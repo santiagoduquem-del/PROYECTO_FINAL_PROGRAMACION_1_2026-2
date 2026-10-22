@@ -17,8 +17,10 @@ public class Funcion {
     private LocalTime hora;
     private double valorBase;
     private EstadoFuncion estado;
+
     // Asientos propios de la función (copia de los de la sala): la ocupación es por función, no por sala.
     private List<Asiento> asientos;
+    List<Venta> listVentas;
 
     public Funcion(String codigo, Pelicula pelicula, Sala sala, LocalDate fecha, LocalTime hora, double valorBase, EstadoFuncion estado) {
         this.codigo = codigo;

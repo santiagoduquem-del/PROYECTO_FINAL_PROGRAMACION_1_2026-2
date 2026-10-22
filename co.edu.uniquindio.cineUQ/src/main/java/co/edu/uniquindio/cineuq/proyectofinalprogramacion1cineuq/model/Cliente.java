@@ -1,6 +1,7 @@
 package co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model;
 
 
+import com.sun.tools.javac.util.List;
 
 /**
  * Cliente que adquiere entradas en el cinema.
@@ -8,6 +9,8 @@ package co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model;
 public class Cliente extends Persona {
 
     private TipoCliente tipoCliente;
+
+    List<Venta> listVentas;
 
     public Cliente(String identificacion, String nombre, TipoCliente tipoCliente) {
         super(identificacion, nombre);

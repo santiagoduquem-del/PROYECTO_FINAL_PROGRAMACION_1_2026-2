@@ -13,7 +13,10 @@ public class Sala {
     private String nombre;
     private int capacidad;
     private EstadoSala estado;
+
+
     private List<Asiento> asientos;
+    private List<Funcion> listFunciones;
 
     public Sala(String codigo, String nombre, int capacidad, EstadoSala estado) {
         this.codigo = codigo;

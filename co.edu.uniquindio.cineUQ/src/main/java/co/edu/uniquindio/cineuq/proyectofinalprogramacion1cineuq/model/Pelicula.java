@@ -1,6 +1,8 @@
 package co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model;
 
 
+import com.sun.tools.javac.util.List;
+
 /**
  * Película disponible en la cartelera del cinema.
  */
@@ -12,6 +14,9 @@ public class Pelicula {
     private int duracionMinutos;
     private Clasificacion clasificacion;
     private EstadoPelicula estado;
+
+
+    List<Funcion> listFunciones;
 
     public Pelicula(String codigo, String nombre, Genero genero, int duracionMinutos, Clasificacion clasificacion, EstadoPelicula estado) {
         this.codigo = codigo;
