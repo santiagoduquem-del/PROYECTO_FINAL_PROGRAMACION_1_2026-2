@@ -1,0 +1,49 @@
+/* Botón invisible sobre un botón dibujado en la imagen */
+.boton-invisible {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 35;
+    -fx-border-color: transparent;
+    -fx-text-fill: transparent;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-cursor: hand;
+}
+
+.boton-invisible:focused {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
+
+.boton-invisible:hover {
+    -fx-background-color: rgba(204, 149, 64, 0.35);
+    -fx-background-insets: 0;
+    -fx-background-radius: 35;
+}
+
+.boton-invisible:pressed {
+    -fx-background-color: rgba(204, 149, 64, 0.65);
+    -fx-background-insets: 0;
+    -fx-background-radius: 35;
+}
+
+/* Botón visible dorado (Volver) */
+.boton-dorado {
+    -fx-background-color: rgba(0, 0, 0, 0.6);
+    -fx-border-color: #CC9540;
+    -fx-border-width: 2;
+    -fx-border-radius: 30;
+    -fx-background-radius: 30;
+    -fx-text-fill: #CC9540;
+    -fx-font-size: 20px;
+    -fx-cursor: hand;
+}
+
+.boton-dorado:hover {
+    -fx-background-color: #CC9540;
+    -fx-text-fill: black;
+}
+
+.boton-dorado:pressed {
+    -fx-background-color: #A87A30;
+}

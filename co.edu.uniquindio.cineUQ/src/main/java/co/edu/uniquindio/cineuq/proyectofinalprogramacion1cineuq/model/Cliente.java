@@ -1,7 +1,7 @@
 package co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model;
 
 
-import com.sun.tools.javac.util.List;
+import java.util.List;
 
 /**
  * Cliente que adquiere entradas en el cinema.

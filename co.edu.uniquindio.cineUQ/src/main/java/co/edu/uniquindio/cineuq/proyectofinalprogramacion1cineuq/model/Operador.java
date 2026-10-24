@@ -1,6 +1,8 @@
 package co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model;
 
-import com.sun.tools.javac.util.List;
+
+import java.util.List;
+
 
 /**
  * Personal que vende y cancela entradas y consulta películas, funciones y disponibilidad.

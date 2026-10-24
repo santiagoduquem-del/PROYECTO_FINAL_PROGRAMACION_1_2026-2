@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="1200.0" prefWidth="1920.0" style="-fx-background-color: black;" stylesheets="@estilos.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.ViewController.SignUpViewController">
+   <children>
+      <ImageView fitHeight="1200.0" fitWidth="1920.0">
+         <image>
+            <Image url="@recursosGraficos/signup.jpg" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="1200.0" fitWidth="1920.0">
+         <image>
+            <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/Black%20and%20White%20Modern%20Login%20and%20Sign-up%20Website%20Page%20UI%20Desktop%20Prototype%20(1).jpg" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="1200.0" fitWidth="1920.0">
+         <image>
+            <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/2.jpg" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="45.0" fitWidth="45.0" layoutX="34.0" layoutY="23.0">
+         <image>
+            <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/icons8-volver-64.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="btnVolver" layoutX="34.0" layoutY="22.0" mnemonicParsing="false" onAction="#onVolver" opacity="0.0" prefHeight="45.0" prefWidth="45.0" styleClass="boton-dorado" text="← Volver" />
+   </children>
+</AnchorPane>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.StackPane?>
+
+<StackPane fx:id="rootPane"
+           xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           prefWidth="1920.0" prefHeight="1080.0"
+           style="-fx-background-color: black;"
+           fx:controller="co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.ViewController.VentanaBienvenidaViewController">
+
+    <ImageView fx:id="imageView" preserveRatio="true" smooth="true"/>
+</StackPane>
