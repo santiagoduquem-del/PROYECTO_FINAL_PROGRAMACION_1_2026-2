@@ -1,0 +1,6 @@
+.fondo-menu {
+    -fx-background-image: url("/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/sala_imax.jpg");
+    -fx-background-size: cover;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}

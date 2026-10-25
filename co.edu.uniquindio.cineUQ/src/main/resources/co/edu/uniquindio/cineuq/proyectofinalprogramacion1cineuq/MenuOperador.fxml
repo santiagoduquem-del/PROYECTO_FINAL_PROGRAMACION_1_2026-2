@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="1200.0" prefWidth="1920.0" style="-fx-background-color: Black;" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.ViewController.MenuOperadorViewController">
+   <children>
+      <ImageView fitHeight="584.0" fitWidth="761.0" layoutX="1092.0" layoutY="136.0">
+         <image>
+            <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/catalogo%20de%20peliculas.png" />
+         </image>
+      </ImageView>
+      <Text fill="WHITE" layoutX="1457.0" layoutY="593.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Consultar peliculas" wrappingWidth="354.9478759765625">
+         <font>
+            <Font name="SansSerif Bold" size="59.0" />
+         </font>
+      </Text>
+      <Pane layoutX="73.0" layoutY="27.0" prefHeight="59.0" prefWidth="1780.0" style="-fx-background-color: b81414; -fx-background-radius: 54;">
+         <children>
+            <Pane prefHeight="59.0" prefWidth="1507.0" style="-fx-background-color: e61919; -fx-background-radius: 54;">
+               <children>
+                  <Text fill="WHITE" layoutX="56.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CinemaUQ">
+                     <font>
+                        <Font name="SansSerif Bold" size="18.0" />
+                     </font>
+                  </Text>
+                  <Text fill="WHITE" layoutX="830.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Home">
+                     <font>
+                        <Font name="SansSerif Bold" size="18.0" />
+                     </font>
+                  </Text>
+               </children></Pane>
+            <Text fill="WHITE" layoutX="1544.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="menu del operador">
+               <font>
+                  <Font name="SansSerif Bold" size="18.0" />
+               </font>
+            </Text>
+         </children></Pane>
+      <ImageView fitHeight="584.0" fitWidth="971.0" layoutX="76.0" layoutY="141.0">
+         <image>
+            <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/salaIMAX.png" />
+         </image>
+      </ImageView>
+      <Text fill="WHITE" layoutX="128.0" layoutY="225.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Generar venta de entrada" wrappingWidth="354.9478759765625">
+         <font>
+            <Font name="SansSerif Bold" size="59.0" />
+         </font>
+      </Text>
+      <ImageView fitHeight="367.0" fitWidth="620.0" layoutX="698.0" layoutY="754.0">
+         <image>
+            <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/cancelarVenta.png" />
+         </image>
+      </ImageView>
+      <Text fill="WHITE" layoutX="1018.0" layoutY="1013.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cancelar venta" wrappingWidth="299.7479248046875">
+         <font>
+            <Font name="SansSerif Bold" size="49.0" />
+         </font>
+      </Text>
+      <ImageView fitHeight="360.0" fitWidth="609.0" layoutX="63.0" layoutY="757.0">
+         <image>
+            <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/cinema-background-concept-vector.png" />
+         </image>
+      </ImageView>
+      <Text fill="WHITE" layoutX="375.0" layoutY="1045.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Consultar funsiones" wrappingWidth="290.94793701171875">
+         <font>
+            <Font name="SansSerif Bold" size="45.0" />
+         </font>
+      </Text>
+      <ImageView fitHeight="367.0" fitWidth="494.0" layoutX="1351.0" layoutY="757.0">
+         <image>
+            <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/pexels-tima-miroshnichenko-7991161.png" />
+         </image>
+      </ImageView>
+      <Text fill="WHITE" layoutX="1561.0" layoutY="1033.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Registrar clientes" wrappingWidth="261.347900390625">
+         <font>
+            <Font name="SansSerif Bold" size="49.0" />
+         </font>
+      </Text>
+      <ImageView fitHeight="59.0" fitWidth="58.0" layoutX="960.0" layoutY="627.0">
+         <image>
+            <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/Black%20Orange%20Bold%20Modern%20Branding%20Studio%20Desktop%20Prototype.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="90.0" fitWidth="86.0" layoutX="1351.0" layoutY="754.0">
+         <image>
+            <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/flacha%20blanca.png" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>
