@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="1200.0" prefWidth="1920.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.ViewController.MenuAdministradorViewController">
+   <children>
+      <ImageView fitHeight="588.0" fitWidth="962.0" layoutX="86.0" layoutY="163.0">
+         <image>
+            <Image url="@recursosGraficos/Cinta%20de%20cine%20de%20colores.png" />
+         </image>
+      </ImageView>
+      <Pane layoutX="86.0" layoutY="37.0" prefHeight="59.0" prefWidth="1776.0" style="-fx-background-color: #111111; -fx-background-radius: 54;">
+         <children>
+            <Text fill="WHITE" layoutX="56.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CinemaUQ®">
+               <font>
+                  <Font name="SansSerif Bold" size="18.0" />
+               </font>
+            </Text>
+            <Text fill="WHITE" layoutX="782.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Home">
+               <font>
+                  <Font name="SansSerif Bold" size="18.0" />
+               </font>
+            </Text>
+            <Text fill="WHITE" layoutX="419.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="dolby ◗◖">
+               <font>
+                  <Font name="SansSerif Bold" size="21.0" />
+               </font>
+            </Text>
+            <Text fill="WHITE" layoutX="1141.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="IMAX">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Text>
+            <Pane layoutX="1430.0" prefHeight="59.0" prefWidth="346.0" style="-fx-background-color: b81414; -fx-background-radius: 54;">
+               <children>
+                  <Text fill="WHITE" layoutX="57.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="menu del administrador">
+                     <font>
+                        <Font name="SansSerif Bold" size="18.0" />
+                     </font>
+                  </Text>
+               </children>
+            </Pane>
+         </children>
+      </Pane>
+      <Text fill="WHITE" layoutX="143.0" layoutY="266.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gestionar peliculas" wrappingWidth="354.9478759765625">
+         <font>
+            <Font name="SansSerif Bold" size="60.0" />
+         </font>
+      </Text>
+      <ImageView fitHeight="59.0" fitWidth="58.0" layoutX="931.0" layoutY="651.0">
+         <image>
+            <Image url="@recursosGraficos/Black%20Orange%20Bold%20Modern%20Branding%20Studio%20Desktop%20Prototype.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="578.0" fitWidth="754.0" layoutX="1100.0" layoutY="163.0">
+         <image>
+            <Image url="@recursosGraficos/salaDolby.png" />
+         </image>
+      </ImageView>
+      <Text fill="WHITE" layoutX="1145.0" layoutY="614.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gestionar salas" wrappingWidth="354.9478759765625">
+         <font>
+            <Font name="SansSerif Bold" size="60.0" />
+         </font>
+      </Text>
+      <ImageView fitHeight="362.0" fitWidth="587.0" layoutX="86.0" layoutY="776.0">
+         <image>
+            <Image url="@recursosGraficos/tarifas.png" />
+         </image>
+      </ImageView>
+      <Text fill="WHITE" layoutX="429.0" layoutY="1062.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gestionar tarifas" wrappingWidth="230.94775390625">
+         <font>
+            <Font name="SansSerif Bold" size="37.0" />
+         </font>
+      </Text>
+      <ImageView fitHeight="353.0" fitWidth="535.0" layoutX="696.0" layoutY="776.0">
+         <image>
+            <Image url="@recursosGraficos/BANNER-WEB-13.png" />
+         </image>
+      </ImageView>
+      <Text fill="WHITE" layoutX="917.0" layoutY="1025.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gestionar funsiones" wrappingWidth="281.34765625">
+         <font>
+            <Font name="SansSerif Bold" size="50.0" />
+         </font>
+      </Text>
+      <ImageView fitHeight="362.0" fitWidth="605.0" layoutX="1247.0" layoutY="772.0">
+         <image>
+            <Image url="@recursosGraficos/reportes.png" />
+         </image>
+      </ImageView>
+      <Text fill="WHITE" layoutX="1593.0" layoutY="1044.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Generar reportes" wrappingWidth="241.79895019531227">
+         <font>
+            <Font name="SansSerif Bold" size="45.0" />
+         </font>
+      </Text>
+      <ImageView fitHeight="90.0" fitWidth="86.0" layoutX="1255.0" layoutY="776.0">
+         <image>
+            <Image url="@recursosGraficos/flacha%20blanca.png" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>

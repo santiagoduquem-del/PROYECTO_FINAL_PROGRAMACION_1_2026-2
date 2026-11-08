@@ -6,9 +6,15 @@ import javafx.scene.control.Button;
 public class SignUpViewController {
 
     @FXML private Button btnVolver;
+    @FXML private Button btnVolverLogin;   // NUEVO: coincide con el fx:id de Scene Builder
 
     @FXML
     private void onVolver() {
-        Navegador.irA(btnVolver, "Login.fxml");
+        Navegador.irA(btnVolverLogin, "Login.fxml");
+    }
+
+    @FXML
+    private void onVolverLogin() {
+        Navegador.irA(btnVolverLogin, "Login.fxml");
     }
 }
