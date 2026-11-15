@@ -50,6 +50,21 @@ public class Funcion implements Cancelable, ContadorEntradas, RegistroVentas, Se
         }
     }
 
+    /**
+     * Vuelve a copiar los asientos de la sala (cuando la sala se reorganizó).
+     * Solo se hace si la función no tiene ventas, para no perder qué asiento compró cada cliente.
+     */
+    public boolean reconstruirAsientos() {
+        if (!listVentas.isEmpty()) {
+            return false;
+        }
+        asientos.clear();
+        for (Asiento asientoSala : sala.getAsientos()) {
+            asientos.add(new Asiento(asientoSala.getFila(), asientoSala.getNumero()));
+        }
+        return true;
+    }
+
     public Asiento buscarAsiento(String codigoAsiento) throws AsientoNoEncontradoException {
         for (Asiento asiento : asientos) {
             if (asiento.getCodigo().equalsIgnoreCase(codigoAsiento)) {

@@ -195,15 +195,56 @@ public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
     public void registrarSala(Sala sala) throws SalaDuplicadaException, DatoInvalidoException {
         validarTexto(sala.getCodigo(), "código");
         validarTexto(sala.getNombre(), "nombre");
-        if (sala.getCapacidad() <= 0) {
-            throw new DatoInvalidoException("La capacidad debe ser mayor que cero.");
-        }
+        validarCapacidad(sala.getCapacidad());
         for (Sala s : listSalas) {
             if (s.getCodigo().equals(sala.getCodigo())) {
                 throw new SalaDuplicadaException(sala.getCodigo());
             }
         }
         listSalas.add(sala);
+    }
+
+    /** La capacidad va de 1 a 1000 asientos. */
+    private void validarCapacidad(int capacidad) throws DatoInvalidoException {
+        if (capacidad <= 0) {
+            throw new DatoInvalidoException("La capacidad debe ser mayor que cero.");
+        }
+        if (capacidad > Sala.CAPACIDAD_MAXIMA) {
+            throw new DatoInvalidoException("La capacidad máxima de una sala es " + Sala.CAPACIDAD_MAXIMA + " asientos.");
+        }
+    }
+
+    /**
+     * Para datos guardados con versiones anteriores: las salas de más de 260 asientos
+     * se reorganizan con filas más anchas, y sus funciones SIN ventas copian los asientos nuevos.
+     * Devuelve true si cambió algo (para guardar).
+     */
+    public boolean actualizarDistribucionSalas() {
+        boolean cambio = false;
+        for (Sala sala : listSalas) {
+            if (sala.getCapacidad() <= Sala.CAPACIDAD_MAXIMA && !sala.tieneDistribucionActual()) {
+                sala.reorganizarAsientos();
+                cambio = true;
+            }
+        }
+        for (Funcion funcion : listFunciones) {
+            Sala sala = funcion.getSala();
+            if (funcion.getAsientos().size() == sala.getAsientos().size() && !mismaDistribucion(funcion, sala)) {
+                if (funcion.reconstruirAsientos()) {
+                    cambio = true;
+                }
+            }
+        }
+        return cambio;
+    }
+
+    private boolean mismaDistribucion(Funcion funcion, Sala sala) {
+        for (int i = 0; i < sala.getAsientos().size(); i++) {
+            if (!funcion.getAsientos().get(i).getCodigo().equals(sala.getAsientos().get(i).getCodigo())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -226,9 +267,7 @@ public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
             throws SalaNoEncontradaException, DatoInvalidoException {
         Sala sala = buscarSala(codigo);
         validarTexto(nombre, "nombre");
-        if (capacidad <= 0) {
-            throw new DatoInvalidoException("La capacidad debe ser mayor que cero.");
-        }
+        validarCapacidad(capacidad);
         if (capacidad != sala.getCapacidad() && salaTieneFuncionesProgramadas(sala)) {
             throw new DatoInvalidoException(
                     "No se puede cambiar la capacidad de una sala que tiene funciones programadas.");

@@ -8,15 +8,20 @@ import java.util.List;
 
 /**
  * Sala del cinema con su colección de asientos.
- * Los asientos se generan solos a partir de la capacidad, en filas de 10:
- * A1..A10, B1..B10, etc. Así la capacidad y la cantidad de asientos siempre coinciden.
+ * Los asientos se generan solos a partir de la capacidad:
+ *  - Hasta 260 asientos: filas de 10 (A1..A10, B1..B10, ...). 26 letras x 10 = 260.
+ *  - Más de 260 (ej.: sala IMAX 70 mm): como ya no hay más letras, las filas se hacen
+ *    más anchas (más sillas hacia los lados): asientos por fila = capacidad / 26, redondeado hacia arriba.
+ * Así la capacidad y la cantidad de asientos siempre coinciden y las filas siempre van de la A a la Z.
  */
 public class Sala implements Habilitable, Serializable {
 
     // Versión de la clase para guardarla en archivo (persistencia)
     private static final long serialVersionUID = 1L;
 
-    private static final int ASIENTOS_POR_FILA = 10;
+    public static final int ASIENTOS_POR_FILA_NORMAL = 10;
+    public static final int MAXIMO_FILAS = 26;            // letras de la A a la Z
+    public static final int CAPACIDAD_MAXIMA = 1000;
 
     private String codigo;
     private String nombre;
@@ -33,14 +38,49 @@ public class Sala implements Habilitable, Serializable {
         generarAsientos();
     }
 
+    /**
+     * Cuántas sillas tiene cada fila. Normal: 10.
+     * Si la sala tiene más de 260 asientos, la fila se ensancha para no pasar de la fila Z.
+     */
+    public int getAsientosPorFila() {
+        if (capacidad <= ASIENTOS_POR_FILA_NORMAL * MAXIMO_FILAS) {
+            return ASIENTOS_POR_FILA_NORMAL;
+        }
+        return (capacidad + MAXIMO_FILAS - 1) / MAXIMO_FILAS;   // división redondeada hacia arriba
+    }
+
     /** Crea los asientos de la sala según la capacidad. */
     private void generarAsientos() {
         asientos.clear();
+        if (capacidad <= 0 || capacidad > CAPACIDAD_MAXIMA) {
+            return;   // capacidad inválida: Cine la rechaza con una excepción
+        }
+        int porFila = getAsientosPorFila();
         for (int i = 0; i < capacidad; i++) {
-            char fila = (char) ('A' + i / ASIENTOS_POR_FILA);
-            int numero = i % ASIENTOS_POR_FILA + 1;
+            char fila = (char) ('A' + i / porFila);
+            int numero = i % porFila + 1;
             asientos.add(new Asiento(fila, numero));
         }
+    }
+
+    /** true si los asientos guardados siguen la distribución actual (sirve para datos de versiones viejas). */
+    public boolean tieneDistribucionActual() {
+        if (asientos.size() != capacidad) {
+            return false;
+        }
+        int porFila = getAsientosPorFila();
+        for (int i = 0; i < asientos.size(); i++) {
+            Asiento asiento = asientos.get(i);
+            if (asiento.getFila() != (char) ('A' + i / porFila) || asiento.getNumero() != i % porFila + 1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /** Vuelve a crear los asientos con la distribución actual. */
+    public void reorganizarAsientos() {
+        generarAsientos();
     }
 
     @Override

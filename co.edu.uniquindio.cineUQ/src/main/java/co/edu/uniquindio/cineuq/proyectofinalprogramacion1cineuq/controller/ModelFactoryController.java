@@ -40,6 +40,8 @@ public class ModelFactoryController {
             cine = new Cine("CinemaUQ", "900123456-7", "contacto@cinemauq.co", "6067000000", "Armenia, Quindío");
             cargarDatosDePrueba();
             guardar();
+        } else if (cine.actualizarDistribucionSalas()) {
+            guardar();   // salas grandes de versiones anteriores quedaron con filas más anchas
         }
     }
 

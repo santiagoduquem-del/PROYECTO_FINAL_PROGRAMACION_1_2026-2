@@ -12,6 +12,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Region;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -227,6 +228,14 @@ public class RegistrarVentaViewController extends BarraSuperiorViewController {
         lblDetalleValor.setText(detalle);
     }
 
+    /** Espacio vacío del ancho de un pasillo. */
+    private Region crearPasillo() {
+        Region pasillo = new Region();
+        pasillo.setMinWidth(22);
+        pasillo.setPrefWidth(22);
+        return pasillo;
+    }
+
     /**
      * Dibuja un botón por cada asiento de la función, ubicado según su fila y número.
      * Los ocupados también se pueden marcar: al vender, el sistema mostrará
@@ -247,8 +256,36 @@ public class RegistrarVentaViewController extends BarraSuperiorViewController {
                 + "     Ocupados: " + funcion.contarAsientosOcupados()
                 + "     (puede marcar varios; clic de nuevo para quitar)");
 
+        // Sala normal: filas de 10 con botones grandes.
+        // Sala grande (más de 10 por fila, ej.: IMAX 70 mm): botones más pequeños y dos pasillos,
+        // quedando tres bloques de sillas: izquierda, centro y derecha.
+        int porFila = funcion.getSala().getAsientosPorFila();
+        boolean salaGrande = porFila > Sala.ASIENTOS_POR_FILA_NORMAL;
+        int lado = porFila / 4;   // sillas de cada bloque lateral
+        gridAsientos.setHgap(salaGrande ? 3 : 8);
+        gridAsientos.setVgap(salaGrande ? 4 : 8);
+
+        // Ancho de cada silla en salas grandes: se reparte el espacio del mapa (~1060 px) entre la fila
+        int anchoSilla = 1010 / porFila - 3;
+        if (anchoSilla > 34) {
+            anchoSilla = 34;
+        }
+        if (anchoSilla < 24) {
+            anchoSilla = 24;
+        }
+
+        if (salaGrande) {
+            // Espacios vacíos que forman los pasillos
+            gridAsientos.add(crearPasillo(), lado, 0);
+            gridAsientos.add(crearPasillo(), porFila - lado + 1, 0);
+        }
+
         for (Asiento asiento : funcion.getAsientos()) {
             Button boton = new Button(asiento.getCodigo());
+            if (salaGrande) {
+                boton.setStyle("-fx-min-width: " + anchoSilla + "px; -fx-pref-width: " + anchoSilla + "px; -fx-min-height: 28px;"
+                        + " -fx-font-size: 9px; -fx-padding: 0; -fx-background-radius: 5;");
+            }
 
             if (asientosSeleccionados.contains(asiento)) {
                 boton.getStyleClass().add("asiento-seleccionado");
@@ -261,6 +298,14 @@ public class RegistrarVentaViewController extends BarraSuperiorViewController {
             boton.setOnAction(e -> seleccionarAsiento(asiento));
 
             int columna = asiento.getNumero() - 1;     // 1 -> columna 0
+            if (salaGrande) {
+                if (asiento.getNumero() > lado) {
+                    columna++;                         // salta el pasillo izquierdo
+                }
+                if (asiento.getNumero() > porFila - lado) {
+                    columna++;                         // salta el pasillo derecho
+                }
+            }
             int fila = asiento.getFila() - 'A';        // 'A' -> fila 0
             gridAsientos.add(boton, columna, fila);
         }
