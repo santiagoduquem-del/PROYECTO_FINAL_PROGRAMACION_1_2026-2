@@ -175,6 +175,12 @@ public class GestionFuncionesViewController extends BarraSuperiorViewController 
         txtValorBase.clear();
     }
 
+    /** Abre el CRUD de combos (los combos que el operador puede agregar a una venta). */
+    @FXML
+    private void onGestionarCombos() {
+        Navegador.irA(rootPane, "GestionCombos.fxml");
+    }
+
     @FXML
     private void onVolver() {
         Navegador.irA(rootPane, "MenuAdministrador.fxml");

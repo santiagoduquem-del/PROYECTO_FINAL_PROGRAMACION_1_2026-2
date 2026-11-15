@@ -74,20 +74,24 @@ public class RegistrarVentaController {
 
     /** Texto corto con los combos elegidos, ej.: "2 x Combo Personal, 1 x Combo Nachos". */
     public String describirCombos() {
+        List<Combo> elegidos = modelFactory.getCombosSeleccionados();
         String texto = "";
-        for (Combo combo : Combo.values()) {
+        List<Combo> yaContados = new ArrayList<>();
+        for (Combo combo : elegidos) {
+            if (yaContados.contains(combo)) {
+                continue;   // ese combo ya se escribió con su cantidad
+            }
+            yaContados.add(combo);
             int cantidad = 0;
-            for (Combo c : modelFactory.getCombosSeleccionados()) {
+            for (Combo c : elegidos) {
                 if (c == combo) {
                     cantidad++;
                 }
             }
-            if (cantidad > 0) {
-                if (!texto.isEmpty()) {
-                    texto += ", ";
-                }
-                texto += cantidad + " x " + combo.getNombre();
+            if (!texto.isEmpty()) {
+                texto += ", ";
             }
+            texto += cantidad + " x " + combo.getNombre();
         }
         if (texto.isEmpty()) {
             return "Sin combos";
@@ -230,11 +234,8 @@ public class RegistrarVentaController {
 
         if (!primera.getCombos().isEmpty()) {
             texto += "Combos:\n";
-            for (Combo combo : Combo.values()) {
-                int cantidad = primera.contarCombo(combo);
-                if (cantidad > 0) {
-                    texto += "  " + cantidad + " x " + combo.getNombre() + "\n";
-                }
+            for (Combo combo : primera.obtenerCombosDistintos()) {
+                texto += "  " + primera.contarCombo(combo) + " x " + combo.getNombre() + "\n";
             }
             texto += "Total combos: " + Conversor.aPesos(primera.getValorCombos()) + "\n";
         }

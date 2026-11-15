@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<!-- Información del formato 3D. Los textos de la izquierda se editan aquí (Scene Builder).
+     La imagen: selecciona imgFormato y en Properties > Image elige un archivo de recursosGraficos.
+     La parte derecha (películas y funciones en este formato) la llena el programa. -->
+<AnchorPane fx:id="rootPane" prefHeight="1200.0" prefWidth="1920.0" style="-fx-background-color: black;" stylesheets="@gestion.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.viewController.DetalleFormatoViewController">
+   <children>
+      <!-- Barra superior -->
+      <Pane layoutX="86.0" layoutY="37.0" prefHeight="59.0" prefWidth="1776.0" style="-fx-background-color: #111111; -fx-background-radius: 54;">
+         <children>
+            <Button layoutX="6.0" layoutY="9.0" mnemonicParsing="false" onAction="#onAtras" prefHeight="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 22px; -fx-cursor: hand;" text="←" />
+            <Text fill="WHITE" layoutX="56.0" layoutY="35.0" text="CinemaUQ®">
+               <font><Font name="SansSerif Bold" size="18.0" /></font>
+            </Text>
+            <Button layoutX="407.0" layoutY="9.0" mnemonicParsing="false" onAction="#onDolby" prefHeight="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 21px; -fx-cursor: hand;" text="dolby ◗◖" />
+            <Button layoutX="770.0" layoutY="9.0" mnemonicParsing="false" onAction="#onHome" prefHeight="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px; -fx-cursor: hand;" text="Home" />
+            <Button layoutX="925.0" layoutY="9.0" mnemonicParsing="false" onAction="#onMasFormatos" prefHeight="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px; -fx-cursor: hand;" text="Más formatos" />
+            <Button layoutX="1129.0" layoutY="9.0" mnemonicParsing="false" onAction="#onImax" prefHeight="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px; -fx-cursor: hand;" text="IMAX" />
+            <Pane layoutX="1430.0" prefHeight="59.0" prefWidth="346.0" style="-fx-background-color: #b81414; -fx-background-radius: 54;">
+               <children>
+                  <Text fill="WHITE" layoutX="85.0" layoutY="36.0" text="Información del formato">
+                     <font><Font name="SansSerif Bold" size="18.0" /></font>
+                  </Text>
+               </children>
+            </Pane>
+         </children>
+      </Pane>
+
+      <Button layoutX="86.0" layoutY="108.0" mnemonicParsing="false" onAction="#onVolver" styleClass="boton-volver" text="← Volver" />
+
+      <HBox layoutX="86.0" layoutY="165.0" prefHeight="1000.0" prefWidth="1776.0" spacing="30.0">
+         <children>
+            <!-- Qué es el formato (texto fijo, editable en Scene Builder) -->
+            <VBox prefWidth="1060.0" spacing="16.0" styleClass="tarjeta-formato">
+               <children>
+                  <StackPane prefHeight="250.0" style="-fx-background-color: #1c1c1c; -fx-background-radius: 18;">
+                     <children>
+                        <Label style="-fx-text-fill: #777777; -fx-font-size: 16px;" text="Imagen del formato (agrégala en Scene Builder)" />
+                        <ImageView fx:id="imgFormato" fitHeight="250.0" fitWidth="1000.0" preserveRatio="true">
+                        </ImageView>
+                     </children>
+                  </StackPane>
+                  <Label styleClass="titulo-formato" text="3D" />
+                  <Label style="-fx-font-size: 21px;" styleClass="etiqueta" text="Con gafas especiales la imagen gana profundidad y los objetos parecen salir de la pantalla. Ideal para películas de animación, aventura y ciencia ficción." wrapText="true" />
+                  <Label styleClass="fila-plan-titulo" text="Ideal para" />
+                  <Label styleClass="dato" text="Películas de animación, aventura y ciencia ficción" wrapText="true" />
+                  <Label styleClass="titulo-panel" text="Lo que vas a vivir" />
+                  <VBox spacing="10.0">
+                     <children>
+                        <Label styleClass="caracteristica" text="✔  Gafas 3D incluidas con la entrada" wrapText="true" />
+                        <Label styleClass="caracteristica" text="✔  Imagen con profundidad real" wrapText="true" />
+                        <Label styleClass="caracteristica" text="✔  Efectos que parecen salir de la pantalla" wrapText="true" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+
+            <!-- Dónde verlo en CinemaUQ (lo llena el programa) -->
+            <VBox spacing="16.0" styleClass="panel" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label styleClass="titulo-panel" text="En cartelera en este formato" />
+                  <Label fx:id="lblPeliculas" styleClass="dato" text="-" wrapText="true" />
+                  <Label styleClass="titulo-panel" text="Próximas funciones" />
+                  <ScrollPane fitToWidth="true" style="-fx-background: #111111; -fx-background-color: #111111;" VBox.vgrow="ALWAYS">
+                     <content>
+                        <VBox fx:id="contenedorFunciones" spacing="10.0" />
+                     </content>
+                  </ScrollPane>
+                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#onMasFormatos" styleClass="boton-secundario" text="Ver más formatos" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

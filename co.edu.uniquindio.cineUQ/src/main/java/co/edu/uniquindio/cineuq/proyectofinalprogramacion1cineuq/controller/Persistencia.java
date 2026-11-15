@@ -1,13 +1,16 @@
 package co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.controller;
 
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Cine;
+import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Combo;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -50,7 +53,7 @@ public class Persistencia {
         if (!archivo.exists()) {
             return null;
         }
-        try (ObjectInputStream entrada = new ObjectInputStream(new FileInputStream(archivo))) {
+        try (ObjectInputStream entrada = new LectorCompatible(new FileInputStream(archivo))) {
             return (Cine) entrada.readObject();
         } catch (IOException | ClassNotFoundException e) {
             // Antes de empezar de cero se guarda una copia del archivo, para no perder los datos
@@ -60,6 +63,27 @@ public class Persistencia {
             System.err.println(copiado ? "Se guardó una copia en " + respaldo + ". Se empieza con los datos de prueba."
                                        : "Se empieza con los datos de prueba.");
             return null;
+        }
+    }
+
+    /**
+     * Lector de objetos que también entiende los archivos de la versión anterior.
+     * Allí los combos eran un enum (los enum se guardan con serialVersionUID 0);
+     * ahora Combo es una clase. Cuando el archivo trae el enum viejo, se lee con la copia
+     * que quedó en model.legado, y luego Cine.actualizarCombosAnteriores() los convierte.
+     */
+    private static class LectorCompatible extends ObjectInputStream {
+
+        LectorCompatible(InputStream entrada) throws IOException {
+            super(entrada);
+        }
+
+        @Override
+        protected Class<?> resolveClass(ObjectStreamClass descripcion) throws IOException, ClassNotFoundException {
+            if (descripcion.getName().equals(Combo.class.getName()) && descripcion.getSerialVersionUID() == 0L) {
+                return co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.legado.Combo.class;
+            }
+            return super.resolveClass(descripcion);
         }
     }
 

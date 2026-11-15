@@ -55,6 +55,17 @@ public class Imagenes {
     }
 
     /**
+     * Para imágenes puestas en Scene Builder: si el ImageView ya tiene imagen,
+     * la recorta para que llene todo el recuadro (sin franjas vacías).
+     */
+    public static void llenarRecuadro(ImageView visor) {
+        if (visor != null && visor.getImage() != null && !visor.getImage().isError()) {
+            visor.setPreserveRatio(true);
+            recortarParaLlenar(visor, visor.getImage());
+        }
+    }
+
+    /**
      * Recorta la imagen (centrada) para que tenga la misma proporción que el recuadro.
      * Así, al escalarla, cubre todo el recuadro sin deformarse y sin dejar franjas vacías.
      *

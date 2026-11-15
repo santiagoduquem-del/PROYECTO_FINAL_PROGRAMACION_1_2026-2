@@ -2,12 +2,8 @@ package co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.controller;
 
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Formato;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Controller de la pantalla "Más formatos": muestra los formatos que no tienen
- * botón propio en la barra superior (dolby e IMAX sí lo tienen).
+ * Controller de la pantalla "Más formatos".
  */
 public class FormatosController {
 
@@ -17,19 +13,13 @@ public class FormatosController {
         modelFactory = ModelFactoryController.getInstance();
     }
 
-    /** Todos los formatos menos los que ya están en la barra (Dolby Cinema e IMAX). */
-    public List<Formato> obtenerFormatosRestantes() {
-        List<Formato> restantes = new ArrayList<>();
-        for (Formato formato : Formato.values()) {
-            if (formato != Formato.IMAX && formato != Formato.DOLBY_CINEMA) {
-                restantes.add(formato);
-            }
-        }
-        return restantes;
-    }
-
-    /** Guarda el formato elegido para que la pantalla DetalleFormato muestre su información. */
-    public void seleccionarFormato(Formato formato) {
+    /**
+     * Guarda el formato elegido para que su pantalla muestre las películas y funciones.
+     * Recibe el nombre del formato tal como está en el userData de la tarjeta (ej.: "TRES_D").
+     */
+    public Formato seleccionarFormato(String nombreFormato) {
+        Formato formato = Formato.valueOf(nombreFormato);
         modelFactory.setFormatoSeleccionado(formato);
+        return formato;
     }
 }

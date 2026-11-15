@@ -3,15 +3,19 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<!-- Información de UN formato. Cuál formato se muestra lo decide el botón que se pulsó
-     (dolby, IMAX o una tarjeta de "Más formatos"). -->
+<!-- Información del formato Dolby Cinema. Los textos de la izquierda se editan aquí (Scene Builder).
+     La imagen: selecciona imgFormato y en Properties > Image elige un archivo de recursosGraficos.
+     La parte derecha (películas y funciones en este formato) la llena el programa. -->
 <AnchorPane fx:id="rootPane" prefHeight="1200.0" prefWidth="1920.0" style="-fx-background-color: black;" stylesheets="@gestion.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.viewController.DetalleFormatoViewController">
    <children>
       <!-- Barra superior -->
@@ -39,19 +43,35 @@
 
       <HBox layoutX="86.0" layoutY="165.0" prefHeight="1000.0" prefWidth="1776.0" spacing="30.0">
          <children>
-            <!-- Qué es el formato -->
-            <VBox prefWidth="1060.0" spacing="18.0" styleClass="tarjeta-formato">
+            <!-- Qué es el formato (texto fijo, editable en Scene Builder) -->
+            <VBox prefWidth="1060.0" spacing="16.0" styleClass="tarjeta-formato">
                <children>
-                  <Label fx:id="lblNombre" styleClass="titulo-formato" text="Formato" />
-                  <Label fx:id="lblDescripcion" style="-fx-font-size: 22px;" styleClass="etiqueta" text="-" wrapText="true" />
+                  <StackPane prefHeight="250.0" style="-fx-background-color: #1c1c1c; -fx-background-radius: 18;">
+                     <children>
+                        <Label style="-fx-text-fill: #777777; -fx-font-size: 16px;" text="Imagen del formato (agrégala en Scene Builder)" />
+                        <ImageView fx:id="imgFormato" fitHeight="250.0" fitWidth="1000.0" preserveRatio="true">
+                           <image>
+                              <Image url="@recursosGraficos/salaDolby.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </StackPane>
+                  <Label styleClass="titulo-formato" text="Dolby Cinema" />
+                  <Label style="-fx-font-size: 21px;" styleClass="etiqueta" text="Imagen Dolby Vision con colores vivos y negros profundos, más sonido Dolby Atmos que se mueve a tu alrededor, incluso por encima de ti. Sillas reclinables en toda la sala." wrapText="true" />
                   <Label styleClass="fila-plan-titulo" text="Ideal para" />
-                  <Label fx:id="lblIdealPara" styleClass="dato" text="-" wrapText="true" />
+                  <Label styleClass="dato" text="Quienes buscan la mejor imagen y el mejor sonido" wrapText="true" />
                   <Label styleClass="titulo-panel" text="Lo que vas a vivir" />
-                  <VBox fx:id="contenedorCaracteristicas" spacing="12.0" />
+                  <VBox spacing="10.0">
+                     <children>
+                        <Label styleClass="caracteristica" text="✔  Dolby Vision: más contraste y colores más vivos" wrapText="true" />
+                        <Label styleClass="caracteristica" text="✔  Dolby Atmos: el sonido también viene desde arriba" wrapText="true" />
+                        <Label styleClass="caracteristica" text="✔  Sillas reclinables en toda la sala" wrapText="true" />
+                     </children>
+                  </VBox>
                </children>
             </VBox>
 
-            <!-- Dónde verlo en CinemaUQ -->
+            <!-- Dónde verlo en CinemaUQ (lo llena el programa) -->
             <VBox spacing="16.0" styleClass="panel" HBox.hgrow="ALWAYS">
                <children>
                   <Label styleClass="titulo-panel" text="En cartelera en este formato" />

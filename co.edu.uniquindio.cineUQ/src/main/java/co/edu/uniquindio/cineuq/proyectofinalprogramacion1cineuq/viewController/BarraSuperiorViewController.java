@@ -27,14 +27,14 @@ public class BarraSuperiorViewController {
     @FXML
     protected void onDolby(ActionEvent evento) {
         barraSuperiorController.seleccionarFormato(Formato.DOLBY_CINEMA);
-        Navegador.irA((Node) evento.getSource(), "DetalleFormato.fxml");
+        Navegador.irA((Node) evento.getSource(), Formato.DOLBY_CINEMA.getVista());   // FormatoDolbyCinema.fxml
     }
 
     /** Botón "IMAX": muestra la información de IMAX. */
     @FXML
     protected void onImax(ActionEvent evento) {
         barraSuperiorController.seleccionarFormato(Formato.IMAX);
-        Navegador.irA((Node) evento.getSource(), "DetalleFormato.fxml");
+        Navegador.irA((Node) evento.getSource(), Formato.IMAX.getVista());   // FormatoIMAX.fxml
     }
 
     /** Botón "Más formatos": muestra los formatos que no caben en la barra. */

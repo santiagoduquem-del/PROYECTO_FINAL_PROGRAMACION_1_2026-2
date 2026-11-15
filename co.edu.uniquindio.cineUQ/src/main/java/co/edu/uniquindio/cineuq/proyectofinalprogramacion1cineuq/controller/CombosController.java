@@ -16,6 +16,11 @@ public class CombosController {
         combosSeleccionados = ModelFactoryController.getInstance().getCombosSeleccionados();
     }
 
+    /** Combos habilitados por el administrador (los que se pueden vender). */
+    public List<Combo> obtenerCombosDisponibles() {
+        return ModelFactoryController.getInstance().getCine().consultarCombosDisponibles();
+    }
+
     public void agregarCombo(Combo combo) {
         combosSeleccionados.add(combo);
     }

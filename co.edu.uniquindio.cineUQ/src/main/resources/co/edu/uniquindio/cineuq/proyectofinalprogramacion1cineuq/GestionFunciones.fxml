@@ -66,6 +66,7 @@
                   <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#onActualizarValorBase" styleClass="boton-secundario" text="Actualizar valor base de la función seleccionada" />
                   <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#onCancelarFuncion" styleClass="boton-secundario" text="Cancelar función seleccionada" />
                   <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#onEliminarFuncion" styleClass="boton-peligro" text="Eliminar función seleccionada" />
+                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#onGestionarCombos" styleClass="boton-principal" text="Gestionar combos" />
                </children>
             </VBox>
             <VBox spacing="12.0" styleClass="panel" HBox.hgrow="ALWAYS">

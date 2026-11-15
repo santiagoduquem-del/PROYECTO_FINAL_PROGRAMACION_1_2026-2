@@ -40,8 +40,13 @@ public class ModelFactoryController {
             cine = new Cine("CinemaUQ", "900123456-7", "contacto@cinemauq.co", "6067000000", "Armenia, Quindío");
             cargarDatosDePrueba();
             guardar();
-        } else if (cine.actualizarDistribucionSalas()) {
-            guardar();   // salas grandes de versiones anteriores quedaron con filas más anchas
+        } else {
+            // Datos guardados con versiones anteriores: se ponen al día y se guardan
+            boolean salasActualizadas = cine.actualizarDistribucionSalas();   // salas grandes con filas más anchas
+            boolean combosActualizados = cine.actualizarCombosAnteriores();   // combos fijos -> combos del CRUD
+            if (salasActualizadas || combosActualizados) {
+                guardar();
+            }
         }
     }
 

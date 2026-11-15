@@ -5,7 +5,10 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
@@ -37,11 +40,74 @@
       <Label layoutX="86.0" layoutY="160.0" styleClass="titulo-grande" text="Más formatos" />
       <Label layoutX="88.0" layoutY="222.0" style="-fx-font-size: 18px;" styleClass="etiqueta" text="Además de Dolby Cinema e IMAX, en CinemaUQ puedes vivir la película en estos formatos. Haz clic en uno para ver su información." />
 
+      <!-- Las 4 tarjetas son fijas: el texto y la imagen se editan aquí en Scene Builder -->
       <ScrollPane fitToWidth="true" layoutX="86.0" layoutY="270.0" prefHeight="890.0" prefWidth="1776.0" style="-fx-background: black; -fx-background-color: black;">
          <content>
-            <FlowPane fx:id="contenedorFormatos" hgap="32.0" prefWrapLength="1760.0" vgap="32.0">
+            <HBox spacing="32.0">
                <padding><Insets bottom="20.0" top="10.0" /></padding>
-            </FlowPane>
+               <children>
+                  <!-- Tarjeta 2D: el userData dice qué formato abre -->
+                  <VBox onMouseClicked="#onVerFormato" prefWidth="420.0" minHeight="560.0" spacing="14.0" styleClass="tarjeta-formato" userData="DOS_D">
+                     <children>
+                        <StackPane prefHeight="200.0" style="-fx-background-color: #1c1c1c; -fx-background-radius: 14;">
+                           <children>
+                              <Label style="-fx-text-fill: #777777;" text="Imagen (Scene Builder)" />
+                              <ImageView fx:id="imgDosD" fitHeight="200.0" fitWidth="360.0" preserveRatio="true" />
+                           </children>
+                        </StackPane>
+                        <Label styleClass="titulo-pelicula" text="2D" />
+                        <Label styleClass="fila-plan-titulo" text="Ideal para: Cualquier película y cualquier presupuesto" wrapText="true" />
+                        <Label style="-fx-font-size: 17px;" styleClass="etiqueta" text="La proyección digital tradicional: imagen nítida y sonido envolvente estándar. Sirve para cualquier película y es el formato más económico." wrapText="true" VBox.vgrow="ALWAYS" />
+                        <Button mnemonicParsing="false" onAction="#onVerFormato" styleClass="boton-principal" text="Ver información" userData="DOS_D" />
+                     </children>
+                  </VBox>
+                  <!-- Tarjeta 3D: el userData dice qué formato abre -->
+                  <VBox onMouseClicked="#onVerFormato" prefWidth="420.0" minHeight="560.0" spacing="14.0" styleClass="tarjeta-formato" userData="TRES_D">
+                     <children>
+                        <StackPane prefHeight="200.0" style="-fx-background-color: #1c1c1c; -fx-background-radius: 14;">
+                           <children>
+                              <Label style="-fx-text-fill: #777777;" text="Imagen (Scene Builder)" />
+                              <ImageView fx:id="imgTresD" fitHeight="200.0" fitWidth="360.0" preserveRatio="true" />
+                           </children>
+                        </StackPane>
+                        <Label styleClass="titulo-pelicula" text="3D" />
+                        <Label styleClass="fila-plan-titulo" text="Ideal para: Películas de animación, aventura y ciencia ficción" wrapText="true" />
+                        <Label style="-fx-font-size: 17px;" styleClass="etiqueta" text="Con gafas especiales la imagen gana profundidad y los objetos parecen salir de la pantalla. Ideal para películas de animación, aventura y ciencia ficción." wrapText="true" VBox.vgrow="ALWAYS" />
+                        <Button mnemonicParsing="false" onAction="#onVerFormato" styleClass="boton-principal" text="Ver información" userData="TRES_D" />
+                     </children>
+                  </VBox>
+                  <!-- Tarjeta 4DX: el userData dice qué formato abre -->
+                  <VBox onMouseClicked="#onVerFormato" prefWidth="420.0" minHeight="560.0" spacing="14.0" styleClass="tarjeta-formato" userData="CUATRO_DX">
+                     <children>
+                        <StackPane prefHeight="200.0" style="-fx-background-color: #1c1c1c; -fx-background-radius: 14;">
+                           <children>
+                              <Label style="-fx-text-fill: #777777;" text="Imagen (Scene Builder)" />
+                              <ImageView fx:id="imgCuatroDX" fitHeight="200.0" fitWidth="360.0" preserveRatio="true" />
+                           </children>
+                        </StackPane>
+                        <Label styleClass="titulo-pelicula" text="4DX" />
+                        <Label styleClass="fila-plan-titulo" text="Ideal para: Películas de acción y aventura" wrapText="true" />
+                        <Label style="-fx-font-size: 17px;" styleClass="etiqueta" text="Las sillas se mueven al ritmo de la acción y la sala suma efectos de viento, agua, aromas, vibraciones y luces. Una película para vivirla con todos los sentidos." wrapText="true" VBox.vgrow="ALWAYS" />
+                        <Button mnemonicParsing="false" onAction="#onVerFormato" styleClass="boton-principal" text="Ver información" userData="CUATRO_DX" />
+                     </children>
+                  </VBox>
+                  <!-- Tarjeta VIP Bistró: el userData dice qué formato abre -->
+                  <VBox onMouseClicked="#onVerFormato" prefWidth="420.0" minHeight="560.0" spacing="14.0" styleClass="tarjeta-formato" userData="VIP_BISTRO">
+                     <children>
+                        <StackPane prefHeight="200.0" style="-fx-background-color: #1c1c1c; -fx-background-radius: 14;">
+                           <children>
+                              <Label style="-fx-text-fill: #777777;" text="Imagen (Scene Builder)" />
+                              <ImageView fx:id="imgVipBistro" fitHeight="200.0" fitWidth="360.0" preserveRatio="true" />
+                           </children>
+                        </StackPane>
+                        <Label styleClass="titulo-pelicula" text="VIP Bistró" />
+                        <Label styleClass="fila-plan-titulo" text="Ideal para: Planes especiales, citas y celebraciones" wrapText="true" />
+                        <Label style="-fx-font-size: 17px;" styleClass="etiqueta" text="Sillas reclinables de cuero, mucho espacio entre filas y servicio de comida y bebidas a la silla durante toda la función." wrapText="true" VBox.vgrow="ALWAYS" />
+                        <Button mnemonicParsing="false" onAction="#onVerFormato" styleClass="boton-principal" text="Ver información" userData="VIP_BISTRO" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
          </content>
       </ScrollPane>
    </children>

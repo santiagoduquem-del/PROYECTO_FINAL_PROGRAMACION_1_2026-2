@@ -148,14 +148,16 @@ public class RegistrarVentaViewController extends BarraSuperiorViewController {
         try {
             List<Venta> ventas = registrarVentaController.venderEntradas(cbFuncion.getValue(),
                     asientosSeleccionados, cbCliente.getValue(), cbTipoEntrada.getValue());
-            txtTiquete.setText(registrarVentaController.generarTiquete(ventas));
+            String tiquete = registrarVentaController.generarTiquete(ventas);
+            txtTiquete.setText(tiquete);
 
             String codigos = "";
             for (Venta venta : ventas) {
                 codigos += (codigos.isEmpty() ? "" : ", ") + venta.getCodigo();
             }
-            Alertas.mostrarInfo("Compra registrada",
-                    "Se registraron " + ventas.size() + " entrada(s): " + codigos + ".");
+            // El tiquete completo también se muestra en una ventana, con espacio para leerlo
+            Alertas.mostrarLista("Compra registrada",
+                    "Se registraron " + ventas.size() + " entrada(s): " + codigos + ".", tiquete);
 
             asientosSeleccionados.clear();
             dibujarMapa();

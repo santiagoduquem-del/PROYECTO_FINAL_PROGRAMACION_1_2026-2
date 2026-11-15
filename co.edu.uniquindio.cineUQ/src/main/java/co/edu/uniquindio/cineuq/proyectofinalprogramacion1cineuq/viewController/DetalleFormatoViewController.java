@@ -6,23 +6,23 @@ import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Formato;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Funcion;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
 
 /**
- * Pantalla con la información de un formato (IMAX, Dolby Cinema, 2D, 3D, 4DX o VIP Bistró).
- * Hereda de BarraSuperiorViewController los botones de la barra superior
- * (incluido "Más formatos", que también usa el botón "Ver más formatos").
+ * Controla las 6 pantallas de formatos (Formato2D.fxml, Formato3D.fxml, FormatoIMAX.fxml,
+ * FormatoDolbyCinema.fxml, Formato4DX.fxml y FormatoVipBistro.fxml).
+ * Son iguales por dentro: el texto de cada formato está escrito en su FXML (Scene Builder)
+ * y este viewController solo llena la parte que cambia: películas y funciones en ese formato.
+ * Hereda de BarraSuperiorViewController los botones de la barra superior.
  */
 public class DetalleFormatoViewController extends BarraSuperiorViewController {
 
     @FXML private AnchorPane rootPane;
-    @FXML private Label lblNombre;
-    @FXML private Label lblDescripcion;
-    @FXML private Label lblIdealPara;
-    @FXML private VBox contenedorCaracteristicas;
+    @FXML private ImageView imgFormato;
     @FXML private Label lblPeliculas;
     @FXML private VBox contenedorFunciones;
 
@@ -32,17 +32,8 @@ public class DetalleFormatoViewController extends BarraSuperiorViewController {
     public void initialize() {
         Formato formato = detalleFormatoController.obtenerFormatoSeleccionado();
 
-        lblNombre.setText(formato.getNombre());
-        lblDescripcion.setText(formato.getDescripcion());
-        lblIdealPara.setText(formato.getIdealPara());
-
-        // Una línea por cada característica del formato
-        for (String caracteristica : formato.getCaracteristicas()) {
-            Label linea = new Label("✔  " + caracteristica);
-            linea.getStyleClass().add("caracteristica");
-            linea.setWrapText(true);
-            contenedorCaracteristicas.getChildren().add(linea);
-        }
+        // La imagen que se puso en Scene Builder se recorta para llenar el recuadro
+        Imagenes.llenarRecuadro(imgFormato);
 
         lblPeliculas.setText(detalleFormatoController.obtenerPeliculasEnFormato(formato));
 

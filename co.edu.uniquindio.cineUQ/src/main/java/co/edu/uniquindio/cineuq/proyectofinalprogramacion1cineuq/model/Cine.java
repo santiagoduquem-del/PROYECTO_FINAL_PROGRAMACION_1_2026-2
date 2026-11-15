@@ -15,7 +15,7 @@ import java.util.List;
  * e implementa todas las operaciones de negocio.
  */
 public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
-        GestionPersonas, GestionVentas, GestionTarifas, Reportes, Serializable {
+        GestionPersonas, GestionVentas, GestionTarifas, GestionCombos, Reportes, Serializable {
 
     // Versión de la clase para guardarla en archivo (persistencia)
     private static final long serialVersionUID = 1L;
@@ -35,6 +35,7 @@ public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
     private List<Venta> listVentas;
     private List<Tarifa> listTarifas;
     private List<Membresia> listMembresias;
+    private List<Combo> listCombos;
 
     // Contador para generar los códigos de venta: V1, V2, V3...
     private int consecutivoVentas;
@@ -59,6 +60,7 @@ public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
             listTarifas.add(new Tarifa(tipo, tipo.getValorPorDefecto()));
         }
         crearMembresiasPorDefecto();
+        crearCombosPorDefecto();
     }
 
     // =====================================================================
@@ -695,6 +697,14 @@ public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
             throw new SinAsientosDisponiblesException(codigoFuncion);
         }
 
+        if (combos != null) {
+            for (Combo combo : combos) {
+                if (!combo.estaDisponible()) {
+                    throw new DatoInvalidoException("El combo " + combo.getNombre() + " ya no está disponible.");
+                }
+            }
+        }
+
         Asiento asiento = funcion.buscarAsiento(codigoAsiento);
         asiento.ocupar();   // lanza AsientoOcupadoException si ya está ocupado
 
@@ -816,6 +826,134 @@ public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
     public double calcularValorEntrada(TipoEntrada tipoEntrada, PlanMembresia plan, double valorBaseFuncion) {
         double sinDescuento = calcularValorEntrada(tipoEntrada) + valorBaseFuncion;
         return Math.round(sinDescuento * (1 - buscarMembresia(plan).getDescuentoEntradas()));   // redondeado a pesos
+    }
+
+    // =====================================================================
+    // Combos (CRUD del administrador)
+    // =====================================================================
+
+    /** Los 6 combos con los que empieza el cine. El administrador los puede cambiar o borrar. */
+    private void crearCombosPorDefecto() {
+        listCombos = new ArrayList<>();
+        listCombos.add(new Combo("C1", "Combo Personal", "Crispetas medianas + gaseosa mediana", 18000));
+        listCombos.add(new Combo("C2", "Combo Pareja", "Crispetas grandes + 2 gaseosas medianas", 32000));
+        listCombos.add(new Combo("C3", "Combo Familiar", "2 crispetas grandes + 4 gaseosas + chocolatina", 52000));
+        listCombos.add(new Combo("C4", "Combo Nachos", "Nachos con queso cheddar + gaseosa grande", 24000));
+        listCombos.add(new Combo("C5", "Combo Perro Caliente", "Perro caliente + crispetas pequeñas + gaseosa", 26000));
+        listCombos.add(new Combo("C6", "Combo Infantil", "Crispetas pequeñas + jugo + juguete sorpresa", 16000));
+    }
+
+    private void validarDatosCombo(String codigo, String nombre, String descripcion, double precio)
+            throws DatoInvalidoException {
+        validarTexto(codigo, "código");
+        validarTexto(nombre, "nombre");
+        validarTexto(descripcion, "contenido del combo");
+        if (precio <= 0) {
+            throw new DatoInvalidoException("El precio del combo debe ser mayor que cero.");
+        }
+    }
+
+    @Override
+    public void registrarCombo(Combo combo) throws ComboDuplicadoException, DatoInvalidoException {
+        validarDatosCombo(combo.getCodigo(), combo.getNombre(), combo.getDescripcion(), combo.getPrecio());
+        for (Combo c : consultarCombos()) {
+            if (c.getCodigo().equalsIgnoreCase(combo.getCodigo())) {
+                throw new ComboDuplicadoException(combo.getCodigo());
+            }
+        }
+        listCombos.add(combo);
+    }
+
+    @Override
+    public Combo buscarCombo(String codigo) throws ComboNoEncontradoException {
+        for (Combo combo : consultarCombos()) {
+            if (combo.getCodigo().equalsIgnoreCase(codigo)) {
+                return combo;
+            }
+        }
+        throw new ComboNoEncontradoException(codigo);
+    }
+
+    @Override
+    public List<Combo> consultarCombos() {
+        // Datos guardados antes de existir el CRUD de combos: se crean los 6 combos iniciales
+        if (listCombos == null) {
+            crearCombosPorDefecto();
+        }
+        return listCombos;
+    }
+
+    /** Solo los combos habilitados: son los que el operador puede vender. */
+    @Override
+    public List<Combo> consultarCombosDisponibles() {
+        List<Combo> disponibles = new ArrayList<>();
+        for (Combo combo : consultarCombos()) {
+            if (combo.estaDisponible()) {
+                disponibles.add(combo);
+            }
+        }
+        return disponibles;
+    }
+
+    /** Cambia los datos del combo. Las ventas ya hechas conservan el valor que se pagó. */
+    @Override
+    public void modificarCombo(String codigo, String nombre, String descripcion, double precio)
+            throws ComboNoEncontradoException, DatoInvalidoException {
+        Combo combo = buscarCombo(codigo);
+        validarDatosCombo(codigo, nombre, descripcion, precio);
+        combo.setNombre(nombre.trim());
+        combo.setDescripcion(descripcion.trim());
+        combo.setPrecio(precio);
+    }
+
+    public void asignarImagenCombo(String codigo, String rutaImagen) throws ComboNoEncontradoException {
+        buscarCombo(codigo).setRutaImagen(rutaImagen);
+    }
+
+    @Override
+    public void habilitarCombo(String codigo) throws ComboNoEncontradoException {
+        buscarCombo(codigo).habilitar();
+    }
+
+    @Override
+    public void deshabilitarCombo(String codigo) throws ComboNoEncontradoException {
+        buscarCombo(codigo).deshabilitar();
+    }
+
+    /** true si el combo aparece en alguna venta. */
+    public boolean comboFueVendido(Combo combo) {
+        for (Venta venta : listVentas) {
+            if (venta.contarCombo(combo) > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Solo se elimina si nunca se ha vendido (para no dañar el historial); si no, se deshabilita. */
+    @Override
+    public void eliminarCombo(String codigo) throws ComboNoEncontradoException, EliminacionNoPermitidaException {
+        Combo combo = buscarCombo(codigo);
+        if (comboFueVendido(combo)) {
+            throw new EliminacionNoPermitidaException("No se puede eliminar el combo " + codigo
+                    + " porque ya se ha vendido. Puede deshabilitarlo para que no aparezca en la venta.");
+        }
+        listCombos.remove(combo);
+    }
+
+    /**
+     * Para datos guardados con la versión anterior, donde los combos eran fijos (enum):
+     * cada combo viejo de las ventas se cambia por el combo nuevo que tiene el mismo nombre.
+     * Devuelve true si cambió algo (para guardar).
+     */
+    public boolean actualizarCombosAnteriores() {
+        boolean cambio = false;
+        for (Venta venta : listVentas) {
+            if (venta.actualizarCombosAnteriores(consultarCombos())) {
+                cambio = true;
+            }
+        }
+        return cambio;
     }
 
     // =====================================================================

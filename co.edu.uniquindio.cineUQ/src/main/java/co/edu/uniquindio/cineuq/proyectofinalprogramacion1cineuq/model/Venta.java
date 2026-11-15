@@ -62,6 +62,42 @@ public class Venta implements Cancelable, Serializable {
         return cantidad;
     }
 
+    /** Los combos de la venta sin repetir (para mostrar "2 x Combo Pareja" una sola vez). */
+    public List<Combo> obtenerCombosDistintos() {
+        List<Combo> distintos = new ArrayList<>();
+        for (Combo combo : combos) {
+            if (!distintos.contains(combo)) {
+                distintos.add(combo);
+            }
+        }
+        return distintos;
+    }
+
+    /**
+     * Solo para datos de la versión anterior: allí los combos eran un enum (model.legado.Combo).
+     * Cada combo viejo se cambia por el combo del catálogo que tiene el mismo nombre.
+     * Devuelve true si cambió algo.
+     */
+    public boolean actualizarCombosAnteriores(List<Combo> catalogo) {
+        boolean cambio = false;
+        List<Combo> nuevos = new ArrayList<>();
+        for (Object elemento : combos) {
+            if (elemento instanceof co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.legado.Combo) {
+                String nombreViejo = ((co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.legado.Combo) elemento).getNombre();
+                for (Combo combo : catalogo) {
+                    if (combo.getNombre().equals(nombreViejo)) {
+                        nuevos.add(combo);
+                    }
+                }
+                cambio = true;
+            } else {
+                nuevos.add((Combo) elemento);
+            }
+        }
+        combos = nuevos;
+        return cambio;
+    }
+
     /** Información de la entrada (el "tiquete") que se le muestra al cliente. */
     public String generarInformacionEntrada() {
         String texto = "========== CINEMAUQ ==========\n"
@@ -85,11 +121,8 @@ public class Venta implements Cancelable, Serializable {
 
         if (!combos.isEmpty()) {
             texto += "Combos:\n";
-            for (Combo combo : Combo.values()) {
-                int cantidad = contarCombo(combo);
-                if (cantidad > 0) {
-                    texto += "  " + cantidad + " x " + combo.getNombre() + "\n";
-                }
+            for (Combo combo : obtenerCombosDistintos()) {
+                texto += "  " + contarCombo(combo) + " x " + combo.getNombre() + "\n";
             }
             texto += "Total combos: $" + String.format("%,.0f", valorCombos) + "\n";
         }

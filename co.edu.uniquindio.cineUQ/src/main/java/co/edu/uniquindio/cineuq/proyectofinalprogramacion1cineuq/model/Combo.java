@@ -1,37 +1,84 @@
 package co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model;
 
+import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.interfaces.Habilitable;
+
+import java.io.Serializable;
+
 /**
- * Combos de comida que se pueden agregar a una venta. Son fijos.
- * (Precios ilustrativos, ajustables por el grupo.)
+ * Combo de comida que se puede agregar a una venta (crispetas, gaseosas, nachos...).
+ * El administrador los gestiona (CRUD) desde Gestionar funciones -> Gestionar combos,
+ * igual que las películas: con código, nombre, contenido, precio y foto.
+ * Un combo deshabilitado no aparece en la venta, pero sigue en las ventas anteriores.
  */
-public enum Combo {
-    PERSONAL("Combo Personal", "Crispetas medianas + gaseosa mediana", 18000),
-    PAREJA("Combo Pareja", "Crispetas grandes + 2 gaseosas medianas", 32000),
-    FAMILIAR("Combo Familiar", "2 crispetas grandes + 4 gaseosas + chocolatina", 52000),
-    NACHOS("Combo Nachos", "Nachos con queso cheddar + gaseosa grande", 24000),
-    PERRO("Combo Perro Caliente", "Perro caliente + crispetas pequeñas + gaseosa", 26000),
-    INFANTIL("Combo Infantil", "Crispetas pequeñas + jugo + juguete sorpresa", 16000);
+public class Combo implements Habilitable, Serializable {
 
-    private final String nombre;
-    private final String descripcion;
-    private final double precio;
+    // Versión de la clase para guardarla en archivo (persistencia)
+    private static final long serialVersionUID = 1L;
 
-    Combo(String nombre, String descripcion, double precio) {
+    private String codigo;
+    private String nombre;
+    private String descripcion;   // qué trae el combo, ej.: "Crispetas medianas + gaseosa mediana"
+    private double precio;
+    private String rutaImagen;    // foto del combo (puede ser null)
+    private boolean disponible;
+
+    public Combo(String codigo, String nombre, String descripcion, double precio) {
+        this.codigo = codigo;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
+        this.disponible = true;
+    }
+
+    @Override
+    public boolean estaDisponible() {
+        return disponible;
+    }
+
+    @Override
+    public void habilitar() {
+        disponible = true;
+    }
+
+    @Override
+    public void deshabilitar() {
+        disponible = false;
+    }
+
+    public String getCodigo() {
+        return codigo;
     }
 
     public String getNombre() {
         return nombre;
     }
 
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
     public String getDescripcion() {
         return descripcion;
     }
 
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
     public double getPrecio() {
         return precio;
+    }
+
+    public void setPrecio(double precio) {
+        this.precio = precio;
+    }
+
+    public String getRutaImagen() {
+        return rutaImagen;
+    }
+
+    public void setRutaImagen(String rutaImagen) {
+        this.rutaImagen = rutaImagen;
     }
 
     @Override
