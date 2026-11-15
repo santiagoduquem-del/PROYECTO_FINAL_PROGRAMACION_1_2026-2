@@ -11,10 +11,10 @@ public class HelloApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(
-                HelloApplication.class.getResource("ventanaBienvenida.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("CineUQ");
+        // La primera pantalla es la intro; al terminar, ella misma abre el Login
+        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("ventanaBienvenida.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 1920, 1200);
+        stage.setTitle("CinemaUQ");
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();

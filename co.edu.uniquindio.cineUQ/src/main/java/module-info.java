@@ -12,6 +12,6 @@ module co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq {
     requires com.almasb.fxgl.all;
 
     opens co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq to javafx.fxml;
-    opens co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.ViewController to javafx.fxml;
+    opens co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.viewController to javafx.fxml;
     exports co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq;
 }

@@ -2,7 +2,7 @@
 
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -11,11 +11,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="1200.0" prefWidth="1920.0" style="-fx-background-color: black;" stylesheets="@estilos.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.ViewController.SignUpViewController">
+<AnchorPane prefHeight="1200.0" prefWidth="1920.0" style="-fx-background-color: black;" stylesheets="@estilos.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.viewController.SignUpViewController">
    <children>
       <ImageView fitHeight="1200.0" fitWidth="1920.0">
          <image>
-            <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/Sign%20up.jpg" />
+            <Image url="@recursosGraficos/Sign%20up.jpg" />
          </image>
       </ImageView>
       <Pane layoutX="1252.0" layoutY="87.0" prefHeight="1025.0" prefWidth="651.0" style="-fx-background-color: #FFFFFF; -fx-background-radius: 60;">
@@ -23,7 +23,22 @@
             <Cursor fx:constant="DEFAULT" />
          </cursor>
          <children>
-            <Button fx:id="btnRegistrarse" layoutX="120.0" layoutY="769.0" maxHeight="70.0" maxWidth="563.0" minHeight="52.0" minWidth="416.0" mnemonicParsing="false" prefHeight="62.0" prefWidth="416.0" style="-fx-background-radius: 56; -fx-background-color: #D3D3D3;" text="Log in">
+            <Text fontSmoothingType="LCD" layoutX="118.0" layoutY="218.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sign up">
+               <font>
+                  <Font name="SansSerif Bold" size="53.0" />
+               </font>
+            </Text>
+            <Text fill="#777777" layoutX="120.0" layoutY="262.0" text="Paso 1 de 2: tus datos">
+               <font>
+                  <Font size="17.0" />
+               </font>
+            </Text>
+            <TextField fx:id="txtNombre" alignment="CENTER" layoutX="116.0" layoutY="285.0" prefHeight="52.0" prefWidth="416.0" promptText="nombre completo" style="-fx-background-color: #D3D3D3; -fx-background-radius: 56;" />
+            <TextField fx:id="txtIdentificacion" alignment="CENTER" layoutX="116.0" layoutY="347.0" prefHeight="52.0" prefWidth="416.0" promptText="identificación" style="-fx-background-color: #D3D3D3; -fx-background-radius: 56;" />
+            <TextField fx:id="txtTelefono" alignment="CENTER" layoutX="116.0" layoutY="409.0" prefHeight="52.0" prefWidth="416.0" promptText="teléfono" style="-fx-background-color: #D3D3D3; -fx-background-radius: 56;" />
+            <TextField fx:id="txtCorreo" alignment="CENTER" layoutX="116.0" layoutY="471.0" prefHeight="52.0" prefWidth="416.0" promptText="correo electrónico" style="-fx-background-color: #D3D3D3; -fx-background-radius: 56;" />
+            <ComboBox fx:id="cbTipoCliente" layoutX="116.0" layoutY="533.0" prefHeight="52.0" prefWidth="416.0" promptText="tipo de cliente" style="-fx-background-color: #D3D3D3; -fx-background-radius: 56; -fx-font-size: 15px;" />
+            <Button fx:id="btnContinuar" layoutX="120.0" layoutY="638.0" maxHeight="70.0" maxWidth="563.0" minHeight="62.0" minWidth="416.0" mnemonicParsing="false" onAction="#onContinuar" prefHeight="62.0" prefWidth="416.0" style="-fx-background-radius: 56; -fx-background-color: Black;" text="Continuar" textFill="#fff9f9">
                <font>
                   <Font size="19.0" />
                </font>
@@ -31,25 +46,19 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button fx:id="btnRegistrarse1" layoutX="120.0" layoutY="638.0" maxHeight="70.0" maxWidth="563.0" minHeight="62.0" minWidth="416.0" mnemonicParsing="false" prefHeight="62.0" prefWidth="416.0" style="-fx-background-radius: 56; -fx-background-color: Black;" text="crear cuenta" textFill="#fff9f9">
+            <ImageView fitHeight="42.0" fitWidth="416.0" layoutX="120.0" layoutY="716.0">
+               <image>
+                  <Image url="@recursosGraficos/Captura%20de%20pantalla_20261024_190837.png" />
+               </image>
+            </ImageView>
+            <Button fx:id="btnIrLogin" layoutX="120.0" layoutY="769.0" maxHeight="70.0" maxWidth="563.0" minHeight="52.0" minWidth="416.0" mnemonicParsing="false" onAction="#onVolverLogin" prefHeight="62.0" prefWidth="416.0" style="-fx-background-radius: 56; -fx-background-color: #D3D3D3;" text="Log in">
                <font>
                   <Font size="19.0" />
                </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
             </Button>
-            <TextField alignment="CENTER" layoutX="116.0" layoutY="295.0" prefHeight="52.0" prefWidth="416.0" promptText="nombre de usuario" style="-fx-background-color: #D3D3D3; -fx-background-radius: 56;" />
-            <ImageView fitHeight="42.0" fitWidth="416.0" layoutX="120.0" layoutY="716.0">
-               <image>
-                  <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/Captura%20de%20pantalla_20261024_190837.png" />
-               </image>
-            </ImageView>
-            <Text fontSmoothingType="LCD" layoutX="118.0" layoutY="218.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sign in">
-               <font>
-                  <Font name="SansSerif Bold" size="53.0" />
-               </font>
-            </Text>
-            <PasswordField alignment="CENTER" layoutX="120.0" layoutY="487.0" prefHeight="52.0" prefWidth="181.0" promptText="contraseña" style="-fx-background-color: #D3D3D3; -fx-background-radius: 56;" />
-            <PasswordField alignment="CENTER" layoutX="351.0" layoutY="487.0" prefHeight="52.0" prefWidth="181.0" promptText="confirmar contraseña" style="-fx-background-color: #D3D3D3; -fx-background-radius: 56;" />
-            <TextField alignment="CENTER" layoutX="116.0" layoutY="377.0" prefHeight="52.0" prefWidth="416.0" promptText="correo electronico" style="-fx-background-color: #D3D3D3; -fx-background-radius: 56;" />
          </children>
       </Pane>
       <Text fill="WHITE" fontSmoothingType="LCD" layoutX="97.0" layoutY="1074.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome!">
@@ -59,12 +68,14 @@
       </Text>
       <ImageView fitHeight="42.0" fitWidth="38.0" layoutX="34.0" layoutY="22.0">
          <image>
-            <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/icons8-volver-64.png" />
+            <Image url="@recursosGraficos/icons8-volver-64.png" />
          </image>
       </ImageView>
+      <!-- Botón invisible encima de la flecha de volver -->
       <Button fx:id="btnVolverLogin" layoutX="30.0" layoutY="20.0" mnemonicParsing="false" onAction="#onVolverLogin" opacity="0.0" prefHeight="45.0" prefWidth="45.0" styleClass="boton-dorado" text="← Volver">
          <cursor>
             <Cursor fx:constant="HAND" />
-         </cursor></Button>
+         </cursor>
+      </Button>
    </children>
 </AnchorPane>

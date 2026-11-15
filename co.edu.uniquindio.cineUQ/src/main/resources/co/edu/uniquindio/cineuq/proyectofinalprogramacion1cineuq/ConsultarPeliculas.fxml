@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="rootPane" prefHeight="1200.0" prefWidth="1920.0" style="-fx-background-color: black;" stylesheets="@gestion.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.viewController.ConsultarPeliculasViewController">
+   <children>
+      <!-- Barra superior -->
+      <Pane layoutX="86.0" layoutY="37.0" prefHeight="59.0" prefWidth="1776.0" style="-fx-background-color: #111111; -fx-background-radius: 54;">
+         <children>
+            <Button layoutX="6.0" layoutY="9.0" mnemonicParsing="false" onAction="#onAtras" prefHeight="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 22px; -fx-cursor: hand;" text="←" />
+            <Text fill="WHITE" layoutX="56.0" layoutY="35.0" text="CinemaUQ®">
+               <font><Font name="SansSerif Bold" size="18.0" /></font>
+            </Text>
+            <Button layoutX="770.0" layoutY="9.0" mnemonicParsing="false" onAction="#onHome" prefHeight="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px; -fx-cursor: hand;" text="Home" />
+            <Button layoutX="407.0" layoutY="9.0" mnemonicParsing="false" onAction="#onDolby" prefHeight="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 21px; -fx-cursor: hand;" text="dolby ◗◖" />
+            <Button layoutX="925.0" layoutY="9.0" mnemonicParsing="false" onAction="#onMasFormatos" prefHeight="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px; -fx-cursor: hand;" text="Más formatos" />
+            <Button layoutX="1129.0" layoutY="9.0" mnemonicParsing="false" onAction="#onImax" prefHeight="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px; -fx-cursor: hand;" text="IMAX" />
+            <Pane layoutX="1430.0" prefHeight="59.0" prefWidth="346.0" style="-fx-background-color: #b81414; -fx-background-radius: 54;">
+               <children>
+                  <Text fill="WHITE" layoutX="80.0" layoutY="36.0" text="Consultar películas">
+                     <font><Font name="SansSerif Bold" size="18.0" /></font>
+                  </Text>
+               </children>
+            </Pane>
+         </children>
+      </Pane>
+
+      <Button layoutX="86.0" layoutY="108.0" mnemonicParsing="false" onAction="#onVolver" styleClass="boton-volver" text="← Volver al menú" />
+
+      <HBox layoutX="86.0" layoutY="165.0" prefHeight="1000.0" prefWidth="1776.0" spacing="30.0">
+         <children>
+            <!-- Cartelera -->
+            <VBox prefWidth="820.0" spacing="12.0" styleClass="panel">
+               <children>
+                  <Label styleClass="titulo-panel" text="Películas disponibles en cartelera" />
+                  <Label styleClass="etiqueta" text="Haga clic en una película para ver su carátula, banner y datos." />
+                  <TableView fx:id="tablaPeliculas" onMouseClicked="#onSeleccionarPelicula" styleClass="tabla" VBox.vgrow="ALWAYS">
+                     <columns>
+                        <TableColumn fx:id="colNombre" prefWidth="250.0" text="Nombre" />
+                        <TableColumn fx:id="colAnio" prefWidth="150.0" text="Año" />
+                        <TableColumn fx:id="colGenero" prefWidth="160.0" text="Género" />
+                        <TableColumn fx:id="colDuracion" prefWidth="110.0" text="Duración" />
+                        <TableColumn fx:id="colClasificacion" prefWidth="180.0" text="Clasificación" />
+                        <TableColumn fx:id="colFormato" prefWidth="130.0" text="Formato" />
+                     </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+               </children>
+            </VBox>
+
+            <!-- Detalle de la película -->
+            <VBox spacing="25.0" styleClass="panel" HBox.hgrow="ALWAYS">
+               <children>
+                  <StackPane maxWidth="Infinity" prefHeight="330.0" styleClass="marco-imagen">
+                     <children>
+                        <Label styleClass="sin-imagen" text="Sin banner" />
+                        <ImageView fx:id="imgBanner" fitHeight="330.0" fitWidth="860.0" preserveRatio="true" />
+                     </children>
+                  </StackPane>
+                  <HBox spacing="30.0">
+                     <children>
+                        <StackPane prefHeight="360.0" prefWidth="250.0" styleClass="marco-imagen">
+                           <children>
+                              <Label styleClass="sin-imagen" text="Sin carátula" />
+                              <ImageView fx:id="imgCaratula" fitHeight="360.0" fitWidth="250.0" preserveRatio="true" />
+                           </children>
+                        </StackPane>
+                        <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label fx:id="lblNombre" styleClass="titulo-pelicula" text="Seleccione una película" wrapText="true" />
+                              <Label styleClass="etiqueta" text="Año de estreno" />
+                              <Label fx:id="lblAnio" styleClass="dato" text="-" />
+                              <Label styleClass="etiqueta" text="Género" />
+                              <Label fx:id="lblGenero" styleClass="dato" text="-" />
+                              <Label styleClass="etiqueta" text="Duración" />
+                              <Label fx:id="lblDuracion" styleClass="dato" text="-" />
+                              <Label styleClass="etiqueta" text="Clasificación" />
+                              <Label fx:id="lblClasificacion" styleClass="dato" text="-" />
+                              <Label styleClass="etiqueta" text="Formato" />
+                              <Label fx:id="lblFormato" styleClass="dato" text="-" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

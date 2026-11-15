@@ -1,0 +1,308 @@
+/* Estilos de las pantallas de gestión y consulta (mismo tema negro/rojo de los menús) */
+
+.panel {
+    -fx-background-color: #111111;
+    -fx-background-radius: 30;
+    -fx-padding: 30;
+}
+
+.titulo-panel {
+    -fx-text-fill: white;
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+}
+
+.etiqueta {
+    -fx-text-fill: #e4e4e4;
+    -fx-font-size: 16px;
+}
+
+.dato {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.campo {
+    -fx-background-color: #D3D3D3;
+    -fx-background-radius: 30;
+    -fx-font-size: 16px;
+    -fx-pref-height: 42px;
+    -fx-padding: 0 15 0 15;
+}
+
+.boton-principal {
+    -fx-background-color: #b81414;
+    -fx-text-fill: white;
+    -fx-background-radius: 30;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-pref-height: 44px;
+    -fx-cursor: hand;
+}
+
+.boton-secundario {
+    -fx-background-color: #333333;
+    -fx-text-fill: white;
+    -fx-background-radius: 30;
+    -fx-font-size: 16px;
+    -fx-pref-height: 44px;
+    -fx-cursor: hand;
+}
+
+.boton-peligro {
+    -fx-background-color: transparent;
+    -fx-border-color: #e53935;
+    -fx-border-radius: 30;
+    -fx-border-width: 2;
+    -fx-text-fill: #ff6b6b;
+    -fx-background-radius: 30;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-pref-height: 44px;
+    -fx-cursor: hand;
+}
+
+.boton-peligro:hover {
+    -fx-background-color: #3a0d0d;
+}
+
+.boton-volver {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+/* ---------- Imágenes de películas ---------- */
+.marco-imagen {
+    -fx-background-color: #1c1c1c;
+    -fx-background-radius: 12;
+}
+
+.sin-imagen {
+    -fx-text-fill: #777777;
+    -fx-font-size: 13px;
+}
+
+.titulo-pelicula {
+    -fx-text-fill: white;
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+}
+
+/* ---------- Tablas ---------- */
+.tabla {
+    -fx-background-color: #1c1c1c;
+    -fx-font-size: 15px;
+}
+
+.tabla .column-header-background {
+    -fx-background-color: #111111;
+}
+
+.tabla .column-header {
+    -fx-background-color: #111111;
+}
+
+.tabla .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.tabla .table-row-cell {
+    -fx-background-color: #1c1c1c;
+    -fx-cell-size: 38px;
+}
+
+.tabla .table-row-cell:odd {
+    -fx-background-color: #232323;
+}
+
+.tabla .table-row-cell:selected {
+    -fx-background-color: #b81414;
+}
+
+.tabla .table-cell {
+    -fx-text-fill: white;
+}
+
+/* ---------- Tiquete de venta ---------- */
+.tiquete {
+    -fx-font-family: "Monospaced";
+    -fx-font-size: 15px;
+}
+
+/* ---------- Mapa de asientos ---------- */
+.mapa {
+    -fx-background-color: #1c1c1c;
+    -fx-background: #1c1c1c;
+}
+
+.pantalla-cine {
+    -fx-background-color: #e4e4e4;
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+    -fx-background-radius: 6;
+}
+
+.asiento-disponible, .asiento-ocupado, .asiento-seleccionado {
+    -fx-min-width: 58px;
+    -fx-min-height: 40px;
+    -fx-alignment: center;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+}
+
+.asiento-disponible {
+    -fx-background-color: #2e7d32;
+    -fx-cursor: hand;
+}
+
+.asiento-ocupado {
+    -fx-background-color: #b81414;
+    -fx-opacity: 0.8;
+}
+
+.asiento-seleccionado {
+    -fx-background-color: #f9a825;
+    -fx-text-fill: black;
+}
+
+/* ---------- Planes de membresía (estilo Netflix) ---------- */
+.titulo-grande {
+    -fx-text-fill: white;
+    -fx-font-size: 44px;
+    -fx-font-weight: bold;
+}
+
+.tarjeta-plan {
+    -fx-background-color: #111111;
+    -fx-background-radius: 18;
+    -fx-border-color: #333333;
+    -fx-border-radius: 18;
+    -fx-border-width: 2;
+    -fx-padding: 10;
+    -fx-cursor: hand;
+}
+
+.plan-seleccionado {
+    -fx-border-color: #e50914;
+    -fx-border-width: 4;
+    -fx-effect: dropshadow(gaussian, rgba(229, 9, 20, 0.6), 25, 0.3, 0, 0);
+}
+
+.plan-popular {
+    -fx-background-color: #e50914;
+    -fx-background-radius: 14 14 0 0;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-alignment: center;
+    -fx-pref-height: 34px;
+}
+
+.encabezado-plan {
+    -fx-background-radius: 12;
+    -fx-padding: 20;
+    -fx-pref-height: 115px;
+}
+
+.plan-free     { -fx-background-color: linear-gradient(to bottom right, #2c2c2c, #6b6b6b); }
+.plan-basico   { -fx-background-color: linear-gradient(to bottom right, #1f3c88, #6a5acd); }
+.plan-estandar { -fx-background-color: linear-gradient(to bottom right, #3b2a8f, #b44bd6); }
+.plan-premium  { -fx-background-color: linear-gradient(to bottom right, #1f3c88, #c2185b, #e53935); }
+
+.nombre-plan {
+    -fx-text-fill: white;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.lema-plan {
+    -fx-text-fill: white;
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+}
+
+.check-plan {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.fila-plan {
+    -fx-border-color: transparent transparent #333333 transparent;
+    -fx-padding: 14 12 14 12;
+}
+
+.fila-plan-titulo {
+    -fx-text-fill: #aaaaaa;
+    -fx-font-size: 15px;
+}
+
+.fila-plan-valor {
+    -fx-text-fill: white;
+    -fx-font-size: 19px;
+    -fx-font-weight: bold;
+}
+
+/* ---------- Combos ---------- */
+.tarjeta-combo {
+    -fx-background-color: #111111;
+    -fx-background-radius: 18;
+    -fx-padding: 15;
+}
+
+.nombre-combo {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.boton-cantidad {
+    -fx-background-color: #333333;
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 30;
+    -fx-min-width: 44px;
+    -fx-min-height: 44px;
+    -fx-cursor: hand;
+}
+
+.cantidad-combo {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-min-width: 40px;
+    -fx-alignment: center;
+}
+
+/* ---------- Formatos ---------- */
+.tarjeta-formato {
+    -fx-cursor: hand;
+    -fx-background-color: #111111;
+    -fx-background-radius: 24;
+    -fx-padding: 30;
+    -fx-border-color: #b81414 transparent transparent transparent;
+    -fx-border-width: 4 0 0 0;
+}
+
+.tarjeta-formato:hover {
+    -fx-background-color: #1c1c1c;
+}
+
+.titulo-formato {
+    -fx-text-fill: white;
+    -fx-font-size: 64px;
+    -fx-font-weight: bold;
+}
+
+.caracteristica {
+    -fx-text-fill: white;
+    -fx-font-size: 19px;
+}

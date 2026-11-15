@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="0.0" prefWidth="0.0" style="-fx-background-color: black;" stylesheets="@estilos.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.ViewController.LoginViewController">
+<AnchorPane prefHeight="1200.0" prefWidth="1920.0" style="-fx-background-color: black;" stylesheets="@estilos.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.viewController.LoginViewController">
    <children>
       <ImageView fitHeight="1200.0" fitWidth="1920.0">
          <image>
@@ -23,7 +23,7 @@
             <Cursor fx:constant="DEFAULT" />
          </cursor>
          <children>
-            <Button fx:id="btnRegistrarseLogin" layoutX="120.0" layoutY="769.0" maxHeight="70.0" maxWidth="563.0" minHeight="52.0" minWidth="416.0" mnemonicParsing="false" onAction="#OnRegistrarseLogin" prefHeight="62.0" prefWidth="416.0" style="-fx-background-radius: 56; -fx-background-color: #D3D3D3;" text="Sign Up">
+            <Button fx:id="btnRegistrarse" layoutX="120.0" layoutY="769.0" maxHeight="70.0" maxWidth="563.0" minHeight="52.0" minWidth="416.0" mnemonicParsing="false" onAction="#onRegistrarse" prefHeight="62.0" prefWidth="416.0" style="-fx-background-radius: 56; -fx-background-color: #D3D3D3;" text="Sign Up">
                <font>
                   <Font size="19.0" />
                </font>
@@ -31,7 +31,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Button fx:id="btnIngresar" layoutX="120.0" layoutY="638.0" maxHeight="70.0" maxWidth="563.0" minHeight="62.0" minWidth="416.0" mnemonicParsing="false" onAction="#onIngresarLogin" prefHeight="62.0" prefWidth="416.0" style="-fx-background-radius: 56; -fx-background-color: Black;" text="Login" textFill="#fff9f9">
+            <Button fx:id="btnIngresar" layoutX="120.0" layoutY="638.0" maxHeight="70.0" maxWidth="563.0" minHeight="62.0" minWidth="416.0" mnemonicParsing="false" onAction="#onIngresar" prefHeight="62.0" prefWidth="416.0" style="-fx-background-radius: 56; -fx-background-color: Black;" text="Login" textFill="#fff9f9">
                <font>
                   <Font size="19.0" />
                </font>
@@ -39,7 +39,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <TextField alignment="CENTER" layoutX="116.0" layoutY="389.0" prefHeight="52.0" prefWidth="416.0" promptText="nombre de usuario" style="-fx-background-color: #D3D3D3; -fx-background-radius: 56;" />
+            <TextField fx:id="txtUsuario" alignment="CENTER" layoutX="116.0" layoutY="389.0" prefHeight="52.0" prefWidth="416.0" promptText="nombre de usuario" style="-fx-background-color: #D3D3D3; -fx-background-radius: 56;" />
             <ImageView fitHeight="42.0" fitWidth="416.0" layoutX="120.0" layoutY="716.0">
                <image>
                   <Image url="@recursosGraficos/Captura%20de%20pantalla_20261024_190837.png" />
@@ -50,27 +50,17 @@
                   <Font name="SansSerif Bold" size="53.0" />
                </font>
             </Text>
-            <PasswordField alignment="CENTER" layoutX="116.0" layoutY="461.0" prefHeight="52.0" prefWidth="416.0" promptText="contraseña" style="-fx-background-color: #D3D3D3; -fx-background-radius: 56;" />
-            <ImageView fitHeight="34.0" fitWidth="28.0" layoutX="135.0" layoutY="470.0">
+            <PasswordField fx:id="txtClave" alignment="CENTER" layoutX="116.0" layoutY="461.0" onAction="#onIngresar" prefHeight="52.0" prefWidth="416.0" promptText="contraseña" style="-fx-background-color: #D3D3D3; -fx-background-radius: 56;" />
+            <ImageView fitHeight="34.0" fitWidth="28.0" layoutX="135.0" layoutY="470.0" mouseTransparent="true">
                <image>
                   <Image url="@recursosGraficos/clker-free-vector-images-lock-306311_640.png" />
                </image>
             </ImageView>
-            <ImageView fitHeight="28.0" fitWidth="28.0" layoutX="135.0" layoutY="401.0">
+            <ImageView fitHeight="28.0" fitWidth="28.0" layoutX="135.0" layoutY="401.0" mouseTransparent="true">
                <image>
                   <Image url="@recursosGraficos/tuktukdesign-icon-1633249_640.png" />
                </image>
             </ImageView>
-            <Text fill="#e4e4e4" layoutX="135.0" layoutY="557.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Recuerdame">
-               <font>
-                  <Font name="System Italic" size="13.0" />
-               </font>
-            </Text>
-            <Text fill="#99cee1" layoutX="372.0" layoutY="557.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Olvide mi contraseña">
-               <font>
-                  <Font name="System Italic" size="13.0" />
-               </font>
-            </Text>
          </children>
       </Pane>
       <Text fill="WHITE" fontSmoothingType="LCD" layoutX="92.0" layoutY="1087.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome Back!">

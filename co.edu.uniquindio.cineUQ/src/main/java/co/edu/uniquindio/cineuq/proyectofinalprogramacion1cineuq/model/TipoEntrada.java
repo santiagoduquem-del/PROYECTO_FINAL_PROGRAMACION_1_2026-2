@@ -1,21 +1,34 @@
 package co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model;
 
 /**
- * Tipos de entrada con su tarifa (valores ilustrativos, ajustables por el grupo).
+ * Tipos de entrada. Cada uno tiene un valor por defecto (valores ilustrativos del enunciado).
+ * El valor vigente se guarda en la clase Tarifa, que el administrador puede modificar.
  */
 public enum TipoEntrada {
-    GENERAL(15000),
-    ESTUDIANTE(12000),
-    NIÑO(10000),
-    ADULTO_MAYOR(11000);
+    GENERAL("General", 15000),
+    ESTUDIANTE("Estudiante", 12000),
+    NINO("Niño", 10000),
+    ADULTO_MAYOR("Adulto mayor", 11000);
 
-    private final double valor;
+    private final String descripcion;
+    private final double valorPorDefecto;
 
-    TipoEntrada(double valor) {
-        this.valor = valor;
+    TipoEntrada(String descripcion, double valorPorDefecto) {
+        this.descripcion = descripcion;
+        this.valorPorDefecto = valorPorDefecto;
     }
 
-    public double getValor() {
-        return valor;
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public double getValorPorDefecto() {
+        return valorPorDefecto;
+    }
+
+    // Así se muestra en los ComboBox de la interfaz
+    @Override
+    public String toString() {
+        return descripcion;
     }
 }

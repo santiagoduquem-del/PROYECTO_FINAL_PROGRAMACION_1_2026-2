@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+   Paso 2 del registro de un cliente: elegir el plan de membresía.
+   Los precios, descuentos y beneficios se llenan desde el código con los valores vigentes
+   (los que el administrador pone en "Gestionar membresías").
+-->
+<AnchorPane fx:id="rootPane" prefHeight="1200.0" prefWidth="1920.0" style="-fx-background-color: black;" stylesheets="@gestion.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.viewController.PlanesViewController">
+   <children>
+      <Button layoutX="86.0" layoutY="40.0" mnemonicParsing="false" onAction="#onVolver" styleClass="boton-volver" text="← Volver" />
+      <Label layoutX="86.0" layoutY="95.0" styleClass="titulo-grande" text="Selecciona el plan ideal para ti" />
+      <Label fx:id="lblSaludo" layoutX="88.0" layoutY="160.0" style="-fx-font-size: 19px;" styleClass="etiqueta" text="Paso 2 de 2: elige tu membresía" />
+
+      <HBox alignment="BOTTOM_LEFT" layoutX="86.0" layoutY="215.0" prefWidth="1776.0" spacing="24.0">
+         <children>
+
+            <!-- ===== FREE ===== -->
+            <VBox fx:id="tarjetaFree" onMouseClicked="#onSeleccionarPlan" prefWidth="426.0" styleClass="tarjeta-plan" userData="FREE">
+               <children>
+                  <VBox spacing="6.0" styleClass="encabezado-plan,plan-free">
+                     <children>
+                        <Label styleClass="nombre-plan" text="Free" />
+                        <Label styleClass="lema-plan" text="Para empezar" />
+                        <Label fx:id="checkFree" styleClass="check-plan" text="✔ Seleccionado" visible="false" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="4.0" styleClass="fila-plan">
+                     <children>
+                        <Label styleClass="fila-plan-titulo" text="Precio mensual" />
+                        <Label fx:id="lblPrecioFree" styleClass="fila-plan-valor" text="COP 0" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="4.0" styleClass="fila-plan">
+                     <children>
+                        <Label styleClass="fila-plan-titulo" text="Descuento en entradas" />
+                        <Label fx:id="lblEntradasFree" styleClass="fila-plan-valor" text="0 %" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="4.0" styleClass="fila-plan">
+                     <children>
+                        <Label styleClass="fila-plan-titulo" text="Descuento en combos" />
+                        <Label fx:id="lblCombosFree" styleClass="fila-plan-valor" text="0 %" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="4.0" styleClass="fila-plan">
+                     <children>
+                        <Label styleClass="fila-plan-titulo" text="Beneficio extra" />
+                        <Label fx:id="lblBeneficioFree" styleClass="fila-plan-valor" text="Acumula puntos en cada compra" wrapText="true" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+
+            <!-- ===== BÁSICO ===== -->
+            <VBox fx:id="tarjetaBasico" onMouseClicked="#onSeleccionarPlan" prefWidth="426.0" styleClass="tarjeta-plan" userData="BASICO">
+               <children>
+                  <VBox spacing="6.0" styleClass="encabezado-plan,plan-basico">
+                     <children>
+                        <Label styleClass="nombre-plan" text="Básico" />
+                        <Label styleClass="lema-plan" text="Ahorra en cada visita" />
+                        <Label fx:id="checkBasico" styleClass="check-plan" text="✔ Seleccionado" visible="false" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="4.0" styleClass="fila-plan">
+                     <children>
+                        <Label styleClass="fila-plan-titulo" text="Precio mensual" />
+                        <Label fx:id="lblPrecioBasico" styleClass="fila-plan-valor" text="COP 14,900" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="4.0" styleClass="fila-plan">
+                     <children>
+                        <Label styleClass="fila-plan-titulo" text="Descuento en entradas" />
+                        <Label fx:id="lblEntradasBasico" styleClass="fila-plan-valor" text="10 %" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="4.0" styleClass="fila-plan">
+                     <children>
+                        <Label styleClass="fila-plan-titulo" text="Descuento en combos" />
+                        <Label fx:id="lblCombosBasico" styleClass="fila-plan-valor" text="5 %" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="4.0" styleClass="fila-plan">
+                     <children>
+                        <Label styleClass="fila-plan-titulo" text="Beneficio extra" />
+                        <Label fx:id="lblBeneficioBasico" styleClass="fila-plan-valor" text="1 bebida pequeña gratis al mes" wrapText="true" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+
+            <!-- ===== ESTÁNDAR ===== -->
+            <VBox fx:id="tarjetaEstandar" onMouseClicked="#onSeleccionarPlan" prefWidth="426.0" styleClass="tarjeta-plan" userData="ESTANDAR">
+               <children>
+                  <VBox spacing="6.0" styleClass="encabezado-plan,plan-estandar">
+                     <children>
+                        <Label styleClass="nombre-plan" text="Estándar" />
+                        <Label styleClass="lema-plan" text="El favorito de los cinéfilos" />
+                        <Label fx:id="checkEstandar" styleClass="check-plan" text="✔ Seleccionado" visible="false" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="4.0" styleClass="fila-plan">
+                     <children>
+                        <Label styleClass="fila-plan-titulo" text="Precio mensual" />
+                        <Label fx:id="lblPrecioEstandar" styleClass="fila-plan-valor" text="COP 29,900" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="4.0" styleClass="fila-plan">
+                     <children>
+                        <Label styleClass="fila-plan-titulo" text="Descuento en entradas" />
+                        <Label fx:id="lblEntradasEstandar" styleClass="fila-plan-valor" text="20 %" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="4.0" styleClass="fila-plan">
+                     <children>
+                        <Label styleClass="fila-plan-titulo" text="Descuento en combos" />
+                        <Label fx:id="lblCombosEstandar" styleClass="fila-plan-valor" text="15 %" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="4.0" styleClass="fila-plan">
+                     <children>
+                        <Label styleClass="fila-plan-titulo" text="Beneficio extra" />
+                        <Label fx:id="lblBeneficioEstandar" styleClass="fila-plan-valor" text="Preventa de estrenos 48 h antes" wrapText="true" />
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+
+            <!-- ===== PREMIUM (con la pestaña "Más popular" encima) ===== -->
+            <VBox prefWidth="426.0">
+               <children>
+                  <Label maxWidth="Infinity" styleClass="plan-popular" text="Más popular" />
+                  <VBox fx:id="tarjetaPremium" onMouseClicked="#onSeleccionarPlan" prefWidth="426.0" styleClass="tarjeta-plan" userData="PREMIUM">
+                     <children>
+                        <VBox spacing="6.0" styleClass="encabezado-plan,plan-premium">
+                           <children>
+                              <Label styleClass="nombre-plan" text="Premium" />
+                              <Label styleClass="lema-plan" text="La experiencia completa" />
+                              <Label fx:id="checkPremium" styleClass="check-plan" text="✔ Seleccionado" visible="false" />
+                           </children>
+                        </VBox>
+                        <VBox spacing="4.0" styleClass="fila-plan">
+                           <children>
+                              <Label styleClass="fila-plan-titulo" text="Precio mensual" />
+                              <Label fx:id="lblPrecioPremium" styleClass="fila-plan-valor" text="COP 49,900" />
+                           </children>
+                        </VBox>
+                        <VBox spacing="4.0" styleClass="fila-plan">
+                           <children>
+                              <Label styleClass="fila-plan-titulo" text="Descuento en entradas" />
+                              <Label fx:id="lblEntradasPremium" styleClass="fila-plan-valor" text="30 %" />
+                           </children>
+                        </VBox>
+                        <VBox spacing="4.0" styleClass="fila-plan">
+                           <children>
+                              <Label styleClass="fila-plan-titulo" text="Descuento en combos" />
+                              <Label fx:id="lblCombosPremium" styleClass="fila-plan-valor" text="30 %" />
+                           </children>
+                        </VBox>
+                        <VBox spacing="4.0" styleClass="fila-plan">
+                           <children>
+                              <Label styleClass="fila-plan-titulo" text="Beneficio extra" />
+                              <Label fx:id="lblBeneficioPremium" styleClass="fila-plan-valor" text="2 entradas gratis al mes y acceso a VIP Bistró" wrapText="true" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+
+      <HBox alignment="CENTER_LEFT" layoutX="86.0" layoutY="820.0" prefWidth="1776.0" spacing="40.0">
+         <children>
+            <Label fx:id="lblPlanElegido" styleClass="dato" text="Plan seleccionado: ninguno" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+            <Button mnemonicParsing="false" onAction="#onRegistrarme" prefWidth="420.0" styleClass="boton-principal" text="Registrarme" />
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

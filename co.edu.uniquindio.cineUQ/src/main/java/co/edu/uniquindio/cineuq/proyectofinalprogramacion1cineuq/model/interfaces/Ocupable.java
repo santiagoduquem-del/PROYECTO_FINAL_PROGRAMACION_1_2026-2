@@ -1,7 +1,6 @@
 package co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.interfaces;
-import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.exceptions.*;
 
-import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.*;
+import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.exceptions.AsientoOcupadoException;
 
 /**
  * Entidad que puede ocuparse y liberarse (Asiento).

@@ -1,12 +1,24 @@
 package co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model;
 
+import java.io.Serializable;
+import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.exceptions.*;
+import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.interfaces.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Clase principal del sistema: agrupa salas, películas, funciones, clientes, operarios y ventas.
+ * Clase principal del sistema: agrupa salas, películas, funciones, clientes, empleados y ventas,
+ * e implementa todas las operaciones de negocio.
  */
-public class Cine {
+public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
+        GestionPersonas, GestionVentas, GestionTarifas, Reportes, Serializable {
+
+    // Versión de la clase para guardarla en archivo (persistencia)
+    private static final long serialVersionUID = 1L;
 
     private String nombre;
     private String nit;
@@ -19,12 +31,15 @@ public class Cine {
     private List<Pelicula> listPeliculas;
     private List<Funcion> listFunciones;
     private List<Cliente> listClientes;
-    private List<Operador> listOperarios;
+    private List<Empleado> listEmpleados;   // operadores y administradores
     private List<Venta> listVentas;
+    private List<Tarifa> listTarifas;
+    private List<Membresia> listMembresias;
 
+    // Contador para generar los códigos de venta: V1, V2, V3...
+    private int consecutivoVentas;
 
-
-    public Cine(String nombre) {
+    public Cine(String nombre, String nit, String correo, String telefono, String direccion) {
         this.nombre = nombre;
         this.nit = nit;
         this.correo = correo;
@@ -34,9 +49,856 @@ public class Cine {
         this.listPeliculas = new ArrayList<>();
         this.listFunciones = new ArrayList<>();
         this.listClientes = new ArrayList<>();
-        this.listOperarios = new ArrayList<>();
+        this.listEmpleados = new ArrayList<>();
         this.listVentas = new ArrayList<>();
+        this.consecutivoVentas = 0;
+
+        // Una tarifa por cada tipo de entrada, con su valor por defecto
+        this.listTarifas = new ArrayList<>();
+        for (TipoEntrada tipo : TipoEntrada.values()) {
+            listTarifas.add(new Tarifa(tipo, tipo.getValorPorDefecto()));
+        }
+        crearMembresiasPorDefecto();
     }
+
+    // =====================================================================
+    // Validaciones de apoyo
+    // =====================================================================
+
+    private void validarTexto(String texto, String campo) throws DatoInvalidoException {
+        if (texto == null || texto.trim().isEmpty()) {
+            throw new DatoInvalidoException("El campo " + campo + " es obligatorio.");
+        }
+    }
+
+    /** El año debe estar entre 1895 (primera proyección de cine) y dos años después del actual (preventas). */
+    private void validarAnioEstreno(int anio) throws DatoInvalidoException {
+        int maximo = LocalDate.now().getYear() + 2;
+        if (anio < 1895 || anio > maximo) {
+            throw new DatoInvalidoException("El año de estreno debe estar entre 1895 y " + maximo + ".");
+        }
+    }
+
+    private boolean salaTieneFuncionesProgramadas(Sala sala) {
+        for (Funcion funcion : listFunciones) {
+            if (funcion.getSala() == sala && funcion.getEstado() == EstadoFuncion.PROGRAMADA) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // =====================================================================
+    // Películas
+    // =====================================================================
+
+    @Override
+    public void registrarPelicula(Pelicula pelicula) throws PeliculaDuplicadaException, DatoInvalidoException {
+        validarTexto(pelicula.getCodigo(), "código");
+        validarTexto(pelicula.getNombre(), "nombre");
+        if (pelicula.getDuracionMinutos() <= 0) {
+            throw new DatoInvalidoException("La duración debe ser mayor que cero.");
+        }
+        if (pelicula.getFormato() == null) {
+            throw new DatoInvalidoException("Debe seleccionar el formato de la película.");
+        }
+        validarAnioEstreno(pelicula.getAnioEstreno());
+        for (Pelicula p : listPeliculas) {
+            if (p.getCodigo().equals(pelicula.getCodigo())) {
+                throw new PeliculaDuplicadaException(pelicula.getCodigo());
+            }
+        }
+        listPeliculas.add(pelicula);
+    }
+
+    @Override
+    public Pelicula buscarPelicula(String codigo) throws PeliculaNoEncontradaException {
+        for (Pelicula pelicula : listPeliculas) {
+            if (pelicula.getCodigo().equals(codigo)) {
+                return pelicula;
+            }
+        }
+        throw new PeliculaNoEncontradaException(codigo);
+    }
+
+    @Override
+    public List<Pelicula> consultarPeliculas() {
+        return listPeliculas;
+    }
+
+    @Override
+    public List<Pelicula> consultarPeliculasDisponibles() {
+        List<Pelicula> disponibles = new ArrayList<>();
+        for (Pelicula pelicula : listPeliculas) {
+            if (pelicula.estaDisponible()) {
+                disponibles.add(pelicula);
+            }
+        }
+        return disponibles;
+    }
+
+    @Override
+    public void modificarPelicula(String codigo, String nombre, Genero genero, int duracionMinutos,
+                                  Clasificacion clasificacion, Formato formato, int anioEstreno)
+            throws PeliculaNoEncontradaException, DatoInvalidoException {
+        Pelicula pelicula = buscarPelicula(codigo);
+        validarTexto(nombre, "nombre");
+        if (duracionMinutos <= 0) {
+            throw new DatoInvalidoException("La duración debe ser mayor que cero.");
+        }
+        if (formato == null) {
+            throw new DatoInvalidoException("Debe seleccionar el formato de la película.");
+        }
+        validarAnioEstreno(anioEstreno);
+        pelicula.setNombre(nombre);
+        pelicula.setGenero(genero);
+        pelicula.setDuracionMinutos(duracionMinutos);
+        pelicula.setClasificacion(clasificacion);
+        pelicula.setFormato(formato);
+        pelicula.setAnioEstreno(anioEstreno);
+    }
+
+    @Override
+    public void asignarImagenesPelicula(String codigo, String rutaCaratula, String rutaBanner)
+            throws PeliculaNoEncontradaException {
+        Pelicula pelicula = buscarPelicula(codigo);
+        pelicula.setRutaCaratula(rutaCaratula);
+        pelicula.setRutaBanner(rutaBanner);
+    }
+
+    /** Solo se puede eliminar si nunca se le programaron funciones (si no, se debe deshabilitar). */
+    @Override
+    public void eliminarPelicula(String codigo) throws PeliculaNoEncontradaException, EliminacionNoPermitidaException {
+        Pelicula pelicula = buscarPelicula(codigo);
+        if (!pelicula.getListFunciones().isEmpty()) {
+            throw new EliminacionNoPermitidaException("No se puede eliminar la película " + codigo
+                    + " porque tiene funciones registradas. Puede deshabilitarla.");
+        }
+        listPeliculas.remove(pelicula);
+    }
+
+    @Override
+    public void habilitarPelicula(String codigo) throws PeliculaNoEncontradaException {
+        buscarPelicula(codigo).habilitar();
+    }
+
+    @Override
+    public void deshabilitarPelicula(String codigo) throws PeliculaNoEncontradaException {
+        buscarPelicula(codigo).deshabilitar();
+    }
+
+    // =====================================================================
+    // Salas
+    // =====================================================================
+
+    @Override
+    public void registrarSala(Sala sala) throws SalaDuplicadaException, DatoInvalidoException {
+        validarTexto(sala.getCodigo(), "código");
+        validarTexto(sala.getNombre(), "nombre");
+        if (sala.getCapacidad() <= 0) {
+            throw new DatoInvalidoException("La capacidad debe ser mayor que cero.");
+        }
+        for (Sala s : listSalas) {
+            if (s.getCodigo().equals(sala.getCodigo())) {
+                throw new SalaDuplicadaException(sala.getCodigo());
+            }
+        }
+        listSalas.add(sala);
+    }
+
+    @Override
+    public Sala buscarSala(String codigo) throws SalaNoEncontradaException {
+        for (Sala sala : listSalas) {
+            if (sala.getCodigo().equals(codigo)) {
+                return sala;
+            }
+        }
+        throw new SalaNoEncontradaException(codigo);
+    }
+
+    @Override
+    public List<Sala> consultarSalas() {
+        return listSalas;
+    }
+
+    @Override
+    public void modificarSala(String codigo, String nombre, int capacidad)
+            throws SalaNoEncontradaException, DatoInvalidoException {
+        Sala sala = buscarSala(codigo);
+        validarTexto(nombre, "nombre");
+        if (capacidad <= 0) {
+            throw new DatoInvalidoException("La capacidad debe ser mayor que cero.");
+        }
+        if (capacidad != sala.getCapacidad() && salaTieneFuncionesProgramadas(sala)) {
+            throw new DatoInvalidoException(
+                    "No se puede cambiar la capacidad de una sala que tiene funciones programadas.");
+        }
+        sala.setNombre(nombre);
+        if (capacidad != sala.getCapacidad()) {
+            sala.setCapacidad(capacidad);   // vuelve a generar los asientos
+        }
+    }
+
+    /** Solo se puede eliminar si nunca se programaron funciones en ella (si no, se debe dejar fuera de servicio). */
+    @Override
+    public void eliminarSala(String codigo) throws SalaNoEncontradaException, EliminacionNoPermitidaException {
+        Sala sala = buscarSala(codigo);
+        for (Funcion funcion : listFunciones) {
+            if (funcion.getSala() == sala) {
+                throw new EliminacionNoPermitidaException("No se puede eliminar la sala " + codigo
+                        + " porque tiene funciones registradas. Puede dejarla fuera de servicio.");
+            }
+        }
+        listSalas.remove(sala);
+    }
+
+    @Override
+    public void habilitarSala(String codigo) throws SalaNoEncontradaException {
+        buscarSala(codigo).habilitar();
+    }
+
+    @Override
+    public void deshabilitarSala(String codigo) throws SalaNoEncontradaException {
+        buscarSala(codigo).deshabilitar();
+    }
+
+    // =====================================================================
+    // Funciones
+    // =====================================================================
+
+    @Override
+    public Funcion programarFuncion(String codigo, String codigoPelicula, String codigoSala, LocalDate fecha,
+                                    LocalTime hora, double valorBase)
+            throws FuncionDuplicadaException, PeliculaNoEncontradaException, PeliculaNoDisponibleException,
+                   SalaNoEncontradaException, SalaNoDisponibleException, ConflictoHorarioException,
+                   DatoInvalidoException {
+
+        validarTexto(codigo, "código");
+        if (fecha == null || hora == null) {
+            throw new DatoInvalidoException("Debe indicar la fecha y la hora de la función.");
+        }
+        if (fecha.isBefore(LocalDate.now())) {
+            throw new DatoInvalidoException("No se pueden programar funciones en fechas pasadas.");
+        }
+        // El valor base es un recargo opcional (estrenos o formatos especiales): puede ser 0
+        if (valorBase < 0) {
+            throw new DatoInvalidoException("El valor base no puede ser negativo (déjelo vacío o en 0 si no aplica).");
+        }
+        for (Funcion f : listFunciones) {
+            if (f.getCodigo().equals(codigo)) {
+                throw new FuncionDuplicadaException(codigo);
+            }
+        }
+
+        Pelicula pelicula = buscarPelicula(codigoPelicula);
+        if (!pelicula.estaDisponible()) {
+            throw new PeliculaNoDisponibleException(codigoPelicula);
+        }
+
+        Sala sala = buscarSala(codigoSala);
+        if (!sala.estaDisponible()) {
+            throw new SalaNoDisponibleException(codigoSala);
+        }
+
+        Funcion nueva = new Funcion(codigo, pelicula, sala, fecha, hora, valorBase);
+
+        // Verificar que no se cruce con otra función programada en la misma sala y fecha.
+        // Dos horarios se cruzan si cada uno empieza antes de que el otro termine.
+        for (Funcion existente : listFunciones) {
+            boolean mismaSala = existente.getSala() == sala;
+            boolean mismaFecha = existente.getFecha().equals(fecha);
+            boolean programada = existente.getEstado() == EstadoFuncion.PROGRAMADA;
+            if (mismaSala && mismaFecha && programada) {
+                boolean seCruzan = nueva.getMinutoInicio() < existente.getMinutoFin()
+                        && existente.getMinutoInicio() < nueva.getMinutoFin();
+                if (seCruzan) {
+                    throw new ConflictoHorarioException(codigoSala, existente.getCodigo());
+                }
+            }
+        }
+
+        listFunciones.add(nueva);
+        pelicula.agregarFuncion(nueva);
+        return nueva;
+    }
+
+    @Override
+    public Funcion buscarFuncion(String codigo) throws FuncionNoEncontradaException {
+        for (Funcion funcion : listFunciones) {
+            if (funcion.getCodigo().equals(codigo)) {
+                return funcion;
+            }
+        }
+        throw new FuncionNoEncontradaException(codigo);
+    }
+
+    @Override
+    public List<Funcion> consultarFunciones() {
+        return listFunciones;
+    }
+
+    @Override
+    public List<Funcion> consultarFuncionesProgramadas() {
+        List<Funcion> programadas = new ArrayList<>();
+        for (Funcion funcion : listFunciones) {
+            if (funcion.getEstado() == EstadoFuncion.PROGRAMADA) {
+                programadas.add(funcion);
+            }
+        }
+        return programadas;
+    }
+
+    @Override
+    public List<Funcion> consultarFuncionesProgramadas(String codigoPelicula) {
+        List<Funcion> resultado = new ArrayList<>();
+        for (Funcion funcion : consultarFuncionesProgramadas()) {
+            if (funcion.getPelicula().getCodigo().equals(codigoPelicula)) {
+                resultado.add(funcion);
+            }
+        }
+        return resultado;
+    }
+
+    @Override
+    public List<Funcion> consultarFuncionesPorFecha(LocalDate fecha) {
+        List<Funcion> resultado = new ArrayList<>();
+        for (Funcion funcion : listFunciones) {
+            if (funcion.getFecha().equals(fecha)) {
+                resultado.add(funcion);
+            }
+        }
+        return resultado;
+    }
+
+    @Override
+    public List<Asiento> consultarAsientos(String codigoFuncion) throws FuncionNoEncontradaException {
+        return buscarFuncion(codigoFuncion).getAsientos();
+    }
+
+    /**
+     * Modifica película, sala, fecha, hora y valor base de una función, solo si está programada
+     * y NO tiene ventas (para no cambiarle la función a quien ya compró).
+     * Se quita la función vieja y se programa de nuevo con los datos nuevos (con todas las validaciones
+     * de programarFuncion: sala disponible, cruces de horario, etc.). Si algo falla, queda la vieja.
+     */
+    @Override
+    public Funcion modificarFuncion(String codigo, String codigoPelicula, String codigoSala, LocalDate fecha,
+                                    LocalTime hora, double valorBase) throws CinemaException {
+        Funcion vieja = buscarFuncion(codigo);
+        if (vieja.getEstado() != EstadoFuncion.PROGRAMADA) {
+            throw new ModificacionNoPermitidaException("Solo se pueden modificar funciones programadas.");
+        }
+        if (!vieja.getListVentas().isEmpty()) {
+            throw new ModificacionNoPermitidaException("No se puede modificar la función " + codigo
+                    + " porque ya tiene ventas. Solo puede actualizar su valor base o cancelarla.");
+        }
+
+        listFunciones.remove(vieja);
+        vieja.getPelicula().removerFuncion(vieja);
+        try {
+            return programarFuncion(codigo, codigoPelicula, codigoSala, fecha, hora, valorBase);
+        } catch (CinemaException e) {
+            // Los datos nuevos no son válidos: se deja la función como estaba
+            listFunciones.add(vieja);
+            vieja.getPelicula().agregarFuncion(vieja);
+            throw e;
+        }
+    }
+
+    /** Solo se puede eliminar si no tiene ventas (si no, se debe cancelar). */
+    @Override
+    public void eliminarFuncion(String codigo) throws FuncionNoEncontradaException, EliminacionNoPermitidaException {
+        Funcion funcion = buscarFuncion(codigo);
+        if (!funcion.getListVentas().isEmpty()) {
+            throw new EliminacionNoPermitidaException("No se puede eliminar la función " + codigo
+                    + " porque tiene ventas registradas. Puede cancelarla.");
+        }
+        listFunciones.remove(funcion);
+        funcion.getPelicula().removerFuncion(funcion);
+    }
+
+    /** Cambia el valor base (recargo) de una función. Las ventas ya hechas conservan lo que se pagó. */
+    @Override
+    public void modificarValorBase(String codigoFuncion, double nuevoValor)
+            throws FuncionNoEncontradaException, DatoInvalidoException {
+        if (nuevoValor < 0) {
+            throw new DatoInvalidoException("El valor base no puede ser negativo (déjelo vacío o en 0 si no aplica).");
+        }
+        buscarFuncion(codigoFuncion).setValorBase(nuevoValor);
+    }
+
+    @Override
+    public void cancelarFuncion(String codigo) throws FuncionNoEncontradaException, FuncionNoDisponibleException {
+        buscarFuncion(codigo).cancelar();
+    }
+
+
+    // =====================================================================
+    // Personas (clientes y empleados)
+    // =====================================================================
+
+    @Override
+    public void registrarCliente(Cliente cliente) throws ClienteDuplicadoException, DatoInvalidoException {
+        validarDatosCliente(cliente);
+        if (cliente.getPlan() == null) {
+            throw new DatoInvalidoException("Debe seleccionar el plan de membresía.");
+        }
+        for (Cliente c : listClientes) {
+            if (c.getIdentificacion().equals(cliente.getIdentificacion())) {
+                throw new ClienteDuplicadoException(cliente.getIdentificacion());
+            }
+        }
+        listClientes.add(cliente);
+    }
+
+    /**
+     * Revisa los datos del cliente (sin el plan). También la usa Sign Up en el paso 1,
+     * para avisar de los errores antes de pasar a la pantalla de planes.
+     */
+    @Override
+    public void validarDatosCliente(Cliente cliente) throws DatoInvalidoException {
+        validarTexto(cliente.getIdentificacion(), "identificación");
+        validarTexto(cliente.getNombre(), "nombre");
+        validarTexto(cliente.getTelefono(), "teléfono");
+        validarTexto(cliente.getCorreo(), "correo");
+
+        // Teléfono: solo números, entre 7 y 10 dígitos
+        String telefono = cliente.getTelefono().trim();
+        if (telefono.length() < 7 || telefono.length() > 10) {
+            throw new DatoInvalidoException("El teléfono debe tener entre 7 y 10 dígitos.");
+        }
+        for (int i = 0; i < telefono.length(); i++) {
+            if (!Character.isDigit(telefono.charAt(i))) {
+                throw new DatoInvalidoException("El teléfono solo puede tener números.");
+            }
+        }
+
+        // Correo: debe tener una @ y un punto después de ella (ej.: nombre@correo.com)
+        String correo = cliente.getCorreo().trim();
+        int arroba = correo.indexOf('@');
+        if (arroba <= 0 || correo.indexOf('.', arroba) < arroba + 2 || correo.endsWith(".") || correo.contains(" ")) {
+            throw new DatoInvalidoException("El correo no es válido (ejemplo: nombre@correo.com).");
+        }
+
+        if (cliente.getTipoCliente() == null) {
+            throw new DatoInvalidoException("Debe seleccionar el tipo de cliente.");
+        }
+    }
+
+    @Override
+    public Cliente buscarCliente(String identificacion) throws ClienteNoEncontradoException {
+        for (Cliente cliente : listClientes) {
+            if (cliente.getIdentificacion().equals(identificacion)) {
+                return cliente;
+            }
+        }
+        throw new ClienteNoEncontradoException(identificacion);
+    }
+
+    @Override
+    public List<Cliente> consultarClientes() {
+        return listClientes;
+    }
+
+    /** Cambia los datos del cliente (la identificación no cambia porque es la que lo identifica). */
+    @Override
+    public void modificarCliente(String identificacion, String nombre, String telefono, String correo,
+                                 TipoCliente tipoCliente, PlanMembresia plan)
+            throws ClienteNoEncontradoException, DatoInvalidoException {
+        Cliente cliente = buscarCliente(identificacion);
+        // Se validan los datos nuevos antes de cambiar nada
+        validarDatosCliente(new Cliente(identificacion, nombre, telefono, correo, tipoCliente, plan));
+        if (plan == null) {
+            throw new DatoInvalidoException("Debe seleccionar el plan de membresía.");
+        }
+        cliente.setNombre(nombre.trim());
+        cliente.setTelefono(telefono.trim());
+        cliente.setCorreo(correo.trim());
+        cliente.setTipoCliente(tipoCliente);
+        cliente.setPlan(plan);
+    }
+
+    /** Solo se puede eliminar un cliente que no tenga compras (se necesitan para el historial y los reportes). */
+    @Override
+    public void eliminarCliente(String identificacion)
+            throws ClienteNoEncontradoException, EliminacionNoPermitidaException {
+        Cliente cliente = buscarCliente(identificacion);
+        if (!cliente.getListVentas().isEmpty()) {
+            throw new EliminacionNoPermitidaException("No se puede eliminar el cliente " + identificacion
+                    + " porque tiene compras registradas (se necesitan para el historial y los reportes).");
+        }
+        listClientes.remove(cliente);
+    }
+
+    @Override
+    public void registrarEmpleado(Empleado empleado) throws UsuarioDuplicadoException, DatoInvalidoException {
+        validarTexto(empleado.getIdentificacion(), "identificación");
+        validarTexto(empleado.getNombre(), "nombre");
+        validarTexto(empleado.getUsuario(), "usuario");
+        validarTexto(empleado.getContrasena(), "contraseña");
+        for (Empleado e : listEmpleados) {
+            if (e.getUsuario().equals(empleado.getUsuario())) {
+                throw new UsuarioDuplicadoException("el usuario " + empleado.getUsuario());
+            }
+            if (e.getIdentificacion().equals(empleado.getIdentificacion())) {
+                throw new UsuarioDuplicadoException("la identificación " + empleado.getIdentificacion());
+            }
+        }
+        listEmpleados.add(empleado);
+    }
+
+    @Override
+    public Empleado autenticarEmpleado(String usuario, String contrasena) throws CredencialesInvalidasException {
+        for (Empleado empleado : listEmpleados) {
+            if (empleado.validarCredenciales(usuario, contrasena)) {
+                return empleado;
+            }
+        }
+        throw new CredencialesInvalidasException(usuario);
+    }
+
+    @Override
+    public List<Empleado> consultarEmpleados() {
+        return listEmpleados;
+    }
+
+    @Override
+    public Empleado buscarEmpleado(String identificacion) throws EmpleadoNoEncontradoException {
+        for (Empleado empleado : listEmpleados) {
+            if (empleado.getIdentificacion().equals(identificacion)) {
+                return empleado;
+            }
+        }
+        throw new EmpleadoNoEncontradoException(identificacion);
+    }
+
+    /**
+     * Cambia nombre, usuario y contraseña del empleado.
+     * Si la contraseña llega vacía, se deja la que tenía.
+     */
+    @Override
+    public void modificarEmpleado(String identificacion, String nombre, String usuario, String contrasena)
+            throws EmpleadoNoEncontradoException, UsuarioDuplicadoException, DatoInvalidoException {
+        Empleado empleado = buscarEmpleado(identificacion);
+        validarTexto(nombre, "nombre");
+        validarTexto(usuario, "usuario");
+        for (Empleado otro : listEmpleados) {
+            if (otro != empleado && otro.getUsuario().equals(usuario.trim())) {
+                throw new UsuarioDuplicadoException("el usuario " + usuario.trim());
+            }
+        }
+        empleado.setNombre(nombre.trim());
+        empleado.setUsuario(usuario.trim());
+        if (contrasena != null && !contrasena.isEmpty()) {
+            empleado.setContrasena(contrasena);
+        }
+    }
+
+    /**
+     * Elimina un empleado, salvo que:
+     *  - sea el mismo que tiene la sesión iniciada,
+     *  - sea el último administrador (siempre debe quedar uno),
+     *  - sea un operador con ventas registradas (se necesitan para el historial).
+     */
+    @Override
+    public void eliminarEmpleado(String identificacion, Empleado empleadoActual)
+            throws EmpleadoNoEncontradoException, EliminacionNoPermitidaException {
+        Empleado empleado = buscarEmpleado(identificacion);
+        if (empleado == empleadoActual) {
+            throw new EliminacionNoPermitidaException("No puede eliminar su propia cuenta mientras tiene la sesión iniciada.");
+        }
+        if (empleado instanceof Administrador) {
+            int administradores = 0;
+            for (Empleado e : listEmpleados) {
+                if (e instanceof Administrador) {
+                    administradores++;
+                }
+            }
+            if (administradores == 1) {
+                throw new EliminacionNoPermitidaException("No se puede eliminar el último administrador del sistema.");
+            }
+        }
+        if (empleado instanceof Operador && !((Operador) empleado).getListVentas().isEmpty()) {
+            throw new EliminacionNoPermitidaException("No se puede eliminar el operador " + identificacion
+                    + " porque tiene ventas registradas (se necesitan para el historial).");
+        }
+        listEmpleados.remove(empleado);
+    }
+
+    // =====================================================================
+    // Ventas
+    // =====================================================================
+
+    @Override
+    public Venta venderEntrada(String codigoFuncion, String codigoAsiento, String identificacionCliente,
+                               TipoEntrada tipoEntrada, List<Combo> combos, Operador operador)
+            throws FuncionNoEncontradaException, FuncionNoDisponibleException, ClienteNoEncontradoException,
+                   SinAsientosDisponiblesException, AsientoNoEncontradoException, AsientoOcupadoException,
+                   DatoInvalidoException {
+
+        if (tipoEntrada == null) {
+            throw new DatoInvalidoException("Debe seleccionar el tipo de entrada.");
+        }
+
+        Funcion funcion = buscarFuncion(codigoFuncion);
+        if (funcion.getEstado() != EstadoFuncion.PROGRAMADA) {
+            throw new FuncionNoDisponibleException(codigoFuncion);
+        }
+
+        Cliente cliente = buscarCliente(identificacionCliente);
+        if (!esTipoEntradaPermitido(cliente, tipoEntrada)) {
+            throw new DatoInvalidoException("El cliente " + cliente.getNombre() + " está registrado como "
+                    + cliente.getTipoCliente().getDescripcion() + ". Solo puede comprar entrada General o "
+                    + cliente.getTipoCliente().getDescripcion() + ". Si cambió su condición, actualice el tipo de cliente.");
+        }
+
+        if (funcion.contarAsientosDisponibles() == 0) {
+            throw new SinAsientosDisponiblesException(codigoFuncion);
+        }
+
+        Asiento asiento = funcion.buscarAsiento(codigoAsiento);
+        asiento.ocupar();   // lanza AsientoOcupadoException si ya está ocupado
+
+        // Precios con el descuento del plan de membresía del cliente
+        if (combos == null) {
+            combos = new ArrayList<>();
+        }
+        double tarifa = calcularValorEntrada(tipoEntrada);
+        double valorEntrada = calcularValorEntrada(tipoEntrada, cliente.getPlan(), funcion.getValorBase());
+        double valorCombos = calcularValorCombos(combos, cliente.getPlan());
+
+        consecutivoVentas++;
+        String codigoVenta = "V" + consecutivoVentas;
+
+        Venta venta = new Venta(codigoVenta, cliente, funcion, asiento, tipoEntrada,
+                operador, LocalDateTime.now(), tarifa, funcion.getValorBase(), valorEntrada, combos, valorCombos);
+
+        listVentas.add(venta);
+        funcion.agregarVenta(venta);
+        cliente.agregarVenta(venta);
+        if (operador != null) {
+            operador.agregarVenta(venta);
+        }
+        return venta;
+    }
+
+    /** Suma el precio de los combos y le aplica el descuento de combos del plan. */
+    /**
+     * Regla del tipo de entrada: cualquier cliente puede comprar GENERAL;
+     * los demás tipos solo si coinciden con su tipo de cliente (ej.: NIÑO -> entrada NIÑO).
+     */
+    public boolean esTipoEntradaPermitido(Cliente cliente, TipoEntrada tipoEntrada) {
+        if (cliente == null || tipoEntrada == null) {
+            return true;   // todavía no hay nada que comparar
+        }
+        return tipoEntrada == TipoEntrada.GENERAL
+                || tipoEntrada.name().equals(cliente.getTipoCliente().name());
+    }
+
+    /** Valor de los combos SIN descuento (precio de lista). */
+    public double calcularValorCombosSinDescuento(List<Combo> combos) {
+        double total = 0;
+        for (Combo combo : combos) {
+            total += combo.getPrecio();
+        }
+        return total;
+    }
+
+    @Override
+    public double calcularValorCombos(List<Combo> combos, PlanMembresia plan) {
+        double total = 0;
+        for (Combo combo : combos) {
+            total += combo.getPrecio();
+        }
+        return Math.round(total * (1 - buscarMembresia(plan).getDescuentoCombos()));   // redondeado a pesos
+    }
+
+    @Override
+    public void cancelarVenta(String codigoVenta) throws VentaNoEncontradaException, VentaYaCanceladaException {
+        buscarVenta(codigoVenta).cancelar();   // también libera el asiento
+    }
+
+    @Override
+    public Venta buscarVenta(String codigoVenta) throws VentaNoEncontradaException {
+        for (Venta venta : listVentas) {
+            if (venta.getCodigo().equals(codigoVenta)) {
+                return venta;
+            }
+        }
+        throw new VentaNoEncontradaException(codigoVenta);
+    }
+
+    @Override
+    public List<Venta> consultarVentas() {
+        return listVentas;
+    }
+
+    // =====================================================================
+    // Tarifas
+    // =====================================================================
+
+    @Override
+    public List<Tarifa> consultarTarifas() {
+        return listTarifas;
+    }
+
+    @Override
+    public Tarifa buscarTarifa(TipoEntrada tipoEntrada) {
+        for (Tarifa tarifa : listTarifas) {
+            if (tarifa.getTipoEntrada() == tipoEntrada) {
+                return tarifa;
+            }
+        }
+        return null;   // no pasa: en el constructor se crea una tarifa por cada tipo
+    }
+
+    @Override
+    public void modificarTarifa(TipoEntrada tipoEntrada, double nuevoValor) throws DatoInvalidoException {
+        if (tipoEntrada == null) {
+            throw new DatoInvalidoException("Debe seleccionar el tipo de entrada.");
+        }
+        if (nuevoValor <= 0) {
+            throw new DatoInvalidoException("El valor de la tarifa debe ser mayor que cero.");
+        }
+        buscarTarifa(tipoEntrada).setValor(nuevoValor);
+    }
+
+    @Override
+    public double calcularValorEntrada(TipoEntrada tipoEntrada) {
+        return buscarTarifa(tipoEntrada).getValor();
+    }
+
+    /**
+     * Valor de UNA entrada:
+     *     (tarifa del tipo de entrada + valor base de la función) - descuento de entradas del plan
+     * El valor base es un recargo opcional por estreno o formato especial (puede ser 0).
+     */
+    @Override
+    public double calcularValorEntrada(TipoEntrada tipoEntrada, PlanMembresia plan, double valorBaseFuncion) {
+        double sinDescuento = calcularValorEntrada(tipoEntrada) + valorBaseFuncion;
+        return Math.round(sinDescuento * (1 - buscarMembresia(plan).getDescuentoEntradas()));   // redondeado a pesos
+    }
+
+    // =====================================================================
+    // Membresías (valores vigentes de cada plan)
+    // =====================================================================
+
+    /** Una membresía por cada plan, con los valores por defecto del enum PlanMembresia. */
+    private void crearMembresiasPorDefecto() {
+        listMembresias = new ArrayList<>();
+        for (PlanMembresia plan : PlanMembresia.values()) {
+            listMembresias.add(new Membresia(plan));
+        }
+    }
+
+    @Override
+    public List<Membresia> consultarMembresias() {
+        // Datos guardados antes de existir las membresías: se crean con los valores por defecto
+        if (listMembresias == null) {
+            crearMembresiasPorDefecto();
+        }
+        return listMembresias;
+    }
+
+    @Override
+    public Membresia buscarMembresia(PlanMembresia plan) {
+        for (Membresia membresia : consultarMembresias()) {
+            if (membresia.getPlan() == plan) {
+                return membresia;
+            }
+        }
+        return null;   // no pasa: hay una membresía por cada plan
+    }
+
+    /**
+     * Cambia los valores de un plan. Los descuentos van de 0 a 1 (0.25 = 25 %).
+     * Las ventas ya hechas conservan lo que se pagó.
+     */
+    @Override
+    public void modificarMembresia(PlanMembresia plan, double precioMensual, double descuentoEntradas,
+                                   double descuentoCombos, String beneficioExtra) throws DatoInvalidoException {
+        if (plan == null) {
+            throw new DatoInvalidoException("Debe seleccionar el plan.");
+        }
+        if (precioMensual < 0) {
+            throw new DatoInvalidoException("El precio mensual no puede ser negativo.");
+        }
+        if (descuentoEntradas < 0 || descuentoEntradas > 1 || descuentoCombos < 0 || descuentoCombos > 1) {
+            throw new DatoInvalidoException("Los descuentos deben estar entre 0 % y 100 %.");
+        }
+        validarTexto(beneficioExtra, "beneficio extra");
+        Membresia membresia = buscarMembresia(plan);
+        membresia.setPrecioMensual(precioMensual);
+        membresia.setDescuentoEntradas(descuentoEntradas);
+        membresia.setDescuentoCombos(descuentoCombos);
+        membresia.setBeneficioExtra(beneficioExtra.trim());
+    }
+
+    // =====================================================================
+    // Reportes (las ventas canceladas no cuentan)
+    // =====================================================================
+
+    @Override
+    public int calcularTotalEntradasVendidas() {
+        int total = 0;
+        for (Venta venta : listVentas) {
+            if (venta.getEstado() == EstadoVenta.ACTIVA) {
+                total++;
+            }
+        }
+        return total;
+    }
+
+    @Override
+    public double calcularTotalIngresos() {
+        double total = 0;
+        for (Venta venta : listVentas) {
+            if (venta.getEstado() == EstadoVenta.ACTIVA) {
+                total += venta.getValorPagado();
+            }
+        }
+        return total;
+    }
+
+    @Override
+    public Pelicula obtenerPeliculaMasVendida() {
+        Pelicula masVendida = null;
+        int maximo = 0;
+        for (Pelicula pelicula : listPeliculas) {
+            int vendidas = pelicula.contarEntradasVendidas();
+            if (vendidas > maximo) {
+                maximo = vendidas;
+                masVendida = pelicula;
+            }
+        }
+        return masVendida;
+    }
+
+    @Override
+    public double obtenerOcupacionFuncion(String codigoFuncion) throws FuncionNoEncontradaException {
+        Funcion funcion = buscarFuncion(codigoFuncion);
+        int total = funcion.getAsientos().size();
+        if (total == 0) {
+            return 0;
+        }
+        int ocupados = total - funcion.contarAsientosDisponibles();
+        return ocupados * 100.0 / total;
+    }
+
+    @Override
+    public List<Funcion> obtenerFuncionesProgramadas(LocalDate fecha) {
+        List<Funcion> resultado = new ArrayList<>();
+        for (Funcion funcion : consultarFuncionesPorFecha(fecha)) {
+            if (funcion.getEstado() == EstadoFuncion.PROGRAMADA) {
+                resultado.add(funcion);
+            }
+        }
+        return resultado;
+    }
+
+    // =====================================================================
+    // Getters y setters de los datos del cine
+    // =====================================================================
 
     public String getNombre() {
         return nombre;
@@ -78,59 +940,11 @@ public class Cine {
         this.direccion = direccion;
     }
 
-    public List<Sala> getListSalas() {
-        return listSalas;
-    }
-
-    public void setListSalas(List<Sala> listSalas) {
-        this.listSalas = listSalas;
-    }
-
-    public List<Pelicula> getListPeliculas() {
-        return listPeliculas;
-    }
-
-    public void setListPeliculas(List<Pelicula> listPeliculas) {
-        this.listPeliculas = listPeliculas;
-    }
-
-    public List<Funcion> getListFunciones() {
-        return listFunciones;
-    }
-
-    public void setListFunciones(List<Funcion> listFunciones) {
-        this.listFunciones = listFunciones;
-    }
-
-    public List<Cliente> getListClientes() {
-        return listClientes;
-    }
-
-    public void setListClientes(List<Cliente> listClientes) {
-        this.listClientes = listClientes;
-    }
-
-    public List<Operador> getListOperarios() {
-        return listOperarios;
-    }
-
-    public void setListOperarios(List<Operador> listOperarios) {
-        this.listOperarios = listOperarios;
-    }
-
-    public List<Venta> getListVentas() {
-        return listVentas;
-    }
-
-    public void setListVentas(List<Venta> listVentas) {
-        this.listVentas = listVentas;
-    }
-
     @Override
     public String toString() {
-        return "Cine{nombre='" + nombre + "', listSalas=" + listSalas.size()
-                + ", listPeliculas=" + listPeliculas.size() + ", listFunciones=" + listFunciones.size()
-                + ", listClientes=" + listClientes.size() + ", listOperarios=" + listOperarios.size()
-                + ", listVentas=" + listVentas.size() + "}";
+        return "Cine{nombre='" + nombre + "', salas=" + listSalas.size()
+                + ", peliculas=" + listPeliculas.size() + ", funciones=" + listFunciones.size()
+                + ", clientes=" + listClientes.size() + ", empleados=" + listEmpleados.size()
+                + ", ventas=" + listVentas.size() + "}";
     }
 }

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -7,21 +9,21 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="1200.0" prefWidth="1920.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.ViewController.MenuOperadorViewController">
+<AnchorPane fx:id="rootPane" prefHeight="1200.0" prefWidth="1920.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.viewController.MenuOperadorViewController">
    <children>
       <ImageView fitHeight="584.0" fitWidth="761.0" layoutX="1092.0" layoutY="136.0">
          <image>
-            <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/catalogo%20de%20peliculas.png" />
+            <Image url="@recursosGraficos/catalogo%20de%20peliculas.png" />
          </image>
       </ImageView>
-      <Text fill="WHITE" layoutX="1457.0" layoutY="593.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Consultar peliculas" wrappingWidth="354.9478759765625">
+      <Text fill="WHITE" layoutX="1457.0" layoutY="593.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Consultar películas" wrappingWidth="354.9478759765625">
          <font>
             <Font name="SansSerif Bold" size="60.0" />
          </font>
       </Text>
       <ImageView fitHeight="584.0" fitWidth="971.0" layoutX="76.0" layoutY="141.0">
          <image>
-            <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/salaIMAX.png" />
+            <Image url="@recursosGraficos/salaIMAX.png" />
          </image>
       </ImageView>
       <Text fill="WHITE" layoutX="128.0" layoutY="225.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Generar venta de entrada" wrappingWidth="354.9478759765625">
@@ -31,7 +33,7 @@
       </Text>
       <ImageView fitHeight="367.0" fitWidth="620.0" layoutX="698.0" layoutY="754.0">
          <image>
-            <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/cancelarVenta.png" />
+            <Image url="@recursosGraficos/cancelarVenta.png" />
          </image>
       </ImageView>
       <Text fill="WHITE" layoutX="1041.0" layoutY="1026.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Cancelar venta" wrappingWidth="254.94775390625">
@@ -41,71 +43,93 @@
       </Text>
       <ImageView fitHeight="360.0" fitWidth="609.0" layoutX="63.0" layoutY="757.0">
          <image>
-            <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/cinema-background-concept-vector.png" />
+            <Image url="@recursosGraficos/cinema-background-concept-vector.png" />
          </image>
       </ImageView>
-      <Text fill="WHITE" layoutX="385.0" layoutY="1035.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Consultar funsiones" wrappingWidth="230.94775390625">
+      <Text fill="WHITE" layoutX="385.0" layoutY="1035.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Consultar funciones" wrappingWidth="230.94775390625">
          <font>
             <Font name="SansSerif Bold" size="37.0" />
          </font>
       </Text>
       <ImageView fitHeight="367.0" fitWidth="494.0" layoutX="1351.0" layoutY="757.0">
          <image>
-            <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/pexels-tima-miroshnichenko-7991161.png" />
+            <Image url="@recursosGraficos/pexels-tima-miroshnichenko-7991161.png" />
          </image>
       </ImageView>
-      <Text fill="WHITE" layoutX="1583.0" layoutY="1034.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Registrar clientes" wrappingWidth="241.79895019531227">
+      <Text fill="WHITE" layoutX="1583.0" layoutY="1034.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gestionar clientes" wrappingWidth="241.79895019531227">
          <font>
             <Font name="SansSerif Bold" size="45.0" />
          </font>
       </Text>
       <ImageView fitHeight="59.0" fitWidth="58.0" layoutX="960.0" layoutY="627.0">
          <image>
-            <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/Black%20Orange%20Bold%20Modern%20Branding%20Studio%20Desktop%20Prototype.png" />
+            <Image url="@recursosGraficos/Black%20Orange%20Bold%20Modern%20Branding%20Studio%20Desktop%20Prototype.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="90.0" fitWidth="86.0" layoutX="1351.0" layoutY="754.0">
          <image>
-            <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/flacha%20blanca.png" />
+            <Image url="@recursosGraficos/flacha%20blanca.png" />
          </image>
       </ImageView>
       <Pane layoutX="76.0" layoutY="27.0" prefHeight="59.0" prefWidth="1776.0" style="-fx-background-color: #111111; -fx-background-radius: 54;">
          <children>
+            <Button layoutX="6.0" layoutY="9.0" mnemonicParsing="false" onAction="#onAtras" prefHeight="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 22px; -fx-cursor: hand;" text="←" />
             <Text fill="WHITE" layoutX="56.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CinemaUQ®">
                <font>
                   <Font name="SansSerif Bold" size="18.0" />
                </font>
             </Text>
-            <Text fill="WHITE" layoutX="782.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Home">
-               <font>
-                  <Font name="SansSerif Bold" size="18.0" />
-               </font>
-            </Text>
-            <Text fill="WHITE" layoutX="419.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="dolby ">
-               <font>
-                  <Font name="SansSerif Bold" size="21.0" />
-               </font>
-            </Text>
-            <Text fill="WHITE" layoutX="1141.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="IMAX">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Text>
-            <Pane layoutX="1430.0" prefHeight="59.0" prefWidth="346.0" style="-fx-background-color: b81414; -fx-background-radius: 54;">
+            <Button layoutX="770.0" layoutY="9.0" mnemonicParsing="false" onAction="#onHome" prefHeight="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px; -fx-cursor: hand;" text="Home" />
+            <Button layoutX="407.0" layoutY="9.0" mnemonicParsing="false" onAction="#onDolby" prefHeight="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 21px; -fx-cursor: hand;" text="dolby" />
+            <Button layoutX="925.0" layoutY="9.0" mnemonicParsing="false" onAction="#onMasFormatos" prefHeight="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px; -fx-cursor: hand;" text="Más formatos" />
+            <Button layoutX="1129.0" layoutY="9.0" mnemonicParsing="false" onAction="#onImax" prefHeight="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px; -fx-cursor: hand;" text="IMAX" />
+            <Button fx:id="btnCerrarSesion" layoutX="1250.0" layoutY="12.0" mnemonicParsing="false" onAction="#onCerrarSesion" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16;" text="Cerrar sesión">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Pane layoutX="1430.0" prefHeight="59.0" prefWidth="346.0" style="-fx-background-color: #b81414; -fx-background-radius: 54;">
                <children>
-                  <Text fill="WHITE" layoutX="77.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="menu del operador">
+                  <Text fill="WHITE" layoutX="77.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Menú del operador">
                      <font>
                         <Font name="SansSerif Bold" size="18.0" />
                      </font>
                   </Text>
                </children>
             </Pane>
-            <ImageView fitHeight="14.0" fitWidth="22.0" layoutX="492.0" layoutY="23.0">
+            <ImageView fitHeight="14.0" fitWidth="22.0" layoutX="492.0" layoutY="23.0" mouseTransparent="true">
                <image>
-                  <Image url="@../../../../../../../../../../../../../../var/home/santiago/Descargas/PROGRAMACION1/PROYECTO_FINAL_PROGRAMACION_1_2026-2/co.edu.uniquindio.cineUQ/src/main/resources/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/recursosGraficos/DLB.D-4a833e8b.png" />
+                  <Image url="@recursosGraficos/DLB.D-4a833e8b.png" />
                </image>
             </ImageView>
          </children>
       </Pane>
+
+      <!-- Botones invisibles encima de cada tarjeta (van al final para quedar por encima) -->
+      <Button fx:id="btnGenerarVenta" layoutX="76.0" layoutY="141.0" mnemonicParsing="false" onAction="#onGenerarVenta" opacity="0.0" prefHeight="584.0" prefWidth="971.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button fx:id="btnConsultarPeliculas" layoutX="1092.0" layoutY="136.0" mnemonicParsing="false" onAction="#onConsultarPeliculas" opacity="0.0" prefHeight="584.0" prefWidth="761.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button fx:id="btnConsultarFunciones" layoutX="63.0" layoutY="757.0" mnemonicParsing="false" onAction="#onConsultarFunciones" opacity="0.0" prefHeight="360.0" prefWidth="609.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button fx:id="btnCancelarVenta" layoutX="698.0" layoutY="754.0" mnemonicParsing="false" onAction="#onCancelarVenta" opacity="0.0" prefHeight="367.0" prefWidth="620.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button fx:id="btnRegistrarClientes" layoutX="1351.0" layoutY="757.0" mnemonicParsing="false" onAction="#onRegistrarClientes" opacity="0.0" prefHeight="367.0" prefWidth="494.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
    </children>
 </AnchorPane>

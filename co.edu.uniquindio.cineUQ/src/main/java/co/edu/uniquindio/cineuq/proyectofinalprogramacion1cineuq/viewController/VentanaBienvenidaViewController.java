@@ -1,18 +1,13 @@
-package co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.ViewController;
+package co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.viewController;
 
+import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.controller.VentanaBienvenidaController;
 import javafx.animation.AnimationTimer;
-import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.util.Duration;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +15,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Reproduce la intro (secuencia de imágenes JPG) y luego abre el login.
+ * Con un clic sobre la pantalla se puede saltar la intro.
+ */
 public class VentanaBienvenidaViewController {
 
     @FXML private StackPane rootPane;
@@ -28,14 +27,13 @@ public class VentanaBienvenidaViewController {
     private static final String BASE =
             "/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/";
     private static final String CARPETA = BASE + "recursosGraficos/frames/";
-    private static final String SIGUIENTE = BASE + "Login.fxml";
 
     private static final double FPS = 24;
     private static final long NANOS_POR_FRAME = (long) (1e9 / FPS);
-    private static final int ADELANTE = 12;     // frames precargados por delante
-    private static final int MIN_INICIO = 10;   // buffer antes de arrancar
-    private static final int HILOS = 4;         // hilos que decodifican los JPG
-    private static final double SEGUNDOS_FUNDIDO = 0.8;
+    private static final int ADELANTE = 12;      // frames precargados por delante
+    private static final int MIN_INICIO = 10;    // buffer antes de arrancar
+    private static final int HILOS = 4;          // hilos que decodifican los JPG
+    private static final int MAX_ESPERAS = 300;  // ~5 segundos esperando un frame -> se salta al login
 
     private final Map<Integer, Image> cache = new ConcurrentHashMap<>();
     private final Set<Integer> pendientes = ConcurrentHashMap.newKeySet();
@@ -49,16 +47,27 @@ public class VentanaBienvenidaViewController {
     private int totalFrames = 0;
     private int frameActual = -1;
     private long proximoCambio = -1;
+    private int esperas = 0;
     private boolean terminado = false;
+
+    private final VentanaBienvenidaController ventanaBienvenidaController = new VentanaBienvenidaController();
 
     @FXML
     public void initialize() {
+        // Mientras corre la intro se deja listo el sistema (Cine y datos iniciales)
+        ventanaBienvenidaController.iniciarSistema();
+
+        // Clic en cualquier parte: saltar la intro
+        rootPane.setOnMouseClicked(e -> terminar());
+
         while (getClass().getResource(CARPETA + nombre(totalFrames)) != null) {
             totalFrames++;
         }
         System.out.println("Fotogramas encontrados: " + totalFrames);
         if (totalFrames == 0) {
             System.err.println("No se encontraron fotogramas en " + CARPETA);
+            // Se espera a que la ventana esté lista y se va directo al login
+            Platform.runLater(this::terminar);
             return;
         }
 
@@ -75,7 +84,10 @@ public class VentanaBienvenidaViewController {
 
                 // Esperar a tener un buffer inicial
                 if (proximoCambio < 0) {
-                    if (cache.size() < Math.min(MIN_INICIO, totalFrames)) return;
+                    if (cache.size() < Math.min(MIN_INICIO, totalFrames)) {
+                        esperarFrame();
+                        return;
+                    }
                     proximoCambio = now;
                 }
 
@@ -85,9 +97,7 @@ public class VentanaBienvenidaViewController {
 
                 // Ya se mostraron todos los frames
                 if (siguiente >= totalFrames) {
-                    terminado = true;
-                    stop();
-                    irAlLogin();
+                    terminar();
                     return;
                 }
 
@@ -95,9 +105,11 @@ public class VentanaBienvenidaViewController {
                 if (img == null) {
                     // No saltamos frames: esperamos a que cargue
                     precargar(siguiente);
+                    esperarFrame();
                     return;
                 }
 
+                esperas = 0;
                 imageView.setImage(img);
                 frameActual = siguiente;
                 proximoCambio = Math.max(proximoCambio + NANOS_POR_FRAME, now);
@@ -107,33 +119,24 @@ public class VentanaBienvenidaViewController {
         timer.start();
     }
 
-    private void irAlLogin() {
-        System.out.println("Video terminado, cargando login...");
-        Scene scene = rootPane.getScene();
-        scene.setFill(Color.BLACK);
+    /** Si un frame tarda demasiado (por ejemplo, un archivo dañado), se va al login. */
+    private void esperarFrame() {
+        esperas++;
+        if (esperas > MAX_ESPERAS) {
+            System.err.println("La intro tardó demasiado en cargar, se abre el login.");
+            terminar();
+        }
+    }
 
-        FadeTransition salida = new FadeTransition(Duration.seconds(SEGUNDOS_FUNDIDO), rootPane);
-        salida.setFromValue(1);
-        salida.setToValue(0);
-        salida.setOnFinished(e -> {
-            try {
-                Parent login = FXMLLoader.load(getClass().getResource(SIGUIENTE));
-                login.setOpacity(0);
-                scene.setRoot(login);
-
-                cache.clear();
-                cargador.shutdownNow();
-
-                FadeTransition entrada = new FadeTransition(Duration.seconds(SEGUNDOS_FUNDIDO), login);
-                entrada.setFromValue(0);
-                entrada.setToValue(1);
-                entrada.play();
-            } catch (IOException | RuntimeException ex) {
-                ex.printStackTrace();
-                rootPane.setOpacity(1);
-            }
-        });
-        salida.play();
+    private void terminar() {
+        if (terminado) return;   // evita que se ejecute dos veces
+        terminado = true;
+        if (timer != null) {
+            timer.stop();
+        }
+        cargador.shutdownNow();
+        cache.clear();
+        Navegador.irA(rootPane, "Login.fxml");
     }
 
     private void precargar(int desde) {
@@ -145,7 +148,8 @@ public class VentanaBienvenidaViewController {
                     try {
                         URL url = getClass().getResource(CARPETA + nombre(i));
                         if (url != null) {
-                            // Resolución original, carga en segundo plano (false)
+                            // false = carga completa aquí mismo; ya estamos en un hilo del pool,
+                            // así que no se bloquea la ventana
                             cache.put(i, new Image(url.toExternalForm(), false));
                         }
                     } finally {

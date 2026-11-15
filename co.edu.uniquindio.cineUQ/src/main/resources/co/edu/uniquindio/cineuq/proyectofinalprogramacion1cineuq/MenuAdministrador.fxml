@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -7,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="1200.0" prefWidth="1920.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.ViewController.MenuAdministradorViewController">
+<AnchorPane fx:id="rootPane" prefHeight="1200.0" prefWidth="1920.0" style="-fx-background-color: black;" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.viewController.MenuAdministradorViewController">
    <children>
       <ImageView fitHeight="588.0" fitWidth="962.0" layoutX="86.0" layoutY="163.0">
          <image>
@@ -16,38 +18,38 @@
       </ImageView>
       <Pane layoutX="86.0" layoutY="37.0" prefHeight="59.0" prefWidth="1776.0" style="-fx-background-color: #111111; -fx-background-radius: 54;">
          <children>
+            <Button layoutX="6.0" layoutY="9.0" mnemonicParsing="false" onAction="#onAtras" prefHeight="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 22px; -fx-cursor: hand;" text="←" />
             <Text fill="WHITE" layoutX="56.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CinemaUQ®">
                <font>
                   <Font name="SansSerif Bold" size="18.0" />
                </font>
             </Text>
-            <Text fill="WHITE" layoutX="782.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Home">
-               <font>
-                  <Font name="SansSerif Bold" size="18.0" />
-               </font>
-            </Text>
-            <Text fill="WHITE" layoutX="419.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="dolby ◗◖">
-               <font>
-                  <Font name="SansSerif Bold" size="21.0" />
-               </font>
-            </Text>
-            <Text fill="WHITE" layoutX="1141.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" text="IMAX">
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-            </Text>
-            <Pane layoutX="1430.0" prefHeight="59.0" prefWidth="346.0" style="-fx-background-color: b81414; -fx-background-radius: 54;">
+            <Button layoutX="586.0" layoutY="11.0" mnemonicParsing="false" onAction="#onHome" prefHeight="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px; -fx-cursor: hand;" text="Home" />
+            <Button layoutX="328.0" layoutY="9.0" mnemonicParsing="false" onAction="#onDolby" prefHeight="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 21px; -fx-cursor: hand;" text="dolby" />
+            <Button layoutX="811.0" layoutY="11.0" mnemonicParsing="false" onAction="#onImax" prefHeight="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px; -fx-cursor: hand;" text="IMAX" />
+            <Button fx:id="btnCerrarSesion" layoutX="1250.0" layoutY="12.0" mnemonicParsing="false" onAction="#onCerrarSesion" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16;" text="Cerrar sesión">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Pane layoutX="1430.0" prefHeight="59.0" prefWidth="346.0" style="-fx-background-color: #b81414; -fx-background-radius: 54;">
                <children>
-                  <Text fill="WHITE" layoutX="57.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="menu del administrador">
+                  <Text fill="WHITE" layoutX="57.0" layoutY="36.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Menú del administrador">
                      <font>
                         <Font name="SansSerif Bold" size="18.0" />
                      </font>
                   </Text>
                </children>
             </Pane>
+            <ImageView fitHeight="21.0" fitWidth="26.0" layoutX="416.0" layoutY="20.0">
+               <image>
+                  <Image url="@recursosGraficos/DLB.D-4a833e8b.png" />
+               </image>
+            </ImageView>
+            <Button layoutX="1013.0" layoutY="8.0" mnemonicParsing="false" onAction="#onMasFormatos" prefHeight="40.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 18px; -fx-cursor: hand;" text="Más formatos" />
          </children>
       </Pane>
-      <Text fill="WHITE" layoutX="143.0" layoutY="266.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gestionar peliculas" wrappingWidth="354.9478759765625">
+      <Text fill="WHITE" layoutX="143.0" layoutY="266.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gestionar películas" wrappingWidth="354.9478759765625">
          <font>
             <Font name="SansSerif Bold" size="60.0" />
          </font>
@@ -82,7 +84,7 @@
             <Image url="@recursosGraficos/BANNER-WEB-13.png" />
          </image>
       </ImageView>
-      <Text fill="WHITE" layoutX="917.0" layoutY="1025.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gestionar funsiones" wrappingWidth="281.34765625">
+      <Text fill="WHITE" layoutX="917.0" layoutY="1025.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gestionar funciones" wrappingWidth="281.34765625">
          <font>
             <Font name="SansSerif Bold" size="50.0" />
          </font>
@@ -102,5 +104,39 @@
             <Image url="@recursosGraficos/flacha%20blanca.png" />
          </image>
       </ImageView>
+
+            <!-- Acceso a la gestión de empleados (CRUD de operadores y administradores) -->
+      <Button layoutX="1569.0" layoutY="109.0" mnemonicParsing="false" onAction="#onGestionarEmpleados" prefHeight="34.0" prefWidth="243.0" style="-fx-background-color: transparent; -fx-border-color: white; -fx-border-radius: 30; -fx-border-width: 2; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-cursor: hand;" text="Gestionar empleados">
+         <font>
+            <Font size="7.0" />
+         </font>
+      </Button>
+
+      <!-- Botones invisibles encima de cada tarjeta (van al final para quedar por encima) -->
+      <Button fx:id="btnGestionarPeliculas" layoutX="86.0" layoutY="163.0" mnemonicParsing="false" onAction="#onGestionarPeliculas" opacity="0.0" prefHeight="588.0" prefWidth="962.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button fx:id="btnGestionarSalas" layoutX="1100.0" layoutY="163.0" mnemonicParsing="false" onAction="#onGestionarSalas" opacity="0.0" prefHeight="578.0" prefWidth="754.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button fx:id="btnGestionarTarifas" layoutX="86.0" layoutY="776.0" mnemonicParsing="false" onAction="#onGestionarTarifas" opacity="0.0" prefHeight="362.0" prefWidth="587.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button fx:id="btnGestionarFunciones" layoutX="696.0" layoutY="776.0" mnemonicParsing="false" onAction="#onGestionarFunciones" opacity="0.0" prefHeight="353.0" prefWidth="535.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
+      <Button fx:id="btnGenerarReportes" layoutX="1247.0" layoutY="772.0" mnemonicParsing="false" onAction="#onGenerarReportes" opacity="0.0" prefHeight="362.0" prefWidth="605.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
    </children>
 </AnchorPane>
