@@ -1,6 +1,7 @@
 package co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.viewController;
 
 import javafx.animation.FadeTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -116,8 +117,10 @@ public class Navegador {
                 ex.printStackTrace();
                 actual.setOpacity(1);
                 origen.setDisable(false);
-                Alertas.mostrarError("Error", "No se pudo abrir la pantalla " + fxml
-                        + ".\nRevisa la consola para ver el detalle.");
+                // Dentro de una animación no se puede abrir un mensaje directamente:
+                // Platform.runLater lo muestra apenas termina la animación
+                Platform.runLater(() -> Alertas.mostrarError("Error", "No se pudo abrir la pantalla " + fxml
+                        + ".\nRevisa la consola para ver el detalle."));
             }
         });
         salida.play();

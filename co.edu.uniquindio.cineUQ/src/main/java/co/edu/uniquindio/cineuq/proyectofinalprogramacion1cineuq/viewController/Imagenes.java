@@ -7,6 +7,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Window;
 
 import java.io.File;
+import java.net.URL;
 
 /**
  * Métodos de ayuda para elegir y mostrar las imágenes de las películas.
@@ -52,6 +53,28 @@ public class Imagenes {
         } catch (IllegalArgumentException e) {
             visor.setImage(null);
         }
+    }
+
+    /**
+     * Muestra la imagen completa, sin recortar, dentro del tamaño del ImageView
+     * (fitWidth x fitHeight). Si la proporción no coincide, sobra un poco de espacio a los lados.
+     */
+    public static void mostrarSinRecortar(ImageView visor, String ruta) {
+        mostrar(visor, ruta);
+        visor.setViewport(null);   // quita el recorte que hace mostrar(...)
+    }
+
+    /**
+     * Carga una imagen que está dentro del proyecto (carpeta de recursos), por ejemplo
+     * "recursosGraficos/logo_imax.png". Devuelve null si el archivo no existe.
+     */
+    public static Image cargarRecurso(String rutaRelativa) {
+        URL url = Imagenes.class.getResource(
+                "/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/" + rutaRelativa);
+        if (url == null) {
+            return null;
+        }
+        return new Image(url.toExternalForm());
     }
 
     /**

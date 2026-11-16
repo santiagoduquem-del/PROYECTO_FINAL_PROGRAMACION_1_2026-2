@@ -16,6 +16,7 @@
 <!-- Información del formato 3D. Los textos de la izquierda se editan aquí (Scene Builder).
      La imagen: selecciona imgFormato y en Properties > Image elige un archivo de recursosGraficos.
      La parte derecha (películas y funciones en este formato) la llena el programa. -->
+
 <AnchorPane fx:id="rootPane" prefHeight="1200.0" prefWidth="1920.0" style="-fx-background-color: black;" stylesheets="@gestion.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.viewController.DetalleFormatoViewController">
    <children>
       <!-- Barra superior -->
@@ -44,16 +45,25 @@
       <HBox layoutX="86.0" layoutY="165.0" prefHeight="1000.0" prefWidth="1776.0" spacing="30.0">
          <children>
             <!-- Qué es el formato (texto fijo, editable en Scene Builder) -->
-            <VBox prefWidth="1060.0" spacing="16.0" styleClass="tarjeta-formato">
+            <VBox prefWidth="1060.0" spacing="25.0" styleClass="tarjeta-formato">
                <children>
-                  <StackPane prefHeight="250.0" style="-fx-background-color: #1c1c1c; -fx-background-radius: 18;">
+                  <StackPane prefHeight="250.0" style="-fx-background-color: #1c1c1c; -fx-background-radius: 80;">
                      <children>
                         <Label style="-fx-text-fill: #777777; -fx-font-size: 16px;" text="Imagen del formato (agrégala en Scene Builder)" />
                         <ImageView fx:id="imgFormato" fitHeight="250.0" fitWidth="1000.0" preserveRatio="true">
                         </ImageView>
+                        <ImageView fitHeight="421.0" fitWidth="1015.0">
+                           <image>
+                              <Image url="@recursosGraficos/90ff2fffe2220921e0e4e484f37d6850.png" />
+                           </image>
+                        </ImageView>
                      </children>
                   </StackPane>
-                  <Label styleClass="titulo-formato" text="3D" />
+                  <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="REAL D 3D">
+                     <font>
+                        <Font size="46.0" />
+                     </font>
+                  </Text>
                   <Label style="-fx-font-size: 21px;" styleClass="etiqueta" text="Con gafas especiales la imagen gana profundidad y los objetos parecen salir de la pantalla. Ideal para películas de animación, aventura y ciencia ficción." wrapText="true" />
                   <Label styleClass="fila-plan-titulo" text="Ideal para" />
                   <Label styleClass="dato" text="Películas de animación, aventura y ciencia ficción" wrapText="true" />

@@ -31,6 +31,7 @@ public class Venta implements Cancelable, Serializable {
     private double valorCombos;      // ya con el descuento del plan
     private double valorPagado;      // valorEntrada + valorCombos
     private EstadoVenta estado;
+    private Pago pago;               // pago con tarjeta de la compra (null en ventas de versiones anteriores)
 
     public Venta(String codigo, Cliente cliente, Funcion funcion, Asiento asiento, TipoEntrada tipoEntrada,
                  Operador operador, LocalDateTime fechaHoraVenta, double tarifa, double valorBase,
@@ -104,7 +105,8 @@ public class Venta implements Cancelable, Serializable {
                 + "Entrada N°: " + codigo + "\n"
                 + "Película:   " + funcion.getPelicula().getNombre()
                 + (funcion.getPelicula().getAnioEstreno() > 0 ? " (" + funcion.getPelicula().getAnioEstreno() + ")" : "") + "\n"
-                + "Formato:    " + funcion.getPelicula().getFormato() + "\n"
+                + "Formato:    " + funcion.getFormato() + "\n"
+                + "Idioma:     " + funcion.getIdioma() + "\n"
                 + "Sala:       " + funcion.getSala().getNombre() + "\n"
                 + "Fecha:      " + funcion.getFecha() + "  " + funcion.getHora() + "\n"
                 + "Asiento:    " + asiento.getCodigo() + "\n"
@@ -127,8 +129,11 @@ public class Venta implements Cancelable, Serializable {
             texto += "Total combos: $" + String.format("%,.0f", valorCombos) + "\n";
         }
 
-        texto += "TOTAL PAGADO: $" + String.format("%,.0f", valorPagado) + "\n"
-                + "Vendida: " + fechaHoraVenta.toLocalDate() + " " + fechaHoraVenta.toLocalTime().withNano(0) + "\n"
+        texto += "TOTAL PAGADO: $" + String.format("%,.0f", valorPagado) + "\n";
+        if (pago != null) {
+            texto += pago.generarComprobante();
+        }
+        texto += "Vendida: " + fechaHoraVenta.toLocalDate() + " " + fechaHoraVenta.toLocalTime().withNano(0) + "\n"
                 + "==============================";
         return texto;
     }
@@ -222,5 +227,13 @@ public class Venta implements Cancelable, Serializable {
         return "Venta{codigo='" + codigo + "', cliente=" + cliente.getNombre()
                 + ", funcion=" + funcion.getCodigo() + ", asiento=" + asiento.getCodigo()
                 + ", valorPagado=" + valorPagado + ", estado=" + estado + "}";
+    }
+
+    public Pago getPago() {
+        return pago;
+    }
+
+    public void setPago(Pago pago) {
+        this.pago = pago;
     }
 }

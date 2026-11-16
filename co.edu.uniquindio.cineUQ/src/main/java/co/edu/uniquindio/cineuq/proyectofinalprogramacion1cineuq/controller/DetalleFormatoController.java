@@ -33,7 +33,7 @@ public class DetalleFormatoController {
     public String obtenerPeliculasEnFormato(Formato formato) {
         String nombres = "";
         for (Pelicula pelicula : cine.consultarPeliculasDisponibles()) {
-            if (pelicula.getFormato() == formato) {
+            if (pelicula.tieneFormato(formato)) {
                 if (!nombres.isEmpty()) {
                     nombres += ", ";
                 }
@@ -50,7 +50,7 @@ public class DetalleFormatoController {
     public List<Funcion> obtenerFuncionesEnFormato(Formato formato) {
         List<Funcion> resultado = new ArrayList<>();
         for (Funcion funcion : cine.consultarFuncionesProgramadas()) {
-            if (funcion.getPelicula().getFormato() == formato) {
+            if (funcion.getFormato() == formato) {
                 resultado.add(funcion);
             }
         }

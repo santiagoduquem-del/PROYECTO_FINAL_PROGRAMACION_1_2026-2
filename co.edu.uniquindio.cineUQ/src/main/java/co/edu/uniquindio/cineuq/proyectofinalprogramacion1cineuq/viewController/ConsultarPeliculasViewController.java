@@ -1,78 +1,75 @@
 package co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.viewController;
 
-import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Pelicula;
-import javafx.beans.property.SimpleStringProperty;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.controller.ConsultarPeliculasController;
+import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Pelicula;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 import java.util.List;
 
 /**
- * Cartelera del operador: muestra las películas disponibles con la carátula,
- * el banner y los datos que registró el administrador.
+ * Cartelera del operador: mosaico con la carátula de cada película disponible.
+ * Al hacer clic en una carátula se abre DetallePelicula.fxml con el banner, la carátula,
+ * todos los datos y las funciones programadas.
  */
 public class ConsultarPeliculasViewController extends BarraSuperiorViewController {
 
     @FXML private AnchorPane rootPane;
-    @FXML private TableView<Pelicula> tablaPeliculas;
-    @FXML private TableColumn<Pelicula, String> colNombre;
-    @FXML private TableColumn<Pelicula, String> colAnio;
-    @FXML private TableColumn<Pelicula, String> colGenero;
-    @FXML private TableColumn<Pelicula, String> colDuracion;
-    @FXML private TableColumn<Pelicula, String> colClasificacion;
-    @FXML private TableColumn<Pelicula, String> colFormato;
-    @FXML private ImageView imgBanner;
-    @FXML private ImageView imgCaratula;
-    @FXML private Label lblNombre;
-    @FXML private Label lblAnio;
-    @FXML private Label lblGenero;
-    @FXML private Label lblDuracion;
-    @FXML private Label lblClasificacion;
-    @FXML private Label lblFormato;
+    @FXML private FlowPane contenedorPeliculas;
 
     private final ConsultarPeliculasController consultarPeliculasController = new ConsultarPeliculasController();
 
     @FXML
     public void initialize() {
-        colNombre.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNombre()));
-        colAnio.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().describirEstreno()));
-        colGenero.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getGenero().toString()));
-        colDuracion.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getDuracionMinutos() + " min"));
-        colClasificacion.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getClasificacion().getDescripcion()));
-
-        colFormato.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getFormato().toString()));
-
         List<Pelicula> disponibles = consultarPeliculasController.obtenerPeliculasDisponibles();
-        tablaPeliculas.getItems().setAll(disponibles);
-
-        // Se muestra de una vez la primera película de la cartelera
-        if (!disponibles.isEmpty()) {
-            mostrarDetalle(disponibles.get(0));
+        if (disponibles.isEmpty()) {
+            Label vacio = new Label("No hay películas disponibles en cartelera.");
+            vacio.getStyleClass().add("etiqueta");
+            contenedorPeliculas.getChildren().add(vacio);
+        }
+        for (Pelicula pelicula : disponibles) {
+            contenedorPeliculas.getChildren().add(crearTarjeta(pelicula));
         }
     }
 
-    @FXML
-    private void onSeleccionarPelicula() {
-        Pelicula pelicula = tablaPeliculas.getSelectionModel().getSelectedItem();
-        if (pelicula != null) {
-            mostrarDetalle(pelicula);
-        }
-    }
+    /** Tarjeta del mosaico: carátula grande, nombre y una línea con año y formato. */
+    private VBox crearTarjeta(Pelicula pelicula) {
+        Label sinCaratula = new Label("Sin carátula");
+        sinCaratula.getStyleClass().add("sin-imagen");
+        ImageView caratula = new ImageView();
+        caratula.setFitWidth(250);
+        caratula.setFitHeight(375);   // proporción de póster (2:3)
+        caratula.setPreserveRatio(true);
+        Imagenes.mostrar(caratula, pelicula.getRutaCaratula());
+        StackPane marco = new StackPane(sinCaratula, caratula);
+        marco.getStyleClass().add("marco-imagen");
+        marco.setPrefHeight(375);
 
-    private void mostrarDetalle(Pelicula pelicula) {
-        lblNombre.setText(pelicula.getNombre());
-        lblAnio.setText(pelicula.describirEstreno());
-        lblGenero.setText(pelicula.getGenero().toString());
-        lblDuracion.setText(pelicula.getDuracionMinutos() + " minutos");
-        lblClasificacion.setText(pelicula.getClasificacion().getDescripcion());
-        lblFormato.setText(pelicula.getFormato().toString());
-        Imagenes.mostrar(imgBanner, pelicula.getRutaBanner());
-        Imagenes.mostrar(imgCaratula, pelicula.getRutaCaratula());
+        Label nombre = new Label(pelicula.getNombre());
+        nombre.getStyleClass().add("nombre-combo");
+        nombre.setWrapText(true);
+
+        Label datos = new Label(pelicula.describirEstreno() + "  ·  " + pelicula.describirFormatos());
+        datos.getStyleClass().add("etiqueta");
+        datos.setWrapText(true);
+        datos.setMaxWidth(250);
+
+        VBox tarjeta = new VBox(10, marco, nombre, datos);
+        tarjeta.setPrefWidth(250);
+        tarjeta.setMaxWidth(250);
+        tarjeta.setStyle("-fx-cursor: hand;");
+
+        // Clic en la tarjeta: se guarda la película elegida y se abre su detalle
+        tarjeta.setOnMouseClicked(e -> {
+            consultarPeliculasController.seleccionarPelicula(pelicula);
+            Navegador.irA(rootPane, "DetallePelicula.fxml");
+        });
+        return tarjeta;
     }
 
     @FXML

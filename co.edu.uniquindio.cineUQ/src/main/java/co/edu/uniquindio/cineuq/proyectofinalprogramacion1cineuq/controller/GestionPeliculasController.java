@@ -22,24 +22,28 @@ public class GestionPeliculasController {
      * (pueden ser null si no subió alguna).
      */
     public void registrarPelicula(String codigo, String nombre, Genero genero, String duracionTexto, String anioTexto,
-                                  Clasificacion clasificacion, Formato formato, String rutaCaratula, String rutaBanner)
+                                  Clasificacion clasificacion, List<Formato> formatos, String sinopsis, String elenco,
+                                  String estudio, String rutaCaratula, String rutaBanner)
             throws CinemaException {
         validarListas(genero, clasificacion);
         int duracion = Conversor.aEntero(duracionTexto, "duración");
         int anioEstreno = Conversor.aEntero(anioTexto, "año de estreno");
         Pelicula pelicula = new Pelicula(codigo.trim(), nombre.trim(), genero, duracion,
-                clasificacion, formato, anioEstreno, EstadoPelicula.DISPONIBLE);
+                clasificacion, formatos, anioEstreno, EstadoPelicula.DISPONIBLE);
         cine.registrarPelicula(pelicula);
+        cine.asignarInformacionPelicula(pelicula.getCodigo(), sinopsis, elenco, estudio);
         guardarImagenes(pelicula.getCodigo(), rutaCaratula, rutaBanner);
     }
 
     public void modificarPelicula(String codigo, String nombre, Genero genero, String duracionTexto, String anioTexto,
-                                  Clasificacion clasificacion, Formato formato, String rutaCaratula, String rutaBanner)
+                                  Clasificacion clasificacion, List<Formato> formatos, String sinopsis, String elenco,
+                                  String estudio, String rutaCaratula, String rutaBanner)
             throws CinemaException {
         validarListas(genero, clasificacion);
         int duracion = Conversor.aEntero(duracionTexto, "duración");
         int anioEstreno = Conversor.aEntero(anioTexto, "año de estreno");
-        cine.modificarPelicula(codigo.trim(), nombre.trim(), genero, duracion, clasificacion, formato, anioEstreno);
+        cine.modificarPelicula(codigo.trim(), nombre.trim(), genero, duracion, clasificacion, formatos, anioEstreno);
+        cine.asignarInformacionPelicula(codigo.trim(), sinopsis, elenco, estudio);
         guardarImagenes(codigo.trim(), rutaCaratula, rutaBanner);
     }
 

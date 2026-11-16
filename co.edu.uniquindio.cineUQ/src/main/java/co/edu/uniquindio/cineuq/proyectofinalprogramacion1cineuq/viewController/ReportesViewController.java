@@ -41,7 +41,7 @@ public class ReportesViewController extends BarraSuperiorViewController {
     @FXML
     public void initialize() {
         colPelicula.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getPelicula().getNombre()));
-        colFormato.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getPelicula().getFormato().toString()));
+        colFormato.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().describirFormatoIdioma()));
         colSala.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getSala().getNombre()));
         colHora.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getHora().toString()));
         colValor.setCellValueFactory(c -> new SimpleStringProperty(Conversor.aPesos(c.getValue().getValorBase())));

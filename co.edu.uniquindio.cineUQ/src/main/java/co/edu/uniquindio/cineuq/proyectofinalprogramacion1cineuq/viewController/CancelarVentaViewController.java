@@ -54,8 +54,8 @@ public class CancelarVentaViewController extends BarraSuperiorViewController {
     @FXML
     private void onCancelarVenta() {
         try {
-            cancelarVentaController.cancelarVenta(txtCodigoVenta.getText());
-            Alertas.mostrarInfo("Venta cancelada", "La venta se canceló y el asiento quedó disponible.");
+            String mensaje = cancelarVentaController.cancelarVenta(txtCodigoVenta.getText());
+            Alertas.mostrarInfo("Venta cancelada", mensaje);
             txtCodigoVenta.clear();
             refrescarTabla();
         } catch (CinemaException e) {

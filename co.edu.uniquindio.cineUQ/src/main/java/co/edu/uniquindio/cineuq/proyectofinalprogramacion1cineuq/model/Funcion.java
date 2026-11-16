@@ -8,6 +8,7 @@ import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.interface
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.interfaces.RegistroVentas;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,14 +27,19 @@ public class Funcion implements Cancelable, ContadorEntradas, RegistroVentas, Se
     private LocalDate fecha;
     private LocalTime hora;
     private double valorBase;
+    private Formato formato;    // uno de los formatos de la película (ej.: IMAX)
+    private Idioma idioma;      // doblada o subtitulada
     private EstadoFuncion estado;
 
     // Asientos propios de la función: la ocupación es por función, no por sala.
     private List<Asiento> asientos;
     private List<Venta> listVentas;
 
-    public Funcion(String codigo, Pelicula pelicula, Sala sala, LocalDate fecha, LocalTime hora, double valorBase) {
+    public Funcion(String codigo, Pelicula pelicula, Sala sala, LocalDate fecha, LocalTime hora, double valorBase,
+                   Formato formato, Idioma idioma) {
         this.codigo = codigo;
+        this.formato = formato;
+        this.idioma = idioma;
         this.pelicula = pelicula;
         this.sala = sala;
         this.fecha = fecha;
@@ -93,6 +99,24 @@ public class Funcion implements Cancelable, ContadorEntradas, RegistroVentas, Se
         return hora.getHour() * 60 + hora.getMinute();
     }
 
+    /** Minutos que se dejan después de cada función para limpiar la sala. */
+    public static final int MINUTOS_LIMPIEZA = 15;
+
+    /** Fecha y hora exactas en que empieza. */
+    public LocalDateTime getInicio() {
+        return LocalDateTime.of(fecha, hora);
+    }
+
+    /** Fecha y hora en que termina la película (puede ser al día siguiente si pasa de medianoche). */
+    public LocalDateTime getFin() {
+        return getInicio().plusMinutes(pelicula.getDuracionMinutos());
+    }
+
+    /** Fecha y hora en que la sala vuelve a quedar libre: fin de la película + limpieza. */
+    public LocalDateTime getSalaLibreDesde() {
+        return getFin().plusMinutes(MINUTOS_LIMPIEZA);
+    }
+
     /** Minuto del día en que termina, según la duración de la película. */
     public int getMinutoFin() {
         return getMinutoInicio() + pelicula.getDuracionMinutos();
@@ -103,14 +127,9 @@ public class Funcion implements Cancelable, ContadorEntradas, RegistroVentas, Se
         if (estado != EstadoFuncion.PROGRAMADA) {
             throw new FuncionNoDisponibleException(codigo);
         }
+        // Cine.cancelarFuncion ya verificó que no quedan entradas activas.
+        // La función NO se borra: queda en el historial con estado CANCELADA.
         estado = EstadoFuncion.CANCELADA;
-        // Al cancelar la función también se cancelan sus ventas activas.
-        for (Venta venta : listVentas) {
-            if (venta.getEstado() == EstadoVenta.ACTIVA) {
-                venta.setEstado(EstadoVenta.CANCELADA);
-                venta.getAsiento().liberar();
-            }
-        }
     }
 
     @Override
@@ -191,10 +210,31 @@ public class Funcion implements Cancelable, ContadorEntradas, RegistroVentas, Se
         return asientos;
     }
 
+    /** Formato de esta función. Datos de la versión anterior (sin formato): el de la película. */
+    public Formato getFormato() {
+        if (formato == null && !pelicula.getFormatos().isEmpty()) {
+            formato = pelicula.getFormatos().get(0);
+        }
+        return formato;
+    }
+
+    /** Idioma de esta función. Datos de la versión anterior (sin idioma): doblada. */
+    public Idioma getIdioma() {
+        if (idioma == null) {
+            idioma = Idioma.DOBLADA;
+        }
+        return idioma;
+    }
+
+    /** Texto corto, ej.: "IMAX · Subtitulada". */
+    public String describirFormatoIdioma() {
+        return getFormato() + " · " + getIdioma();
+    }
+
     // Así se muestra en los ComboBox de la interfaz
     @Override
     public String toString() {
-        return codigo + " - " + pelicula.getNombre() + " (" + pelicula.getFormato() + ") - "
+        return codigo + " - " + pelicula.getNombre() + " (" + describirFormatoIdioma() + ") - "
                 + fecha + " " + hora + " - " + sala.getNombre();
     }
 }

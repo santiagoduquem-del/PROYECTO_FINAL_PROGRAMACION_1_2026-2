@@ -15,6 +15,11 @@ public class MenuOperadorController {
         return modelFactory.getEmpleadoActual() == null ? "" : modelFactory.getEmpleadoActual().getNombre();
     }
 
+    /** "Consultar funciones" desde el menú: se muestran los horarios de TODAS las películas. */
+    public void prepararConsultaFunciones() {
+        modelFactory.setPeliculaHorarios(null);
+    }
+
     public void cerrarSesion() {
         modelFactory.setEmpleadoActual(null);
     }

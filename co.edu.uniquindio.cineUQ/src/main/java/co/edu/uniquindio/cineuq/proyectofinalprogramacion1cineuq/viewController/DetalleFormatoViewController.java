@@ -13,7 +13,7 @@ import javafx.scene.layout.VBox;
 import java.util.List;
 
 /**
- * Controla las 6 pantallas de formatos (Formato2D.fxml, Formato3D.fxml, FormatoIMAX.fxml,
+ * Controla las pantallas de cada formato (FormatoSignature.fxml, Formato3D.fxml, FormatoIMAX.fxml, etc.,
  * FormatoDolbyCinema.fxml, Formato4DX.fxml y FormatoVipBistro.fxml).
  * Son iguales por dentro: el texto de cada formato está escrito en su FXML (Scene Builder)
  * y este viewController solo llena la parte que cambia: películas y funciones en ese formato.

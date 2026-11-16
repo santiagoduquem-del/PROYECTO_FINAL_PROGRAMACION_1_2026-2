@@ -10,9 +10,13 @@ public class MenuOperadorViewController extends BarraSuperiorViewController {
 
     private final MenuOperadorController menuOperadorController = new MenuOperadorController();
 
+    /**
+     * Como en las páginas de cine: la venta empieza en la cartelera.
+     * Cartelera -> detalle de la película -> Comprar entradas -> horario -> Generar venta.
+     */
     @FXML
     private void onGenerarVenta() {
-        Navegador.irA(rootPane, "RegistrarVenta.fxml");
+        Navegador.irA(rootPane, "ConsultarPeliculas.fxml");
     }
 
     @FXML
@@ -22,6 +26,7 @@ public class MenuOperadorViewController extends BarraSuperiorViewController {
 
     @FXML
     private void onConsultarFunciones() {
+        menuOperadorController.prepararConsultaFunciones();
         Navegador.irA(rootPane, "ConsultarFunciones.fxml");
     }
 

@@ -51,13 +51,13 @@ public class CombosViewController {
         Label sinImagen = new Label("Sin foto");
         sinImagen.getStyleClass().add("sin-imagen");
         ImageView foto = new ImageView();
-        foto.setFitWidth(425);
-        foto.setFitHeight(190);
+        foto.setFitWidth(410);
+        foto.setFitHeight(280);
         foto.setPreserveRatio(true);
         Imagenes.mostrar(foto, combo.getRutaImagen());
         StackPane marco = new StackPane(sinImagen, foto);
         marco.getStyleClass().add("marco-imagen");
-        marco.setPrefHeight(190);
+        marco.setPrefHeight(280);
 
         Label nombre = new Label(combo.getNombre());
         nombre.getStyleClass().add("nombre-combo");
@@ -93,7 +93,7 @@ public class CombosViewController {
 
         VBox tarjeta = new VBox(8, marco, nombre, contenido, filaPrecio);
         tarjeta.getStyleClass().add("tarjeta-combo");
-        tarjeta.setPrefWidth(455);
+        tarjeta.setPrefWidth(440);   // 3 tarjetas por fila
         return tarjeta;
     }
 

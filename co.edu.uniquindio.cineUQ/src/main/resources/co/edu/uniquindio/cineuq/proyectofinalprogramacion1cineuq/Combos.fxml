@@ -21,7 +21,7 @@
 
       <ScrollPane fitToWidth="true" layoutX="37.0" layoutY="100.0" prefHeight="720.0" prefWidth="1440.0" style="-fx-background: black; -fx-background-color: black;">
          <content>
-            <FlowPane fx:id="contenedorCombos" hgap="30.0" prefWrapLength="1420.0" vgap="30.0">
+            <FlowPane fx:id="contenedorCombos" hgap="25.0" prefWrapLength="1400.0" vgap="25.0">
                <padding><Insets bottom="10.0" /></padding>
             </FlowPane>
          </content>

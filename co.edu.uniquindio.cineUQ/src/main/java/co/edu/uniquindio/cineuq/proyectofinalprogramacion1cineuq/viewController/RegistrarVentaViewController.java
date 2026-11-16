@@ -54,6 +54,17 @@ public class RegistrarVentaViewController extends BarraSuperiorViewController {
         // Cada compra nueva empieza sin combos
         registrarVentaController.limpiarCombos();
         actualizarValor();
+
+        // Si se llegó desde Horarios, la película y la función ya vienen elegidas
+        Funcion funcionElegida = registrarVentaController.tomarFuncionElegida();
+        if (funcionElegida != null) {
+            // setValue no siempre dispara el onAction dentro de initialize,
+            // por eso se llaman los métodos a mano
+            cbPelicula.setValue(funcionElegida.getPelicula());
+            onSeleccionarPelicula();                // muestra la carátula y carga las funciones
+            cbFuncion.setValue(funcionElegida);
+            onSeleccionarFuncion();                 // dibuja el mapa de asientos
+        }
     }
 
     @FXML
@@ -83,7 +94,8 @@ public class RegistrarVentaViewController extends BarraSuperiorViewController {
                 + "\n" + pelicula.describirEstreno()
                 + "\n" + pelicula.getGenero()
                 + "\n" + pelicula.getDuracionMinutos() + " minutos"
-                + "\n" + pelicula.getClasificacion().getDescripcion());
+                + "\n" + pelicula.getClasificacion().getDescripcion()
+                + "\n" + pelicula.describirFormatos());
     }
 
     @FXML
@@ -145,9 +157,25 @@ public class RegistrarVentaViewController extends BarraSuperiorViewController {
 
     @FXML
     private void onVender() {
+        Funcion funcion = cbFuncion.getValue();
+        Cliente cliente = cbCliente.getValue();
+        TipoEntrada tipoEntrada = cbTipoEntrada.getValue();
         try {
-            List<Venta> ventas = registrarVentaController.venderEntradas(cbFuncion.getValue(),
-                    asientosSeleccionados, cbCliente.getValue(), cbTipoEntrada.getValue());
+            // 1. Revisar que la compra esté completa antes de cobrar
+            registrarVentaController.validarCompra(funcion, asientosSeleccionados, cliente, tipoEntrada);
+
+            // 2. Pago con tarjeta en una ventana aparte (espera hasta que se cierre)
+            double total = registrarVentaController.calcularTotal(funcion, asientosSeleccionados, cliente, tipoEntrada);
+            registrarVentaController.prepararPago(total, cliente);
+            Navegador.abrirVentana(rootPane, "Pago.fxml", "Pago con tarjeta");
+            Pago pago = registrarVentaController.tomarPagoRealizado();
+            if (pago == null) {
+                return;   // se cerró la ventana sin pagar: no se vende nada
+            }
+
+            // 3. Con el pago aprobado se registran las entradas
+            List<Venta> ventas = registrarVentaController.venderEntradas(funcion,
+                    asientosSeleccionados, cliente, tipoEntrada, pago);
             String tiquete = registrarVentaController.generarTiquete(ventas);
             txtTiquete.setText(tiquete);
 

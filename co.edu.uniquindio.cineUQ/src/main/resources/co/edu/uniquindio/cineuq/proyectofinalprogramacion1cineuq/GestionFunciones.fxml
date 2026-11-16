@@ -47,7 +47,24 @@
                   <Label styleClass="etiqueta" text="Código" />
                   <TextField fx:id="txtCodigo" promptText="F5" styleClass="campo" />
                   <Label styleClass="etiqueta" text="Película" />
-                  <ComboBox fx:id="cbPelicula" maxWidth="Infinity" promptText="Seleccione la película" styleClass="campo" />
+                  <ComboBox fx:id="cbPelicula" maxWidth="Infinity" onAction="#onSeleccionarPelicula" promptText="Seleccione la película" styleClass="campo" />
+                  <!-- Formato (solo los de la película elegida) e idioma de la función -->
+                  <HBox spacing="12.0">
+                     <children>
+                        <VBox spacing="6.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label styleClass="etiqueta" text="Formato" />
+                              <ComboBox fx:id="cbFormato" maxWidth="Infinity" promptText="Formato" styleClass="campo" />
+                           </children>
+                        </VBox>
+                        <VBox spacing="6.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label styleClass="etiqueta" text="Idioma" />
+                              <ComboBox fx:id="cbIdioma" maxWidth="Infinity" promptText="Doblada / Subtitulada" styleClass="campo" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
                   <Label styleClass="etiqueta" text="Sala" />
                   <ComboBox fx:id="cbSala" maxWidth="Infinity" promptText="Seleccione la sala" styleClass="campo" />
                   <Label styleClass="etiqueta" text="Fecha" />
@@ -65,7 +82,6 @@
                   </HBox>
                   <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#onActualizarValorBase" styleClass="boton-secundario" text="Actualizar valor base de la función seleccionada" />
                   <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#onCancelarFuncion" styleClass="boton-secundario" text="Cancelar función seleccionada" />
-                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#onEliminarFuncion" styleClass="boton-peligro" text="Eliminar función seleccionada" />
                   <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#onGestionarCombos" styleClass="boton-principal" text="Gestionar combos" />
                </children>
             </VBox>
@@ -76,7 +92,7 @@
                      <columns>
                         <TableColumn fx:id="colCodigo" prefWidth="80.0" text="Código" />
                         <TableColumn fx:id="colPelicula" prefWidth="210.0" text="Película" />
-                        <TableColumn fx:id="colFormato" prefWidth="110.0" text="Formato" />
+                        <TableColumn fx:id="colFormato" prefWidth="170.0" text="Formato / idioma" />
                         <TableColumn fx:id="colSala" prefWidth="150.0" text="Sala" />
                         <TableColumn fx:id="colFecha" prefWidth="120.0" text="Fecha" />
                         <TableColumn fx:id="colHora" prefWidth="80.0" text="Hora" />

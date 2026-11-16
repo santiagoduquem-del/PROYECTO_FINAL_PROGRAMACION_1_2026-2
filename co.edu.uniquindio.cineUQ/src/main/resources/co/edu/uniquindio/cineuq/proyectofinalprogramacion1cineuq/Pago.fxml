@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<!--
+   Ventana de pago con tarjeta (se abre al pulsar "Vender entradas").
+   Izquierda: la tarjeta de vista previa, que cambia de color y de logo según cómo empieza el número.
+   Derecha: el formulario. El pago es simulado: el monto que se escribe hace de saldo de la cuenta.
+   Los logos van en recursosGraficos: logo_visa.png, logo_mastercard.png, logo_amex.png, logo_diners.png
+-->
+<AnchorPane fx:id="rootPane" prefHeight="800.0" prefWidth="1120.0" style="-fx-background-color: black;" stylesheets="@gestion.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.viewController.PagoViewController">
+   <children>
+      <Label layoutX="40.0" layoutY="25.0" styleClass="titulo-panel" text="Pago con tarjeta" />
+      <Label layoutX="40.0" layoutY="65.0" styleClass="etiqueta" text="Simulación de pago: no se realiza ningún cobro real." />
+
+      <!-- ===== Tarjeta de vista previa ===== -->
+      <AnchorPane fx:id="tarjetaVista" layoutX="40.0" layoutY="115.0" prefHeight="270.0" prefWidth="430.0" style="-fx-background-color: linear-gradient(to bottom right, #2c2c2c, #5a5a5a); -fx-background-radius: 20;">
+         <children>
+            <Label fx:id="lblTipoTarjeta" layoutX="25.0" layoutY="22.0" style="-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;" text="DÉBITO" />
+            <Label fx:id="lblFranquicia" layoutX="270.0" layoutY="22.0" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;" />
+            <ImageView fx:id="imgFranquicia" fitHeight="55.0" fitWidth="130.0" layoutX="280.0" layoutY="12.0" pickOnBounds="true" preserveRatio="true" />
+            <!-- chip -->
+            <Pane layoutX="25.0" layoutY="80.0" prefHeight="42.0" prefWidth="55.0" style="-fx-background-color: linear-gradient(to bottom right, #f0d68a, #b8902f); -fx-background-radius: 8;" />
+            <Label fx:id="lblNumeroTarjeta" layoutX="25.0" layoutY="140.0" style="-fx-text-fill: white; -fx-font-size: 26px; -fx-font-family: 'Monospaced'; -fx-font-weight: bold;" text="•••• •••• •••• ••••" />
+            <Label layoutX="25.0" layoutY="195.0" style="-fx-text-fill: #dddddd; -fx-font-size: 11px;" text="TITULAR" />
+            <Label fx:id="lblTitularTarjeta" layoutX="25.0" layoutY="212.0" maxWidth="280.0" style="-fx-text-fill: white; -fx-font-size: 17px; -fx-font-weight: bold;" text="NOMBRE DEL TITULAR" />
+            <Label layoutX="320.0" layoutY="195.0" style="-fx-text-fill: #dddddd; -fx-font-size: 11px;" text="VENCE" />
+            <Label fx:id="lblVenceTarjeta" layoutX="320.0" layoutY="212.0" style="-fx-text-fill: white; -fx-font-size: 17px; -fx-font-weight: bold;" text="MM/AA" />
+         </children>
+      </AnchorPane>
+
+      <!-- ===== Total y explicación ===== -->
+      <VBox layoutX="40.0" layoutY="410.0" prefWidth="430.0" spacing="12.0">
+         <children>
+            <Label styleClass="etiqueta" text="Total a pagar" />
+            <Label fx:id="lblTotal" style="-fx-text-fill: white; -fx-font-size: 40px; -fx-font-weight: bold;" text="\$0" />
+            <Label maxWidth="430.0" styleClass="etiqueta" text="En &quot;Monto a pagar&quot; escriba el valor que autoriza el cliente. Si es menor al total, el pago se rechaza por saldo insuficiente; si es mayor, el restante se devuelve a su cuenta." wrapText="true" />
+            <Label fx:id="lblResultado" maxWidth="430.0" style="-fx-text-fill: #ffb300; -fx-font-size: 16px; -fx-font-weight: bold;" wrapText="true" />
+         </children>
+      </VBox>
+
+      <!-- ===== Formulario ===== -->
+      <VBox layoutX="510.0" layoutY="110.0" prefWidth="570.0" spacing="8.0" styleClass="panel">
+         <children>
+            <Label styleClass="etiqueta" text="Tipo de tarjeta" />
+            <HBox alignment="CENTER_LEFT" spacing="25.0">
+               <children>
+                  <RadioButton fx:id="rbDebito" mnemonicParsing="false" onAction="#onCambiarTipo" style="-fx-text-fill: white; -fx-font-size: 16px;" text="Débito" />
+                  <RadioButton fx:id="rbCredito" mnemonicParsing="false" onAction="#onCambiarTipo" style="-fx-text-fill: white; -fx-font-size: 16px;" text="Crédito" />
+                  <ComboBox fx:id="cbCuotas" onAction="#onActualizarTarjeta" prefWidth="170.0" promptText="Cuotas" styleClass="campo" />
+               </children>
+            </HBox>
+
+            <Label styleClass="etiqueta" text="Número de tarjeta" />
+            <TextField fx:id="txtNumero" onKeyReleased="#onActualizarTarjeta" promptText="0000 0000 0000 0000" styleClass="campo" />
+            <Label fx:id="lblAvisoNumero" maxWidth="510.0" style="-fx-text-fill: #bbbbbb; -fx-font-size: 13px;" wrapText="true" />
+
+            <Label styleClass="etiqueta" text="Nombre del titular (como aparece en la tarjeta)" />
+            <TextField fx:id="txtTitular" onKeyReleased="#onActualizarTarjeta" promptText="Nombre y apellido" styleClass="campo" />
+
+            <Label styleClass="etiqueta" text="Documento del titular" />
+            <TextField fx:id="txtDocumento" promptText="Cédula o documento" styleClass="campo" />
+
+            <HBox spacing="15.0">
+               <children>
+                  <VBox spacing="6.0">
+                     <children>
+                        <Label styleClass="etiqueta" text="Mes" />
+                        <ComboBox fx:id="cbMes" onAction="#onActualizarTarjeta" prefWidth="140.0" promptText="MM" styleClass="campo" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="6.0">
+                     <children>
+                        <Label styleClass="etiqueta" text="Año" />
+                        <ComboBox fx:id="cbAnio" onAction="#onActualizarTarjeta" prefWidth="160.0" promptText="AAAA" styleClass="campo" />
+                     </children>
+                  </VBox>
+                  <VBox spacing="6.0">
+                     <children>
+                        <Label styleClass="etiqueta" text="CVV" />
+                        <PasswordField fx:id="txtCvv" prefWidth="150.0" promptText="•••" styleClass="campo" />
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+
+            <Label styleClass="etiqueta" text="Monto a pagar">
+               <VBox.margin><Insets top="6.0" /></VBox.margin>
+            </Label>
+            <TextField fx:id="txtMonto" promptText="Ej.: 45000" styleClass="campo" />
+
+            <HBox spacing="15.0">
+               <VBox.margin><Insets top="14.0" /></VBox.margin>
+               <children>
+                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#onPagar" styleClass="boton-principal" text="Pagar" HBox.hgrow="ALWAYS" />
+                  <Button mnemonicParsing="false" onAction="#onCancelar" prefWidth="170.0" styleClass="boton-secundario" text="Cancelar" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

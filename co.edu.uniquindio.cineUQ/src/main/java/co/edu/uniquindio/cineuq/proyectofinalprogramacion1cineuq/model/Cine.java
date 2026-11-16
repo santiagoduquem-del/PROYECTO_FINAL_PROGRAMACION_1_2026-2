@@ -101,8 +101,8 @@ public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
         if (pelicula.getDuracionMinutos() <= 0) {
             throw new DatoInvalidoException("La duración debe ser mayor que cero.");
         }
-        if (pelicula.getFormato() == null) {
-            throw new DatoInvalidoException("Debe seleccionar el formato de la película.");
+        if (pelicula.getFormatos().isEmpty()) {
+            throw new DatoInvalidoException("Debe seleccionar al menos un formato para la película.");
         }
         validarAnioEstreno(pelicula.getAnioEstreno());
         for (Pelicula p : listPeliculas) {
@@ -141,22 +141,30 @@ public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
 
     @Override
     public void modificarPelicula(String codigo, String nombre, Genero genero, int duracionMinutos,
-                                  Clasificacion clasificacion, Formato formato, int anioEstreno)
-            throws PeliculaNoEncontradaException, DatoInvalidoException {
+                                  Clasificacion clasificacion, List<Formato> formatos, int anioEstreno)
+            throws PeliculaNoEncontradaException, DatoInvalidoException, ModificacionNoPermitidaException {
         Pelicula pelicula = buscarPelicula(codigo);
         validarTexto(nombre, "nombre");
         if (duracionMinutos <= 0) {
             throw new DatoInvalidoException("La duración debe ser mayor que cero.");
         }
-        if (formato == null) {
-            throw new DatoInvalidoException("Debe seleccionar el formato de la película.");
+        if (formatos == null || formatos.isEmpty()) {
+            throw new DatoInvalidoException("Debe seleccionar al menos un formato para la película.");
         }
         validarAnioEstreno(anioEstreno);
+        // No se puede quitar un formato que una función programada está usando
+        for (Funcion funcion : listFunciones) {
+            if (funcion.getPelicula() == pelicula && funcion.getEstado() == EstadoFuncion.PROGRAMADA
+                    && !formatos.contains(funcion.getFormato())) {
+                throw new ModificacionNoPermitidaException("No se puede quitar el formato " + funcion.getFormato()
+                        + " porque la función " + funcion.getCodigo() + " está programada en ese formato.");
+            }
+        }
         pelicula.setNombre(nombre);
         pelicula.setGenero(genero);
         pelicula.setDuracionMinutos(duracionMinutos);
         pelicula.setClasificacion(clasificacion);
-        pelicula.setFormato(formato);
+        pelicula.setFormatos(formatos);
         pelicula.setAnioEstreno(anioEstreno);
     }
 
@@ -166,6 +174,15 @@ public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
         Pelicula pelicula = buscarPelicula(codigo);
         pelicula.setRutaCaratula(rutaCaratula);
         pelicula.setRutaBanner(rutaBanner);
+    }
+
+    /** Sinopsis, elenco principal y estudio de la película (son opcionales: pueden quedar vacíos). */
+    public void asignarInformacionPelicula(String codigo, String sinopsis, String elenco, String estudio)
+            throws PeliculaNoEncontradaException {
+        Pelicula pelicula = buscarPelicula(codigo);
+        pelicula.setSinopsis(sinopsis == null ? "" : sinopsis.trim());
+        pelicula.setElenco(elenco == null ? "" : elenco.trim());
+        pelicula.setEstudio(estudio == null ? "" : estudio.trim());
     }
 
     /** Solo se puede eliminar si nunca se le programaron funciones (si no, se debe deshabilitar). */
@@ -309,7 +326,7 @@ public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
 
     @Override
     public Funcion programarFuncion(String codigo, String codigoPelicula, String codigoSala, LocalDate fecha,
-                                    LocalTime hora, double valorBase)
+                                    LocalTime hora, double valorBase, Formato formato, Idioma idioma)
             throws FuncionDuplicadaException, PeliculaNoEncontradaException, PeliculaNoDisponibleException,
                    SalaNoEncontradaException, SalaNoDisponibleException, ConflictoHorarioException,
                    DatoInvalidoException {
@@ -336,24 +353,37 @@ public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
             throw new PeliculaNoDisponibleException(codigoPelicula);
         }
 
+        // El formato debe ser uno de los formatos en que está disponible la película
+        if (formato == null) {
+            throw new DatoInvalidoException("Debe seleccionar el formato de la función.");
+        }
+        if (!pelicula.tieneFormato(formato)) {
+            throw new DatoInvalidoException("La película " + pelicula.getNombre() + " no está disponible en "
+                    + formato + ". Formatos de la película: " + pelicula.describirFormatos() + ".");
+        }
+        if (idioma == null) {
+            throw new DatoInvalidoException("Debe indicar si la función es doblada o subtitulada.");
+        }
+
         Sala sala = buscarSala(codigoSala);
         if (!sala.estaDisponible()) {
             throw new SalaNoDisponibleException(codigoSala);
         }
 
-        Funcion nueva = new Funcion(codigo, pelicula, sala, fecha, hora, valorBase);
+        Funcion nueva = new Funcion(codigo, pelicula, sala, fecha, hora, valorBase, formato, idioma);
 
-        // Verificar que no se cruce con otra función programada en la misma sala y fecha.
-        // Dos horarios se cruzan si cada uno empieza antes de que el otro termine.
+        // Verificar que no se cruce con otra función programada en la misma sala.
+        // Cada función ocupa la sala desde su inicio hasta el fin de la película + 15 min de limpieza.
+        // Dos horarios se cruzan si cada uno empieza antes de que el otro deje libre la sala.
+        // Se compara con fecha Y hora, así se detectan también las funciones que pasan de medianoche.
         for (Funcion existente : listFunciones) {
             boolean mismaSala = existente.getSala() == sala;
-            boolean mismaFecha = existente.getFecha().equals(fecha);
             boolean programada = existente.getEstado() == EstadoFuncion.PROGRAMADA;
-            if (mismaSala && mismaFecha && programada) {
-                boolean seCruzan = nueva.getMinutoInicio() < existente.getMinutoFin()
-                        && existente.getMinutoInicio() < nueva.getMinutoFin();
+            if (mismaSala && programada) {
+                boolean seCruzan = nueva.getInicio().isBefore(existente.getSalaLibreDesde())
+                        && existente.getInicio().isBefore(nueva.getSalaLibreDesde());
                 if (seCruzan) {
-                    throw new ConflictoHorarioException(codigoSala, existente.getCodigo());
+                    throw new ConflictoHorarioException(codigoSala, existente);
                 }
             }
         }
@@ -424,38 +454,28 @@ public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
      */
     @Override
     public Funcion modificarFuncion(String codigo, String codigoPelicula, String codigoSala, LocalDate fecha,
-                                    LocalTime hora, double valorBase) throws CinemaException {
+                                    LocalTime hora, double valorBase, Formato formato, Idioma idioma)
+            throws CinemaException {
         Funcion vieja = buscarFuncion(codigo);
         if (vieja.getEstado() != EstadoFuncion.PROGRAMADA) {
             throw new ModificacionNoPermitidaException("Solo se pueden modificar funciones programadas.");
         }
-        if (!vieja.getListVentas().isEmpty()) {
+        // Solo cuentan las ventas ACTIVAS: si todas se cancelaron, la función se puede modificar
+        if (vieja.contarEntradasVendidas() > 0) {
             throw new ModificacionNoPermitidaException("No se puede modificar la función " + codigo
-                    + " porque ya tiene ventas. Solo puede actualizar su valor base o cancelarla.");
+                    + " porque tiene entradas vendidas activas. Solo puede actualizar su valor base o cancelarla.");
         }
 
         listFunciones.remove(vieja);
         vieja.getPelicula().removerFuncion(vieja);
         try {
-            return programarFuncion(codigo, codigoPelicula, codigoSala, fecha, hora, valorBase);
+            return programarFuncion(codigo, codigoPelicula, codigoSala, fecha, hora, valorBase, formato, idioma);
         } catch (CinemaException e) {
             // Los datos nuevos no son válidos: se deja la función como estaba
             listFunciones.add(vieja);
             vieja.getPelicula().agregarFuncion(vieja);
             throw e;
         }
-    }
-
-    /** Solo se puede eliminar si no tiene ventas (si no, se debe cancelar). */
-    @Override
-    public void eliminarFuncion(String codigo) throws FuncionNoEncontradaException, EliminacionNoPermitidaException {
-        Funcion funcion = buscarFuncion(codigo);
-        if (!funcion.getListVentas().isEmpty()) {
-            throw new EliminacionNoPermitidaException("No se puede eliminar la función " + codigo
-                    + " porque tiene ventas registradas. Puede cancelarla.");
-        }
-        listFunciones.remove(funcion);
-        funcion.getPelicula().removerFuncion(funcion);
     }
 
     /** Cambia el valor base (recargo) de una función. Las ventas ya hechas conservan lo que se pagó. */
@@ -468,9 +488,23 @@ public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
         buscarFuncion(codigoFuncion).setValorBase(nuevoValor);
     }
 
+    /**
+     * Cancela la función. Las funciones no se eliminan: quedan en el historial con estado CANCELADA
+     * (como en un cine real, por contabilidad y reclamos).
+     * Solo se puede cancelar si NO tiene entradas activas: si las tiene, primero se cancelan esas
+     * ventas en "Cancelar venta" (así cada cliente recibe su devolución).
+     */
     @Override
-    public void cancelarFuncion(String codigo) throws FuncionNoEncontradaException, FuncionNoDisponibleException {
-        buscarFuncion(codigo).cancelar();
+    public void cancelarFuncion(String codigo)
+            throws FuncionNoEncontradaException, FuncionNoDisponibleException, CancelacionNoPermitidaException {
+        Funcion funcion = buscarFuncion(codigo);
+        int activas = funcion.contarEntradasVendidas();
+        if (activas > 0) {
+            throw new CancelacionNoPermitidaException("La función " + codigo + " tiene " + activas
+                    + " entrada(s) vendida(s) activa(s). Primero cancele esas ventas en \"Cancelar venta\""
+                    + " y luego cancele la función.");
+        }
+        funcion.cancelar();
     }
 
 
@@ -729,6 +763,89 @@ public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
             operador.agregarVenta(venta);
         }
         return venta;
+    }
+
+    // ---------------- Pago con tarjeta (simulado) ----------------
+
+    /**
+     * Revisa los datos de la tarjeta y el monto ingresado, y devuelve el pago aprobado.
+     * No se conecta con ningún banco: el "saldo" es el monto que se escribe.
+     *  - Monto menor al total  -> SaldoInsuficienteException.
+     *  - Monto mayor al total  -> se aprueba y el restante queda como valor devuelto.
+     */
+    public Pago procesarPago(TipoTarjeta tipoTarjeta, String numeroTarjeta, String titular,
+                             String documentoTitular, int mesVencimiento, int anioVencimiento,
+                             String cvv, int cuotas, double total, double montoIngresado)
+            throws DatoInvalidoException, SaldoInsuficienteException {
+
+        if (tipoTarjeta == null) {
+            throw new DatoInvalidoException("Seleccione si la tarjeta es débito o crédito.");
+        }
+
+        String numero = (numeroTarjeta == null) ? "" : numeroTarjeta.replace(" ", "");
+        if (numero.isEmpty() || !esSoloDigitos(numero)) {
+            throw new DatoInvalidoException("El número de la tarjeta solo puede tener dígitos.");
+        }
+        Franquicia franquicia = Franquicia.detectar(numero);
+        if (franquicia == null) {
+            throw new DatoInvalidoException("Tarjeta no reconocida. Se aceptan Visa, Mastercard, American Express y Diners Club.");
+        }
+        if (numero.length() != franquicia.getCantidadDigitos()) {
+            throw new DatoInvalidoException("Una tarjeta " + franquicia.getNombre() + " tiene "
+                    + franquicia.getCantidadDigitos() + " dígitos y se ingresaron " + numero.length() + ".");
+        }
+
+        if (titular == null || titular.isBlank()) {
+            throw new DatoInvalidoException("Ingrese el nombre del titular como aparece en la tarjeta.");
+        }
+        if (documentoTitular == null || documentoTitular.isBlank()) {
+            throw new DatoInvalidoException("Ingrese el documento del titular.");
+        }
+
+        if (mesVencimiento < 1 || mesVencimiento > 12 || anioVencimiento <= 0) {
+            throw new DatoInvalidoException("Seleccione el mes y el año de vencimiento.");
+        }
+        // La tarjeta sirve hasta el último día de su mes de vencimiento
+        LocalDate hoy = LocalDate.now();
+        if (anioVencimiento < hoy.getYear()
+                || (anioVencimiento == hoy.getYear() && mesVencimiento < hoy.getMonthValue())) {
+            throw new DatoInvalidoException("La tarjeta está vencida.");
+        }
+
+        if (cvv == null || cvv.length() != franquicia.getDigitosCvv() || !esSoloDigitos(cvv)) {
+            throw new DatoInvalidoException("El código de seguridad (CVV) de " + franquicia.getNombre()
+                    + " tiene " + franquicia.getDigitosCvv() + " dígitos.");
+        }
+
+        if (tipoTarjeta == TipoTarjeta.DEBITO) {
+            cuotas = 1;   // el débito siempre es de contado
+        } else if (cuotas < 1) {
+            throw new DatoInvalidoException("Seleccione el número de cuotas.");
+        }
+
+        if (total <= 0) {
+            throw new DatoInvalidoException("No hay nada que pagar.");
+        }
+        if (montoIngresado <= 0) {
+            throw new DatoInvalidoException("Ingrese el monto a pagar.");
+        }
+        if (montoIngresado < total) {
+            throw new SaldoInsuficienteException(total, montoIngresado);
+        }
+
+        String ultimos = numero.substring(numero.length() - 4);
+        return new Pago(tipoTarjeta, franquicia, ultimos, titular.trim(), documentoTitular.trim(),
+                cuotas, total, montoIngresado);
+    }
+
+    /** true si el texto tiene solo dígitos (0-9). */
+    private boolean esSoloDigitos(String texto) {
+        for (int i = 0; i < texto.length(); i++) {
+            if (!Character.isDigit(texto.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /** Suma el precio de los combos y le aplica el descuento de combos del plan. */

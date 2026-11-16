@@ -91,7 +91,7 @@
                         <TableView fx:id="tablaFunciones" styleClass="tabla" VBox.vgrow="ALWAYS">
                            <columns>
                               <TableColumn fx:id="colPelicula" prefWidth="230.0" text="Película" />
-                              <TableColumn fx:id="colFormato" prefWidth="110.0" text="Formato" />
+                              <TableColumn fx:id="colFormato" prefWidth="170.0" text="Formato / idioma" />
                               <TableColumn fx:id="colSala" prefWidth="160.0" text="Sala" />
                               <TableColumn fx:id="colHora" prefWidth="100.0" text="Hora" />
                               <TableColumn fx:id="colValor" prefWidth="130.0" text="Valor base" />

@@ -27,6 +27,12 @@ public class ModelFactoryController {
     private Cliente clienteEnRegistro;
     private List<Combo> combosSeleccionados;
     private Formato formatoSeleccionado;
+    private Pelicula peliculaSeleccionada;   // la que se eligió en la cartelera
+    private Pelicula peliculaHorarios;       // película cuyos horarios se muestran (null = todas)
+    private Funcion funcionParaVenta;        // función elegida en Horarios: Generar venta la trae seleccionada
+    private double totalAPagar;              // total de la compra que se va a pagar con tarjeta
+    private Cliente clienteEnPago;           // cliente de la compra (para sugerir el titular)
+    private Pago pagoRealizado;              // pago aprobado en la ventana de pago (null = no se pagó)
 
     // Constructor privado: nadie puede hacer "new ModelFactoryController()" desde afuera
     private ModelFactoryController() {
@@ -94,6 +100,54 @@ public class ModelFactoryController {
         this.formatoSeleccionado = formatoSeleccionado;
     }
 
+    public Pelicula getPeliculaSeleccionada() {
+        return peliculaSeleccionada;
+    }
+
+    public void setPeliculaSeleccionada(Pelicula peliculaSeleccionada) {
+        this.peliculaSeleccionada = peliculaSeleccionada;
+    }
+
+    public Pelicula getPeliculaHorarios() {
+        return peliculaHorarios;
+    }
+
+    public void setPeliculaHorarios(Pelicula peliculaHorarios) {
+        this.peliculaHorarios = peliculaHorarios;
+    }
+
+    public Funcion getFuncionParaVenta() {
+        return funcionParaVenta;
+    }
+
+    public void setFuncionParaVenta(Funcion funcionParaVenta) {
+        this.funcionParaVenta = funcionParaVenta;
+    }
+
+    public double getTotalAPagar() {
+        return totalAPagar;
+    }
+
+    public void setTotalAPagar(double totalAPagar) {
+        this.totalAPagar = totalAPagar;
+    }
+
+    public Cliente getClienteEnPago() {
+        return clienteEnPago;
+    }
+
+    public void setClienteEnPago(Cliente clienteEnPago) {
+        this.clienteEnPago = clienteEnPago;
+    }
+
+    public Pago getPagoRealizado() {
+        return pagoRealizado;
+    }
+
+    public void setPagoRealizado(Pago pagoRealizado) {
+        this.pagoRealizado = pagoRealizado;
+    }
+
     /** Datos iniciales para poder usar la aplicación desde el primer momento. */
     private void cargarDatosDePrueba() {
         try {
@@ -105,11 +159,11 @@ public class ModelFactoryController {
             cine.registrarSala(new Sala("S3", "Sala 3", 40, EstadoSala.FUERA_DE_SERVICIO));
 
             cine.registrarPelicula(new Pelicula("P1", "El Último Algoritmo", Genero.CIENCIA_FICCION, 125,
-                    Clasificacion.MAYORES_12, Formato.IMAX, 2026, EstadoPelicula.DISPONIBLE));
+                    Clasificacion.MAYORES_12, List.of(Formato.DOS_D, Formato.IMAX, Formato.INFINITY_VISION), 2026, EstadoPelicula.DISPONIBLE));
             cine.registrarPelicula(new Pelicula("P2", "Aventuras en el Quindío", Genero.ANIMACION, 95,
-                    Clasificacion.TODOS, Formato.TRES_D, 2025, EstadoPelicula.DISPONIBLE));
+                    Clasificacion.TODOS, List.of(Formato.DOS_D, Formato.TRES_D), 2025, EstadoPelicula.DISPONIBLE));
             cine.registrarPelicula(new Pelicula("P3", "Noche de Terror", Genero.TERROR, 110,
-                    Clasificacion.MAYORES_18, Formato.CUATRO_DX, 1998, EstadoPelicula.DISPONIBLE));
+                    Clasificacion.MAYORES_18, List.of(Formato.CUATRO_DX), 1998, EstadoPelicula.DISPONIBLE));
 
             cine.registrarCliente(new Cliente("2001", "Laura Gómez", "3104567890", "laura.gomez@correo.com",
                     TipoCliente.ESTUDIANTE, PlanMembresia.ESTANDAR));
@@ -119,10 +173,14 @@ public class ModelFactoryController {
                     TipoCliente.ADULTO_MAYOR, PlanMembresia.PREMIUM));
 
             LocalDate hoy = LocalDate.now();
-            cine.programarFuncion("F1", "P1", "S1", hoy, LocalTime.of(14, 0), 8000);    // estreno IMAX
-            cine.programarFuncion("F2", "P1", "S2", hoy, LocalTime.of(18, 30), 8000);   // estreno IMAX
-            cine.programarFuncion("F3", "P2", "S1", hoy, LocalTime.of(17, 0), 3000);    // 3D
-            cine.programarFuncion("F4", "P3", "S2", hoy.plusDays(1), LocalTime.of(21, 0), 6000);   // 4DX
+            cine.programarFuncion("F1", "P1", "S1", hoy, LocalTime.of(14, 0), 0,
+                    Formato.DOS_D, Idioma.DOBLADA);                                      // 2D doblada
+            cine.programarFuncion("F2", "P1", "S2", hoy, LocalTime.of(18, 30), 8000,
+                    Formato.IMAX, Idioma.SUBTITULADA);                                   // estreno IMAX
+            cine.programarFuncion("F3", "P2", "S1", hoy, LocalTime.of(17, 0), 3000,
+                    Formato.TRES_D, Idioma.DOBLADA);                                     // 3D
+            cine.programarFuncion("F4", "P3", "S2", hoy.plusDays(1), LocalTime.of(21, 0), 6000,
+                    Formato.CUATRO_DX, Idioma.SUBTITULADA);                              // 4DX
         } catch (CinemaException e) {
             System.err.println("Error cargando datos de prueba: " + e.getMessage());
         }

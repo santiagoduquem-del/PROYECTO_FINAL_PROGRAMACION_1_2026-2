@@ -1,11 +1,13 @@
 package co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.interfaces;
 
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Asiento;
+import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Formato;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Funcion;
+import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Idioma;
+import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.exceptions.CancelacionNoPermitidaException;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.exceptions.CinemaException;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.exceptions.ConflictoHorarioException;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.exceptions.DatoInvalidoException;
-import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.exceptions.EliminacionNoPermitidaException;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.exceptions.FuncionDuplicadaException;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.exceptions.FuncionNoDisponibleException;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.exceptions.FuncionNoEncontradaException;
@@ -24,7 +26,7 @@ import java.util.List;
 public interface GestionFunciones {
 
     Funcion programarFuncion(String codigo, String codigoPelicula, String codigoSala, LocalDate fecha,
-                             LocalTime hora, double valorBase)
+                             LocalTime hora, double valorBase, Formato formato, Idioma idioma)
             throws FuncionDuplicadaException, PeliculaNoEncontradaException, PeliculaNoDisponibleException,
                    SalaNoEncontradaException, SalaNoDisponibleException, ConflictoHorarioException,
                    DatoInvalidoException;
@@ -48,14 +50,13 @@ public interface GestionFunciones {
     void modificarValorBase(String codigoFuncion, double nuevoValor)
             throws FuncionNoEncontradaException, DatoInvalidoException;
 
-    /** Modifica película, sala, fecha, hora y valor base, solo si la función no tiene ventas. */
+    /** Modifica película, sala, fecha, hora, valor base, formato e idioma, solo si la función no tiene ventas. */
     Funcion modificarFuncion(String codigo, String codigoPelicula, String codigoSala, LocalDate fecha,
-                             LocalTime hora, double valorBase) throws CinemaException;
+                             LocalTime hora, double valorBase, Formato formato, Idioma idioma) throws CinemaException;
 
-    /** Elimina la función solo si no tiene ventas. */
-    void eliminarFuncion(String codigo) throws FuncionNoEncontradaException, EliminacionNoPermitidaException;
 
-    /** Cancela la función y todas sus ventas activas. */
-    void cancelarFuncion(String codigo) throws FuncionNoEncontradaException, FuncionNoDisponibleException;
+    /** Cancela la función (queda en el historial). Solo si no tiene entradas activas. */
+    void cancelarFuncion(String codigo)
+            throws FuncionNoEncontradaException, FuncionNoDisponibleException, CancelacionNoPermitidaException;
 
 }

@@ -8,12 +8,18 @@ import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.exception
 import javafx.beans.property.SimpleStringProperty;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.controller.GestionPeliculasController;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GestionPeliculasViewController extends BarraSuperiorViewController {
 
@@ -23,8 +29,11 @@ public class GestionPeliculasViewController extends BarraSuperiorViewController 
     @FXML private ComboBox<Genero> cbGenero;
     @FXML private TextField txtDuracion;
     @FXML private TextField txtAnioEstreno;
+    @FXML private TextArea txtSinopsis;
+    @FXML private TextField txtElenco;
+    @FXML private TextField txtEstudio;
     @FXML private ComboBox<Clasificacion> cbClasificacion;
-    @FXML private ComboBox<Formato> cbFormato;
+    @FXML private FlowPane contenedorFormatos;
     @FXML private TableView<Pelicula> tablaPeliculas;
     @FXML private TableColumn<Pelicula, String> colCodigo;
     @FXML private TableColumn<Pelicula, String> colNombre;
@@ -43,11 +52,21 @@ public class GestionPeliculasViewController extends BarraSuperiorViewController 
     private String rutaCaratula;
     private String rutaBanner;
 
+    // Casillas de los formatos (se crean en initialize)
+    private final List<CheckBox> casillasFormato = new ArrayList<>();
+
     @FXML
     public void initialize() {
         cbGenero.getItems().setAll(Genero.values());
         cbClasificacion.getItems().setAll(Clasificacion.values());
-        cbFormato.getItems().setAll(Formato.values());
+        // Una casilla por cada formato; en userData queda el formato que representa
+        for (Formato formato : Formato.values()) {
+            CheckBox casilla = new CheckBox(formato.getNombre());
+            casilla.setUserData(formato);
+            casilla.setStyle("-fx-text-fill: white; -fx-font-size: 15px;");
+            casillasFormato.add(casilla);
+        }
+        contenedorFormatos.getChildren().setAll(casillasFormato);
 
         colCodigo.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getCodigo()));
         colNombre.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getNombre()));
@@ -55,7 +74,7 @@ public class GestionPeliculasViewController extends BarraSuperiorViewController 
         colGenero.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getGenero().toString()));
         colDuracion.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getDuracionMinutos() + " min"));
         colClasificacion.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getClasificacion().getDescripcion()));
-        colFormato.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getFormato().toString()));
+        colFormato.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().describirFormatos()));
         colEstado.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getEstado().toString()));
 
         refrescarTabla();
@@ -68,11 +87,16 @@ public class GestionPeliculasViewController extends BarraSuperiorViewController 
         if (pelicula != null) {
             txtCodigo.setText(pelicula.getCodigo());
             txtNombre.setText(pelicula.getNombre());
+            txtSinopsis.setText(pelicula.getSinopsis());
+            txtElenco.setText(pelicula.getElenco());
+            txtEstudio.setText(pelicula.getEstudio());
             cbGenero.setValue(pelicula.getGenero());
             txtDuracion.setText(String.valueOf(pelicula.getDuracionMinutos()));
             txtAnioEstreno.setText(pelicula.getAnioEstreno() == 0 ? "" : String.valueOf(pelicula.getAnioEstreno()));
             cbClasificacion.setValue(pelicula.getClasificacion());
-            cbFormato.setValue(pelicula.getFormato());
+            for (CheckBox casilla : casillasFormato) {
+                casilla.setSelected(pelicula.tieneFormato((Formato) casilla.getUserData()));
+            }
 
             rutaCaratula = pelicula.getRutaCaratula();
             rutaBanner = pelicula.getRutaBanner();
@@ -103,7 +127,8 @@ public class GestionPeliculasViewController extends BarraSuperiorViewController 
     private void onRegistrar() {
         try {
             gestionPeliculasController.registrarPelicula(txtCodigo.getText(), txtNombre.getText(), cbGenero.getValue(),
-                    txtDuracion.getText(), txtAnioEstreno.getText(), cbClasificacion.getValue(), cbFormato.getValue(), rutaCaratula, rutaBanner);
+                    txtDuracion.getText(), txtAnioEstreno.getText(), cbClasificacion.getValue(), obtenerFormatosMarcados(),
+                    txtSinopsis.getText(), txtElenco.getText(), txtEstudio.getText(), rutaCaratula, rutaBanner);
             Alertas.mostrarInfo("Película registrada", "La película se registró correctamente.");
             onLimpiar();
             refrescarTabla();
@@ -116,7 +141,8 @@ public class GestionPeliculasViewController extends BarraSuperiorViewController 
     private void onModificar() {
         try {
             gestionPeliculasController.modificarPelicula(txtCodigo.getText(), txtNombre.getText(), cbGenero.getValue(),
-                    txtDuracion.getText(), txtAnioEstreno.getText(), cbClasificacion.getValue(), cbFormato.getValue(), rutaCaratula, rutaBanner);
+                    txtDuracion.getText(), txtAnioEstreno.getText(), cbClasificacion.getValue(), obtenerFormatosMarcados(),
+                    txtSinopsis.getText(), txtElenco.getText(), txtEstudio.getText(), rutaCaratula, rutaBanner);
             Alertas.mostrarInfo("Película modificada", "Los datos de la película se actualizaron.");
             refrescarTabla();
         } catch (CinemaException e) {
@@ -166,11 +192,16 @@ public class GestionPeliculasViewController extends BarraSuperiorViewController 
     private void onLimpiar() {
         txtCodigo.clear();
         txtNombre.clear();
+        txtSinopsis.clear();
+        txtElenco.clear();
+        txtEstudio.clear();
         cbGenero.setValue(null);
         txtDuracion.clear();
         txtAnioEstreno.clear();
         cbClasificacion.setValue(null);
-        cbFormato.setValue(null);
+        for (CheckBox casilla : casillasFormato) {
+            casilla.setSelected(false);
+        }
         rutaCaratula = null;
         rutaBanner = null;
         Imagenes.mostrar(imgCaratula, null);
@@ -186,5 +217,16 @@ public class GestionPeliculasViewController extends BarraSuperiorViewController 
     private void refrescarTabla() {
         tablaPeliculas.getItems().setAll(gestionPeliculasController.obtenerPeliculas());
         tablaPeliculas.refresh();
+    }
+
+    /** Formatos marcados en las casillas. */
+    private List<Formato> obtenerFormatosMarcados() {
+        List<Formato> marcados = new ArrayList<>();
+        for (CheckBox casilla : casillasFormato) {
+            if (casilla.isSelected()) {
+                marcados.add((Formato) casilla.getUserData());
+            }
+        }
+        return marcados;
     }
 }

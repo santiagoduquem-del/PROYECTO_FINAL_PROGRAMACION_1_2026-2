@@ -6,6 +6,7 @@ import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Genero;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Pelicula;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.exceptions.DatoInvalidoException;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.exceptions.EliminacionNoPermitidaException;
+import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.exceptions.ModificacionNoPermitidaException;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.exceptions.PeliculaDuplicadaException;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.exceptions.PeliculaNoEncontradaException;
 
@@ -26,8 +27,8 @@ public interface GestionPeliculas {
     List<Pelicula> consultarPeliculasDisponibles();
 
     void modificarPelicula(String codigo, String nombre, Genero genero, int duracionMinutos,
-                           Clasificacion clasificacion, Formato formato, int anioEstreno)
-            throws PeliculaNoEncontradaException, DatoInvalidoException;
+                           Clasificacion clasificacion, List<Formato> formatos, int anioEstreno)
+            throws PeliculaNoEncontradaException, DatoInvalidoException, ModificacionNoPermitidaException;
 
     /** Guarda la carátula y el banner de la película (pueden ser null si no se subieron). */
     void asignarImagenesPelicula(String codigo, String rutaCaratula, String rutaBanner)

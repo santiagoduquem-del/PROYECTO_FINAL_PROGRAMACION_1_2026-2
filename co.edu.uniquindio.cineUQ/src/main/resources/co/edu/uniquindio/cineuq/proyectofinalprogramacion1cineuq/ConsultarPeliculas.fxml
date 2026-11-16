@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
@@ -38,66 +39,16 @@
 
       <Button layoutX="86.0" layoutY="108.0" mnemonicParsing="false" onAction="#onVolver" styleClass="boton-volver" text="← Volver al menú" />
 
-      <HBox layoutX="86.0" layoutY="165.0" prefHeight="1000.0" prefWidth="1776.0" spacing="30.0">
-         <children>
-            <!-- Cartelera -->
-            <VBox prefWidth="820.0" spacing="12.0" styleClass="panel">
-               <children>
-                  <Label styleClass="titulo-panel" text="Películas disponibles en cartelera" />
-                  <Label styleClass="etiqueta" text="Haga clic en una película para ver su carátula, banner y datos." />
-                  <TableView fx:id="tablaPeliculas" onMouseClicked="#onSeleccionarPelicula" styleClass="tabla" VBox.vgrow="ALWAYS">
-                     <columns>
-                        <TableColumn fx:id="colNombre" prefWidth="250.0" text="Nombre" />
-                        <TableColumn fx:id="colAnio" prefWidth="150.0" text="Año" />
-                        <TableColumn fx:id="colGenero" prefWidth="160.0" text="Género" />
-                        <TableColumn fx:id="colDuracion" prefWidth="110.0" text="Duración" />
-                        <TableColumn fx:id="colClasificacion" prefWidth="180.0" text="Clasificación" />
-                        <TableColumn fx:id="colFormato" prefWidth="130.0" text="Formato" />
-                     </columns>
-                     <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                     </columnResizePolicy>
-                  </TableView>
-               </children>
-            </VBox>
+      <Label layoutX="86.0" layoutY="160.0" styleClass="titulo-grande" text="Cartelera" />
+      <Label layoutX="88.0" layoutY="222.0" style="-fx-font-size: 18px;" styleClass="etiqueta" text="Haga clic en una película para ver su carátula, banner, datos y funciones." />
 
-            <!-- Detalle de la película -->
-            <VBox spacing="25.0" styleClass="panel" HBox.hgrow="ALWAYS">
-               <children>
-                  <StackPane maxWidth="Infinity" prefHeight="330.0" styleClass="marco-imagen">
-                     <children>
-                        <Label styleClass="sin-imagen" text="Sin banner" />
-                        <ImageView fx:id="imgBanner" fitHeight="330.0" fitWidth="860.0" preserveRatio="true" />
-                     </children>
-                  </StackPane>
-                  <HBox spacing="30.0">
-                     <children>
-                        <StackPane prefHeight="360.0" prefWidth="250.0" styleClass="marco-imagen">
-                           <children>
-                              <Label styleClass="sin-imagen" text="Sin carátula" />
-                              <ImageView fx:id="imgCaratula" fitHeight="360.0" fitWidth="250.0" preserveRatio="true" />
-                           </children>
-                        </StackPane>
-                        <VBox spacing="10.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label fx:id="lblNombre" styleClass="titulo-pelicula" text="Seleccione una película" wrapText="true" />
-                              <Label styleClass="etiqueta" text="Año de estreno" />
-                              <Label fx:id="lblAnio" styleClass="dato" text="-" />
-                              <Label styleClass="etiqueta" text="Género" />
-                              <Label fx:id="lblGenero" styleClass="dato" text="-" />
-                              <Label styleClass="etiqueta" text="Duración" />
-                              <Label fx:id="lblDuracion" styleClass="dato" text="-" />
-                              <Label styleClass="etiqueta" text="Clasificación" />
-                              <Label fx:id="lblClasificacion" styleClass="dato" text="-" />
-                              <Label styleClass="etiqueta" text="Formato" />
-                              <Label fx:id="lblFormato" styleClass="dato" text="-" />
-                           </children>
-                        </VBox>
-                     </children>
-                  </HBox>
-               </children>
-            </VBox>
-         </children>
-      </HBox>
+      <!-- Mosaico de carátulas: las tarjetas las crea el programa (una por película disponible) -->
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutX="86.0" layoutY="270.0" prefHeight="890.0" prefWidth="1776.0" style="-fx-background: black; -fx-background-color: black;">
+         <content>
+            <FlowPane fx:id="contenedorPeliculas" hgap="30.0" prefWrapLength="1750.0" vgap="34.0">
+               <padding><Insets bottom="20.0" top="10.0" /></padding>
+            </FlowPane>
+         </content>
+      </ScrollPane>
    </children>
 </AnchorPane>

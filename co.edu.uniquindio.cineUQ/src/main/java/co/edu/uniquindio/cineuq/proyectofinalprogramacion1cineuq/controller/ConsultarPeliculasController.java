@@ -20,4 +20,9 @@ public class ConsultarPeliculasController {
     public List<Pelicula> obtenerPeliculasDisponibles() {
         return cine.consultarPeliculasDisponibles();
     }
+
+    /** Guarda la película elegida en el mosaico para que la pantalla de detalle la muestre. */
+    public void seleccionarPelicula(Pelicula pelicula) {
+        ModelFactoryController.getInstance().setPeliculaSeleccionada(pelicula);
+    }
 }

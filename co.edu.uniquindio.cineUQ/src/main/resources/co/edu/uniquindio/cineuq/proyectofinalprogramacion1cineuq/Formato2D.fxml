@@ -16,6 +16,7 @@
 <!-- Información del formato 2D. Los textos de la izquierda se editan aquí (Scene Builder).
      La imagen: selecciona imgFormato y en Properties > Image elige un archivo de recursosGraficos.
      La parte derecha (películas y funciones en este formato) la llena el programa. -->
+
 <AnchorPane fx:id="rootPane" prefHeight="1200.0" prefWidth="1920.0" style="-fx-background-color: black;" stylesheets="@gestion.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.viewController.DetalleFormatoViewController">
    <children>
       <!-- Barra superior -->
@@ -44,25 +45,34 @@
       <HBox layoutX="86.0" layoutY="165.0" prefHeight="1000.0" prefWidth="1776.0" spacing="30.0">
          <children>
             <!-- Qué es el formato (texto fijo, editable en Scene Builder) -->
-            <VBox prefWidth="1060.0" spacing="16.0" styleClass="tarjeta-formato">
+            <VBox prefWidth="1060.0" spacing="18.0" styleClass="tarjeta-formato">
                <children>
-                  <StackPane prefHeight="250.0" style="-fx-background-color: #1c1c1c; -fx-background-radius: 18;">
+                  <StackPane prefHeight="250.0" style="-fx-background-color: #1c1c1c; -fx-background-radius: 80;">
                      <children>
                         <Label style="-fx-text-fill: #777777; -fx-font-size: 16px;" text="Imagen del formato (agrégala en Scene Builder)" />
                         <ImageView fx:id="imgFormato" fitHeight="250.0" fitWidth="1000.0" preserveRatio="true">
                         </ImageView>
+                        <ImageView fitHeight="466.0" fitWidth="1013.0">
+                           <image>
+                              <Image url="@recursosGraficos/banner%20signature.png" />
+                           </image>
+                        </ImageView>
                      </children>
                   </StackPane>
-                  <Label styleClass="titulo-formato" text="2D" />
-                  <Label style="-fx-font-size: 21px;" styleClass="etiqueta" text="La proyección digital tradicional: imagen nítida y sonido envolvente estándar. Sirve para cualquier película y es el formato más económico." wrapText="true" />
+                  <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Signature">
+                     <font>
+                        <Font size="47.0" />
+                     </font>
+                  </Text>
+                  <Label style="-fx-font-size: 21px;" styleClass="etiqueta" text="La sala insignia de CinemaUQ: proyección láser con imagen más brillante y nítida, sonido envolvente de alta fidelidad y sillas reclinables con más espacio. Una función más cómoda y especial para cualquier película." wrapText="true" />
                   <Label styleClass="fila-plan-titulo" text="Ideal para" />
-                  <Label styleClass="dato" text="Cualquier película y cualquier presupuesto" wrapText="true" />
+                  <Label styleClass="dato" text="Quienes quieren una función más cómoda sin pagar un gran formato" wrapText="true" />
                   <Label styleClass="titulo-panel" text="Lo que vas a vivir" />
                   <VBox spacing="10.0">
                      <children>
-                        <Label styleClass="caracteristica" text="✔  Proyección digital en alta definición" wrapText="true" />
-                        <Label styleClass="caracteristica" text="✔  Sonido envolvente 7.1" wrapText="true" />
-                        <Label styleClass="caracteristica" text="✔  El precio más económico de la cartelera" wrapText="true" />
+                        <Label styleClass="caracteristica" text="✔ Proyección láser en alta definición" wrapText="true" />
+                        <Label styleClass="caracteristica" text="✔ Sonido envolvente de alta fidelidad" wrapText="true" />
+                        <Label styleClass="caracteristica" text="✔ Sillas reclinables con más espacio entre filas" wrapText="true" />
                      </children>
                   </VBox>
                </children>

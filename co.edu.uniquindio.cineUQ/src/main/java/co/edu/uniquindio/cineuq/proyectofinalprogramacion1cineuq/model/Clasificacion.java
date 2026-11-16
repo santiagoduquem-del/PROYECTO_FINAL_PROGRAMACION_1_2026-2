@@ -19,4 +19,10 @@ public enum Clasificacion {
     public String getDescripcion() {
         return descripcion;
     }
+
+    // Así se muestra en los ComboBox y tablas ("Mayores de 12 años" en vez de MAYORES_12)
+    @Override
+    public String toString() {
+        return descripcion;
+    }
 }

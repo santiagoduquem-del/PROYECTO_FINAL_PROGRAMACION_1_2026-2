@@ -16,6 +16,7 @@
 <!-- Información del formato Dolby Cinema. Los textos de la izquierda se editan aquí (Scene Builder).
      La imagen: selecciona imgFormato y en Properties > Image elige un archivo de recursosGraficos.
      La parte derecha (películas y funciones en este formato) la llena el programa. -->
+
 <AnchorPane fx:id="rootPane" prefHeight="1200.0" prefWidth="1920.0" style="-fx-background-color: black;" stylesheets="@gestion.css" xmlns="http://javafx.com/javafx/25.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.viewController.DetalleFormatoViewController">
    <children>
       <!-- Barra superior -->
@@ -44,19 +45,23 @@
       <HBox layoutX="86.0" layoutY="165.0" prefHeight="1000.0" prefWidth="1776.0" spacing="30.0">
          <children>
             <!-- Qué es el formato (texto fijo, editable en Scene Builder) -->
-            <VBox prefWidth="1060.0" spacing="16.0" styleClass="tarjeta-formato">
+            <VBox prefWidth="1060.0" spacing="18.0" styleClass="tarjeta-formato">
                <children>
-                  <StackPane prefHeight="250.0" style="-fx-background-color: #1c1c1c; -fx-background-radius: 18;">
+                  <StackPane prefHeight="250.0" style="-fx-background-color: #1c1c1c; -fx-background-radius: 80;">
                      <children>
                         <Label style="-fx-text-fill: #777777; -fx-font-size: 16px;" text="Imagen del formato (agrégala en Scene Builder)" />
-                        <ImageView fx:id="imgFormato" fitHeight="250.0" fitWidth="1000.0" preserveRatio="true">
+                        <ImageView fitHeight="516.0" fitWidth="1010.0">
                            <image>
-                              <Image url="@recursosGraficos/salaDolby.png" />
+                              <Image url="@recursosGraficos/banner%20dolby.png" />
                            </image>
                         </ImageView>
                      </children>
                   </StackPane>
-                  <Label styleClass="titulo-formato" text="Dolby Cinema" />
+                  <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Dolby Cinema">
+                     <font>
+                        <Font size="46.0" />
+                     </font>
+                  </Text>
                   <Label style="-fx-font-size: 21px;" styleClass="etiqueta" text="Imagen Dolby Vision con colores vivos y negros profundos, más sonido Dolby Atmos que se mueve a tu alrededor, incluso por encima de ti. Sillas reclinables en toda la sala." wrapText="true" />
                   <Label styleClass="fila-plan-titulo" text="Ideal para" />
                   <Label styleClass="dato" text="Quienes buscan la mejor imagen y el mejor sonido" wrapText="true" />

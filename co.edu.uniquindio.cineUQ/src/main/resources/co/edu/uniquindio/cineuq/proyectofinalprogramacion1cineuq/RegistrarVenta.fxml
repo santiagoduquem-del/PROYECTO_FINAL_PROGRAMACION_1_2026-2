@@ -43,89 +43,78 @@
 
       <HBox layoutX="86.0" layoutY="165.0" prefHeight="1000.0" prefWidth="1776.0" spacing="30.0">
          <children>
-            <!-- Formulario de la venta: grupos separados (etiqueta + campo) para que respire -->
-            <VBox minWidth="560.0" prefWidth="560.0" spacing="14.0" styleClass="panel">
+            <!-- Formulario de la venta: el título queda fijo y el resto va en un ScrollPane
+                 para que los campos tengan espacio y la carátula se vea grande -->
+            <VBox minWidth="560.0" prefWidth="560.0" spacing="12.0" styleClass="panel">
                <children>
                   <Label styleClass="titulo-panel" text="Datos de la venta" />
-
-                  <!-- Película + carátula -->
-                  <VBox spacing="6.0">
-                     <children>
-                        <Label styleClass="etiqueta" text="Película" />
-                        <ComboBox fx:id="cbPelicula" maxWidth="Infinity" onAction="#onSeleccionarPelicula" promptText="Seleccione la película" styleClass="campo" />
-                        <HBox alignment="CENTER_LEFT" spacing="18.0">
+                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background: #111111; -fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+                     <content>
+                        <VBox spacing="10.0">
+                           <padding><Insets right="14.0" /></padding>
                            <children>
-                              <StackPane minHeight="140.0" minWidth="94.0" prefHeight="140.0" prefWidth="94.0" styleClass="marco-imagen">
+                              <Label styleClass="etiqueta" text="Película" />
+                              <ComboBox fx:id="cbPelicula" maxWidth="Infinity" onAction="#onSeleccionarPelicula" promptText="Seleccione la película" styleClass="campo" />
+                              <HBox alignment="CENTER_LEFT" spacing="20.0">
                                  <children>
-                                    <Label styleClass="sin-imagen" text="Sin carátula" />
-                                    <ImageView fx:id="imgCaratula" fitHeight="140.0" fitWidth="94.0" preserveRatio="true" />
+                                    <StackPane minHeight="240.0" minWidth="160.0" prefHeight="240.0" prefWidth="160.0" styleClass="marco-imagen">
+                                       <children>
+                                          <Label styleClass="sin-imagen" text="Sin carátula" />
+                                          <ImageView fx:id="imgCaratula" fitHeight="240.0" fitWidth="160.0" preserveRatio="true" />
+                                       </children>
+                                    </StackPane>
+                                    <Label fx:id="lblInfoPelicula" style="-fx-font-size: 17px; -fx-line-spacing: 4;" styleClass="etiqueta" text="Seleccione una película" wrapText="true" HBox.hgrow="ALWAYS" />
                                  </children>
-                              </StackPane>
-                              <Label fx:id="lblInfoPelicula" style="-fx-line-spacing: 3;" styleClass="etiqueta" text="Seleccione una película" wrapText="true" HBox.hgrow="ALWAYS" />
-                           </children>
-                           <padding><Insets top="4.0" /></padding>
-                        </HBox>
-                     </children>
-                  </VBox>
-
-                  <VBox spacing="6.0">
-                     <children>
-                        <Label styleClass="etiqueta" text="Función" />
-                        <ComboBox fx:id="cbFuncion" maxWidth="Infinity" onAction="#onSeleccionarFuncion" promptText="Seleccione la función" styleClass="campo" />
-                     </children>
-                  </VBox>
-
-                  <VBox spacing="6.0">
-                     <children>
-                        <Label styleClass="etiqueta" text="Cliente" />
-                        <ComboBox fx:id="cbCliente" maxWidth="Infinity" onAction="#onSeleccionarCliente" promptText="Seleccione el cliente" styleClass="campo" />
-                        <Label fx:id="lblPlan" style="-fx-text-fill: #f9a825;" styleClass="etiqueta" text="Seleccione un cliente para ver su plan" />
-                     </children>
-                  </VBox>
-
-                  <VBox spacing="6.0">
-                     <children>
-                        <Label styleClass="etiqueta" text="Tipo de entrada" />
-                        <ComboBox fx:id="cbTipoEntrada" maxWidth="Infinity" onAction="#onSeleccionarTipoEntrada" promptText="Seleccione el tipo de entrada" styleClass="campo" />
-                     </children>
-                  </VBox>
-
-                  <!-- Resumen de la compra en una tarjeta más clara -->
-                  <VBox spacing="12.0" style="-fx-background-color: #1a1a1a; -fx-background-radius: 18; -fx-padding: 14 16 14 16;">
-                     <children>
-                        <HBox alignment="CENTER_LEFT" spacing="12.0">
-                           <children>
-                              <Label fx:id="lblCombos" maxWidth="Infinity" styleClass="etiqueta" text="Sin combos" wrapText="true" HBox.hgrow="ALWAYS" />
-                              <Button mnemonicParsing="false" onAction="#onElegirCombos" prefWidth="170.0" styleClass="boton-secundario" text="Elegir combos" />
-                           </children>
-                        </HBox>
-                        <HBox spacing="30.0">
-                           <children>
-                              <VBox minWidth="150.0" prefWidth="150.0" spacing="2.0">
+                                 <padding><Insets bottom="8.0" top="6.0" /></padding>
+                              </HBox>
+                              <Label styleClass="etiqueta" text="Función" />
+                              <ComboBox fx:id="cbFuncion" maxWidth="Infinity" onAction="#onSeleccionarFuncion" promptText="Seleccione la función" styleClass="campo" />
+                              <Label styleClass="etiqueta" text="Cliente">
+                                 <padding><Insets top="8.0" /></padding>
+                              </Label>
+                              <ComboBox fx:id="cbCliente" maxWidth="Infinity" onAction="#onSeleccionarCliente" promptText="Seleccione el cliente" styleClass="campo" />
+                              <Label fx:id="lblPlan" style="-fx-text-fill: #f9a825;" styleClass="etiqueta" text="Seleccione un cliente para ver su plan" wrapText="true" />
+                              <Label styleClass="etiqueta" text="Tipo de entrada">
+                                 <padding><Insets top="8.0" /></padding>
+                              </Label>
+                              <ComboBox fx:id="cbTipoEntrada" maxWidth="Infinity" onAction="#onSeleccionarTipoEntrada" promptText="Seleccione el tipo de entrada" styleClass="campo" />
+                              <HBox alignment="CENTER_LEFT" spacing="12.0">
                                  <children>
-                                    <Label styleClass="etiqueta" text="Asientos" />
-                                    <Label fx:id="lblAsiento" maxWidth="150.0" styleClass="dato" text="Ninguno" wrapText="true" />
+                                    <Label fx:id="lblCombos" maxWidth="Infinity" styleClass="etiqueta" text="Sin combos" wrapText="true" HBox.hgrow="ALWAYS" />
+                                    <Button mnemonicParsing="false" onAction="#onElegirCombos" prefWidth="170.0" styleClass="boton-secundario" text="Elegir combos" />
                                  </children>
-                              </VBox>
-                              <VBox spacing="3.0" HBox.hgrow="ALWAYS">
+                                 <padding><Insets top="8.0" /></padding>
+                              </HBox>
+                              <HBox spacing="30.0">
                                  <children>
-                                    <Label styleClass="etiqueta" text="Total a pagar" />
-                                    <Label fx:id="lblValor" styleClass="dato" text="\$0" />
-                                    <Label fx:id="lblDetalleValor" style="-fx-font-size: 13px;" styleClass="etiqueta" text="0 entrada(s) x \$0 + combos \$0" wrapText="true" />
+                                    <VBox minWidth="150.0" prefWidth="150.0" spacing="2.0">
+                                       <children>
+                                          <Label styleClass="etiqueta" text="Asientos" />
+                                          <Label fx:id="lblAsiento" maxWidth="150.0" styleClass="dato" text="Ninguno" wrapText="true" />
+                                       </children>
+                                    </VBox>
+                                    <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label styleClass="etiqueta" text="Total a pagar" />
+                                          <Label fx:id="lblValor" styleClass="dato" text="\$0" />
+                                          <Label fx:id="lblDetalleValor" maxWidth="Infinity" minHeight="-Infinity" style="-fx-font-size: 13px;" styleClass="etiqueta" text="0 entrada(s) x \$0 + combos \$0" wrapText="true" />
+                                       </children>
+                                    </VBox>
                                  </children>
-                              </VBox>
+                                 <padding><Insets top="8.0" /></padding>
+                              </HBox>
+                              <HBox spacing="15.0">
+                                 <children>
+                                    <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#onVender" styleClass="boton-principal" text="Vender entradas" HBox.hgrow="ALWAYS" />
+                                    <Button mnemonicParsing="false" onAction="#onLimpiar" prefWidth="140.0" styleClass="boton-secundario" text="Limpiar" />
+                                 </children>
+                                 <padding><Insets top="10.0" /></padding>
+                              </HBox>
+                              <TextArea fx:id="txtTiquete" editable="false" minHeight="320.0" prefHeight="320.0" promptText="Aquí aparecerá la información de la entrada vendida" styleClass="tiquete" />
                            </children>
-                        </HBox>
-                     </children>
-                  </VBox>
-
-                  <HBox spacing="15.0">
-                     <children>
-                        <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#onVender" styleClass="boton-principal" text="Vender entradas" HBox.hgrow="ALWAYS" />
-                        <Button mnemonicParsing="false" onAction="#onLimpiar" prefWidth="140.0" styleClass="boton-secundario" text="Limpiar" />
-                     </children>
-                  </HBox>
-                  <TextArea fx:id="txtTiquete" editable="false" minHeight="90.0" prefHeight="150.0" promptText="Aquí aparecerá la información de la entrada vendida" styleClass="tiquete" VBox.vgrow="ALWAYS" />
+                        </VBox>
+                     </content>
+                  </ScrollPane>
                </children>
             </VBox>
 

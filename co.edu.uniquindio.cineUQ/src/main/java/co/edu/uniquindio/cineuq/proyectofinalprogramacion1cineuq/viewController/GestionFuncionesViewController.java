@@ -1,10 +1,11 @@
 package co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.viewController;
 
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.controller.Conversor;
+import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Formato;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Funcion;
+import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Idioma;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Pelicula;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Sala;
-import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Venta;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.exceptions.CinemaException;
 import javafx.beans.property.SimpleStringProperty;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.controller.GestionFuncionesController;
@@ -16,13 +17,14 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 
-import java.util.List;
 
 public class GestionFuncionesViewController extends BarraSuperiorViewController {
 
     @FXML private AnchorPane rootPane;
     @FXML private TextField txtCodigo;
     @FXML private ComboBox<Pelicula> cbPelicula;
+    @FXML private ComboBox<Formato> cbFormato;
+    @FXML private ComboBox<Idioma> cbIdioma;
     @FXML private ComboBox<Sala> cbSala;
     @FXML private DatePicker dpFecha;
     @FXML private TextField txtHora;
@@ -46,10 +48,11 @@ public class GestionFuncionesViewController extends BarraSuperiorViewController 
         // el sistema muestra el error correspondiente (validación del enunciado).
         cbPelicula.getItems().setAll(gestionFuncionesController.obtenerPeliculas());
         cbSala.getItems().setAll(gestionFuncionesController.obtenerSalas());
+        cbIdioma.getItems().setAll(Idioma.values());
 
         colCodigo.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getCodigo()));
         colPelicula.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getPelicula().getNombre()));
-        colFormato.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getPelicula().getFormato().toString()));
+        colFormato.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().describirFormatoIdioma()));
         colSala.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getSala().getNombre()));
         colFecha.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getFecha().toString()));
         colHora.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getHora().toString()));
@@ -65,12 +68,21 @@ public class GestionFuncionesViewController extends BarraSuperiorViewController 
     private void onProgramar() {
         try {
             gestionFuncionesController.programarFuncion(txtCodigo.getText(), cbPelicula.getValue(), cbSala.getValue(),
-                    dpFecha.getValue(), txtHora.getText(), txtValorBase.getText());
+                    dpFecha.getValue(), txtHora.getText(), txtValorBase.getText(), cbFormato.getValue(), cbIdioma.getValue());
             Alertas.mostrarInfo("Función programada", "La función se programó correctamente.");
             onLimpiar();
             refrescarTabla();
         } catch (CinemaException e) {
             Alertas.mostrarError("No se pudo programar", e.getMessage());
+        }
+    }
+
+    /** Al elegir la película, el ComboBox de formato muestra solo los formatos de esa película. */
+    @FXML
+    private void onSeleccionarPelicula() {
+        cbFormato.getItems().setAll(gestionFuncionesController.obtenerFormatosDePelicula(cbPelicula.getValue()));
+        if (cbFormato.getItems().size() == 1) {
+            cbFormato.setValue(cbFormato.getItems().get(0));   // si solo hay uno, se elige solo
         }
     }
 
@@ -81,7 +93,9 @@ public class GestionFuncionesViewController extends BarraSuperiorViewController 
         if (funcion != null) {
             txtCodigo.setText(funcion.getCodigo());
             txtCodigo.setDisable(true);   // el código no se cambia
-            cbPelicula.setValue(funcion.getPelicula());
+            cbPelicula.setValue(funcion.getPelicula());   // también recarga los formatos de la película
+            cbFormato.setValue(funcion.getFormato());
+            cbIdioma.setValue(funcion.getIdioma());
             cbSala.setValue(funcion.getSala());
             dpFecha.setValue(funcion.getFecha());
             txtHora.setText(funcion.getHora().toString());
@@ -94,7 +108,7 @@ public class GestionFuncionesViewController extends BarraSuperiorViewController 
     private void onModificarFuncion() {
         try {
             gestionFuncionesController.modificarFuncion(txtCodigo.getText(), cbPelicula.getValue(), cbSala.getValue(),
-                    dpFecha.getValue(), txtHora.getText(), txtValorBase.getText());
+                    dpFecha.getValue(), txtHora.getText(), txtValorBase.getText(), cbFormato.getValue(), cbIdioma.getValue());
             Alertas.mostrarInfo("Función modificada", "Los datos de la función se actualizaron.");
             onLimpiar();
             refrescarTabla();
@@ -119,47 +133,18 @@ public class GestionFuncionesViewController extends BarraSuperiorViewController 
     private void onCancelarFuncion() {
         Funcion funcion = tablaFunciones.getSelectionModel().getSelectedItem();
 
-        // Confirmación: avisa cuántas entradas vendidas se van a cancelar
-        if (funcion != null) {
-            int vendidas = gestionFuncionesController.contarEntradasVendidas(funcion);
-            String aviso = (vendidas == 0)
-                    ? "La función " + funcion.getCodigo() + " no tiene entradas vendidas."
-                    : "La función " + funcion.getCodigo() + " tiene " + vendidas
-                      + " entrada(s) vendida(s) que también se cancelarán y habrá que devolver el dinero.";
-            if (!Alertas.confirmar("Cancelar función", aviso + "\n\n¿Seguro que desea cancelarla?")) {
-                return;
-            }
-        }
-
-        try {
-            List<Venta> canceladas = gestionFuncionesController.cancelarFuncion(funcion);
-            if (canceladas.isEmpty()) {
-                Alertas.mostrarInfo("Función cancelada", "La función se canceló. No tenía entradas vendidas.");
-            } else {
-                // Lista de reembolsos: a quién contactar y cuánto devolverle
-                Alertas.mostrarLista("Función cancelada - reembolsos",
-                        "La función se canceló. Estos clientes deben recibir la devolución de su dinero:",
-                        gestionFuncionesController.generarReembolsos(funcion, canceladas));
-            }
-            refrescarTabla();
-        } catch (CinemaException e) {
-            Alertas.mostrarError("No se pudo cancelar", e.getMessage());
-        }
-    }
-
-    @FXML
-    private void onEliminarFuncion() {
-        Funcion funcion = tablaFunciones.getSelectionModel().getSelectedItem();
-        if (funcion != null && !Alertas.confirmar("Eliminar función",
-                "¿Seguro que desea eliminar la función " + funcion.getCodigo() + "? Esta acción no se puede deshacer.")) {
+        if (funcion != null && !Alertas.confirmar("Cancelar función",
+                "¿Seguro que desea cancelar la función " + funcion.getCodigo() + "?\n\n"
+                + "La función no se borra: queda en el historial con estado CANCELADA.")) {
             return;
         }
         try {
-            gestionFuncionesController.eliminarFuncion(funcion);
-            Alertas.mostrarInfo("Función eliminada", "La función se eliminó correctamente.");
+            gestionFuncionesController.cancelarFuncion(funcion);
+            Alertas.mostrarInfo("Función cancelada", "La función " + funcion.getCodigo()
+                    + " quedó CANCELADA y se conserva en el historial.");
             refrescarTabla();
         } catch (CinemaException e) {
-            Alertas.mostrarError("No se pudo eliminar", e.getMessage());
+            Alertas.mostrarError("No se pudo cancelar", e.getMessage());
         }
     }
 
@@ -169,6 +154,9 @@ public class GestionFuncionesViewController extends BarraSuperiorViewController 
         txtCodigo.setDisable(false);
         tablaFunciones.getSelectionModel().clearSelection();
         cbPelicula.setValue(null);
+        cbFormato.getItems().clear();
+        cbFormato.setValue(null);
+        cbIdioma.setValue(null);
         cbSala.setValue(null);
         dpFecha.setValue(null);
         txtHora.clear();

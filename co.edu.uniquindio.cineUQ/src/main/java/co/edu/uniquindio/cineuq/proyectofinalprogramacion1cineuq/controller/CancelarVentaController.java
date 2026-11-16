@@ -18,12 +18,22 @@ public class CancelarVentaController {
         cine = ModelFactoryController.getInstance().getCine();
     }
 
-    public void cancelarVenta(String codigoVenta) throws CinemaException {
+    /** Cancela la venta y devuelve el mensaje del reembolso para mostrarlo. */
+    public String cancelarVenta(String codigoVenta) throws CinemaException {
         if (codigoVenta == null || codigoVenta.trim().isEmpty()) {
             throw new DatoInvalidoException("Escriba el código de la venta o selecciónela en la tabla.");
         }
-        cine.cancelarVenta(codigoVenta.trim().toUpperCase());
+        String codigo = codigoVenta.trim().toUpperCase();
+        cine.cancelarVenta(codigo);
         ModelFactoryController.getInstance().guardar();   // persistencia
+
+        Venta venta = cine.buscarVenta(codigo);
+        String mensaje = "La venta se canceló y el asiento quedó disponible.";
+        if (venta.getPago() != null) {
+            mensaje += "\nSe reembolsaron " + Conversor.aPesos(venta.getValorPagado())
+                    + " a la tarjeta " + venta.getPago().describir() + ".";
+        }
+        return mensaje;
     }
 
     public List<Venta> obtenerVentas() {

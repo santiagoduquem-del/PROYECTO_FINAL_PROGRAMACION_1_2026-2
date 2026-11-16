@@ -21,7 +21,8 @@ public class Pelicula implements Habilitable, ContadorEntradas, Serializable {
     private Genero genero;
     private int duracionMinutos;
     private Clasificacion clasificacion;
-    private Formato formato;
+    private List<Formato> formatos;   // formatos en que se puede proyectar (2D, IMAX...)
+    private Formato formato;          // SOLO de la versión anterior (un formato por película); ver getFormatos()
     private int anioEstreno;   // 0 = sin dato (películas guardadas antes de existir este atributo)
     private EstadoPelicula estado;
     private List<Funcion> listFunciones;
@@ -31,14 +32,19 @@ public class Pelicula implements Habilitable, ContadorEntradas, Serializable {
     private String rutaCaratula;
     private String rutaBanner;
 
+    // Información que escribe el administrador (se muestra en el detalle de la película)
+    private String sinopsis;
+    private String elenco;     // actores principales, ej.: "Robert Pattinson, Zoë Kravitz"
+    private String estudio;    // ej.: "Warner Bros. Pictures"
+
     public Pelicula(String codigo, String nombre, Genero genero, int duracionMinutos,
-                    Clasificacion clasificacion, Formato formato, int anioEstreno, EstadoPelicula estado) {
+                    Clasificacion clasificacion, List<Formato> formatos, int anioEstreno, EstadoPelicula estado) {
         this.codigo = codigo;
         this.nombre = nombre;
         this.genero = genero;
         this.duracionMinutos = duracionMinutos;
         this.clasificacion = clasificacion;
-        this.formato = formato;
+        this.formatos = new ArrayList<>(formatos);
         this.anioEstreno = anioEstreno;
         this.estado = estado;
         this.listFunciones = new ArrayList<>();
@@ -116,12 +122,38 @@ public class Pelicula implements Habilitable, ContadorEntradas, Serializable {
         this.clasificacion = clasificacion;
     }
 
-    public Formato getFormato() {
-        return formato;
+    /**
+     * Formatos en que está disponible la película.
+     * Datos guardados con la versión anterior (un solo formato): se pasa ese formato a la lista.
+     */
+    public List<Formato> getFormatos() {
+        if (formatos == null) {
+            formatos = new ArrayList<>();
+            if (formato != null) {
+                formatos.add(formato);
+            }
+        }
+        return formatos;
     }
 
-    public void setFormato(Formato formato) {
-        this.formato = formato;
+    public void setFormatos(List<Formato> formatos) {
+        this.formatos = new ArrayList<>(formatos);
+    }
+
+    public boolean tieneFormato(Formato formato) {
+        return getFormatos().contains(formato);
+    }
+
+    /** Texto con todos los formatos, ej.: "2D · IMAX · 4DX". */
+    public String describirFormatos() {
+        String texto = "";
+        for (Formato f : getFormatos()) {
+            if (!texto.isEmpty()) {
+                texto += " · ";
+            }
+            texto += f.getNombre();
+        }
+        return texto.isEmpty() ? "Sin formato" : texto;
     }
 
     public int getAnioEstreno() {
@@ -180,5 +212,30 @@ public class Pelicula implements Habilitable, ContadorEntradas, Serializable {
     @Override
     public String toString() {
         return nombre + " (" + codigo + ")";
+    }
+
+    // Las películas guardadas antes de existir estos datos los tienen en null: se devuelve texto vacío
+    public String getSinopsis() {
+        return (sinopsis == null) ? "" : sinopsis;
+    }
+
+    public void setSinopsis(String sinopsis) {
+        this.sinopsis = sinopsis;
+    }
+
+    public String getElenco() {
+        return (elenco == null) ? "" : elenco;
+    }
+
+    public void setElenco(String elenco) {
+        this.elenco = elenco;
+    }
+
+    public String getEstudio() {
+        return (estudio == null) ? "" : estudio;
+    }
+
+    public void setEstudio(String estudio) {
+        this.estudio = estudio;
     }
 }

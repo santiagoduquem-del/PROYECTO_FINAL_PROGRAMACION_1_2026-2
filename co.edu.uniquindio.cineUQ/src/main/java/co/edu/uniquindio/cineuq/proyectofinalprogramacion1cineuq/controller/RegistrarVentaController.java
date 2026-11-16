@@ -23,6 +23,16 @@ public class RegistrarVentaController {
         cine = modelFactory.getCine();
     }
 
+    /**
+     * Función elegida en la pantalla de Horarios (o null si se abrió la venta directamente).
+     * Se "toma" una sola vez: después se borra para que la próxima venta empiece vacía.
+     */
+    public Funcion tomarFuncionElegida() {
+        Funcion funcion = modelFactory.getFuncionParaVenta();
+        modelFactory.setFuncionParaVenta(null);
+        return funcion;
+    }
+
     public List<Pelicula> obtenerPeliculasDisponibles() {
         return cine.consultarPeliculasDisponibles();
     }
@@ -156,17 +166,24 @@ public class RegistrarVentaController {
     // ---------------- Venta ----------------
 
     /**
-     * Registra la compra: una venta por cada asiento elegido, todas con el mismo tipo de entrada.
-     * Antes de vender revisa que TODOS los asientos estén libres, para no vender la compra a medias.
-     * El operador es el empleado que inició sesión. Devuelve las ventas para mostrar el tiquete.
+     * Revisa que la compra esté completa ANTES de abrir la ventana de pago,
+     * para no cobrar una compra que después no se puede registrar.
      */
-    public List<Venta> venderEntradas(Funcion funcion, List<Asiento> asientos, Cliente cliente,
-                                      TipoEntrada tipoEntrada) throws CinemaException {
+    public void validarCompra(Funcion funcion, List<Asiento> asientos, Cliente cliente,
+                              TipoEntrada tipoEntrada) throws CinemaException {
         if (funcion == null) {
             throw new DatoInvalidoException("Debe seleccionar la película y la función.");
         }
         if (cliente == null) {
             throw new DatoInvalidoException("Debe seleccionar el cliente.");
+        }
+        if (tipoEntrada == null) {
+            throw new DatoInvalidoException("Debe seleccionar el tipo de entrada.");
+        }
+        if (!cine.esTipoEntradaPermitido(cliente, tipoEntrada)) {
+            throw new DatoInvalidoException("El cliente " + cliente.getNombre() + " está registrado como "
+                    + cliente.getTipoCliente().getDescripcion() + ". Solo puede comprar entrada General o "
+                    + cliente.getTipoCliente().getDescripcion() + ".");
         }
         if (asientos == null || asientos.isEmpty()) {
             throw new DatoInvalidoException("Debe seleccionar al menos un asiento en el mapa de la sala.");
@@ -175,6 +192,37 @@ public class RegistrarVentaController {
             if (!asiento.estaDisponible()) {
                 throw new AsientoOcupadoException(asiento.getCodigo());
             }
+        }
+    }
+
+    /** Total de la compra: (valor de una entrada x cantidad de asientos) + combos. */
+    public double calcularTotal(Funcion funcion, List<Asiento> asientos, Cliente cliente, TipoEntrada tipoEntrada) {
+        return calcularValorEntrada(tipoEntrada, cliente, funcion) * asientos.size() + calcularValorCombos(cliente);
+    }
+
+    /** Deja listo el total y el cliente para la ventana de pago. */
+    public void prepararPago(double total, Cliente cliente) {
+        modelFactory.setTotalAPagar(total);
+        modelFactory.setClienteEnPago(cliente);
+        modelFactory.setPagoRealizado(null);
+    }
+
+    /** Pago aprobado en la ventana de pago, o null si el usuario cerró sin pagar. Se toma una sola vez. */
+    public Pago tomarPagoRealizado() {
+        Pago pago = modelFactory.getPagoRealizado();
+        modelFactory.setPagoRealizado(null);
+        return pago;
+    }
+
+    /**
+     * Registra la compra ya pagada: una venta por cada asiento elegido, todas con el mismo tipo de entrada
+     * y el mismo pago. El operador es el empleado que inició sesión. Devuelve las ventas para el tiquete.
+     */
+    public List<Venta> venderEntradas(Funcion funcion, List<Asiento> asientos, Cliente cliente,
+                                      TipoEntrada tipoEntrada, Pago pago) throws CinemaException {
+        validarCompra(funcion, asientos, cliente, tipoEntrada);
+        if (pago == null) {
+            throw new DatoInvalidoException("La compra no se ha pagado.");
         }
 
         Operador operador = null;
@@ -188,6 +236,7 @@ public class RegistrarVentaController {
             List<Combo> combosDeEstaVenta = (i == 0) ? modelFactory.getCombosSeleccionados() : new ArrayList<>();
             Venta venta = cine.venderEntrada(funcion.getCodigo(), asientos.get(i).getCodigo(),
                     cliente.getIdentificacion(), tipoEntrada, combosDeEstaVenta, operador);
+            venta.setPago(pago);   // todas las entradas de la compra comparten el pago
             ventas.add(venta);
         }
 
@@ -209,7 +258,8 @@ public class RegistrarVentaController {
                 + "Compra de " + ventas.size() + " entradas\n"
                 + "Película:   " + funcion.getPelicula().getNombre()
                 + (funcion.getPelicula().getAnioEstreno() > 0 ? " (" + funcion.getPelicula().getAnioEstreno() + ")" : "") + "\n"
-                + "Formato:    " + funcion.getPelicula().getFormato() + "\n"
+                + "Formato:    " + funcion.getFormato() + "\n"
+                + "Idioma:     " + funcion.getIdioma() + "\n"
                 + "Sala:       " + funcion.getSala().getNombre() + "\n"
                 + "Fecha:      " + funcion.getFecha() + "  " + funcion.getHora() + "\n"
                 + "Cliente:    " + cliente.getNombre() + "  (Plan " + cliente.getPlan().getNombre() + ")\n"
@@ -240,8 +290,11 @@ public class RegistrarVentaController {
             texto += "Total combos: " + Conversor.aPesos(primera.getValorCombos()) + "\n";
         }
 
-        texto += "TOTAL PAGADO: " + Conversor.aPesos(total) + "\n"
-                + "==============================";
+        texto += "TOTAL PAGADO: " + Conversor.aPesos(total) + "\n";
+        if (primera.getPago() != null) {
+            texto += primera.getPago().generarComprobante();
+        }
+        texto += "==============================";
         return texto;
     }
 }
