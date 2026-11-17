@@ -21,7 +21,7 @@ public interface GestionCombos {
 
     List<Combo> consultarCombosDisponibles();
 
-    void modificarCombo(String codigo, String nombre, String descripcion, double precio)
+    void modificarCombo(String codigo, String nombre, String descripcion, double precio, boolean exclusivoVipBistro)
             throws ComboNoEncontradoException, DatoInvalidoException;
 
     void habilitarCombo(String codigo) throws ComboNoEncontradoException;

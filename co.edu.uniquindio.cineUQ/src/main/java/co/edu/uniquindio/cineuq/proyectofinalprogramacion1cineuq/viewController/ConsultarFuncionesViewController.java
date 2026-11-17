@@ -73,8 +73,8 @@ public class ConsultarFuncionesViewController extends BarraSuperiorViewControlle
 
     /** Encabezado de la película y, debajo, sus horarios agrupados por día. */
     private VBox crearBloquePelicula(Pelicula pelicula) {
-        VBox bloque = new VBox(44);
-        bloque.getStyleClass().add("panel");
+        VBox bloque = new VBox(44);   // espacio entre el encabezado y cada día
+        bloque.getStyleClass().add("panel");   // cada película en su propia tarjeta (estilo de gestion.css)
         bloque.getChildren().add(crearEncabezadoPelicula(pelicula));
 
         List<Funcion> funciones = consultarFuncionesController.obtenerFuncionesProximas(pelicula);
@@ -140,7 +140,7 @@ public class ConsultarFuncionesViewController extends BarraSuperiorViewControlle
                 + " -fx-border-color: transparent transparent #5a5a5a transparent; -fx-border-width: 0 0 2 0;"
                 + " -fx-padding: 0 0 8 0;");
 
-        VBox bloque = new VBox(30, titulo);
+        VBox bloque = new VBox(30, titulo);   // espacio entre el título del día y cada formato
 
         // Se agrupan las funciones que tienen el mismo formato e idioma (ej.: IMAX · Subtitulada)
         List<String> gruposVistos = new ArrayList<>();
@@ -185,12 +185,12 @@ public class ConsultarFuncionesViewController extends BarraSuperiorViewControlle
         HBox encabezado = new HBox(18, crearLogoFormato(formato), lblIdioma);
         encabezado.setAlignment(Pos.CENTER_LEFT);
 
-        FlowPane horas = new FlowPane(40, 24);
+        FlowPane horas = new FlowPane(40, 24);   // (horizontal, vertical) entre botones de hora
         for (Funcion funcion : funciones) {
             horas.getChildren().add(crearBotonHora(funcion));
         }
 
-        VBox grupo = new VBox(20, encabezado, horas);
+        VBox grupo = new VBox(20, encabezado, horas);   // entre el logo y los botones
         grupo.setStyle("-fx-padding: 0 0 0 4;");
         return grupo;
     }
@@ -218,7 +218,7 @@ public class ConsultarFuncionesViewController extends BarraSuperiorViewControlle
             Navegador.irA(rootPane, "RegistrarVenta.fxml");
         });
 
-        VBox caja = new VBox(8, boton, detalle);
+        VBox caja = new VBox(8, boton, detalle);   // entre el botón y "Sala · libres"
         caja.setAlignment(Pos.CENTER);
         return caja;
     }

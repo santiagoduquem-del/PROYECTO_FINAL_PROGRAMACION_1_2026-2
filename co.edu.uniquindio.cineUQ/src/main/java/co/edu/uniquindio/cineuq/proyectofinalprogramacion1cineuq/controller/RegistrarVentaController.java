@@ -78,6 +78,30 @@ public class RegistrarVentaController {
         return modelFactory.getCombosSeleccionados();
     }
 
+    /** Antes de abrir la ventana de combos: se le dice qué función es, para mostrar solo los que aplican. */
+    public void prepararCombos(Funcion funcion) {
+        modelFactory.setFuncionEnCombos(funcion);
+    }
+
+    /**
+     * Si se cambia a una función que no es VIP Bistró, se quitan los combos exclusivos ya elegidos.
+     * Devuelve true si se quitó alguno (para avisarle al operador).
+     */
+    public boolean quitarCombosNoPermitidos(Funcion funcion) {
+        if (funcion == null) {
+            return false;
+        }
+        List<Combo> elegidos = modelFactory.getCombosSeleccionados();
+        boolean seQuito = false;
+        for (int i = elegidos.size() - 1; i >= 0; i--) {   // de atrás hacia adelante para poder borrar
+            if (!elegidos.get(i).sePuedeVenderEn(funcion.getFormato())) {
+                elegidos.remove(i);
+                seQuito = true;
+            }
+        }
+        return seQuito;
+    }
+
     public void limpiarCombos() {
         modelFactory.getCombosSeleccionados().clear();
     }
@@ -191,6 +215,12 @@ public class RegistrarVentaController {
         for (Asiento asiento : asientos) {
             if (!asiento.estaDisponible()) {
                 throw new AsientoOcupadoException(asiento.getCodigo());
+            }
+        }
+        for (Combo combo : modelFactory.getCombosSeleccionados()) {
+            if (!combo.sePuedeVenderEn(funcion.getFormato())) {
+                throw new DatoInvalidoException("El combo " + combo.getNombre()
+                        + " es exclusivo de las funciones VIP Bistró. Quítelo en Elegir combos.");
             }
         }
     }

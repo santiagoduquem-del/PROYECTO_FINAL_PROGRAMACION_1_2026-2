@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
@@ -14,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 /**
@@ -43,6 +45,10 @@ public class CombosViewController {
         for (Combo combo : combosController.obtenerCombosDisponibles()) {
             contenedorCombos.getChildren().add(crearTarjeta(combo));
         }
+        actualizarSubtotal();
+    }
+
+    private void actualizarSubtotal() {
         lblSubtotal.setText("Subtotal combos: " + Conversor.aPesos(combosController.calcularSubtotal()));
     }
 
@@ -50,14 +56,26 @@ public class CombosViewController {
     private VBox crearTarjeta(Combo combo) {
         Label sinImagen = new Label("Sin foto");
         sinImagen.getStyleClass().add("sin-imagen");
+        // Fondo: la misma foto, recortada para llenar todo el recuadro, desenfocada y oscura
+        ImageView fondo = new ImageView();
+        fondo.setFitWidth(410);
+        fondo.setFitHeight(280);
+        fondo.setPreserveRatio(true);
+        Imagenes.mostrar(fondo, combo.getRutaImagen());
+        fondo.setEffect(new GaussianBlur(30));
+        fondo.setOpacity(0.45);
+
+        // Encima: la foto completa, sin recortar (si es vertical o cuadrada, el fondo llena los lados)
         ImageView foto = new ImageView();
         foto.setFitWidth(410);
         foto.setFitHeight(280);
         foto.setPreserveRatio(true);
-        Imagenes.mostrar(foto, combo.getRutaImagen());
-        StackPane marco = new StackPane(sinImagen, foto);
+        Imagenes.mostrarSinRecortar(foto, combo.getRutaImagen());
+
+        StackPane marco = new StackPane(sinImagen, fondo, foto);
         marco.getStyleClass().add("marco-imagen");
         marco.setPrefHeight(280);
+        marco.setClip(new Rectangle(410, 280));   // el desenfoque no se sale del recuadro
 
         Label nombre = new Label(combo.getNombre());
         nombre.getStyleClass().add("nombre-combo");
@@ -71,27 +89,36 @@ public class CombosViewController {
         precio.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(precio, Priority.ALWAYS);
 
+        Label cantidad = new Label(String.valueOf(combosController.contarCombo(combo)));
+        cantidad.getStyleClass().add("cantidad-combo");
+
+        // Con − y + solo se actualizan la cantidad de esta tarjeta y el subtotal.
+        // (Si se volvieran a dibujar todas las tarjetas, el scroll saltaría hasta arriba.)
         Button quitar = new Button("−");
         quitar.getStyleClass().add("boton-cantidad");
         quitar.setOnAction(e -> {
             combosController.quitarCombo(combo);
-            dibujarTarjetas();
+            cantidad.setText(String.valueOf(combosController.contarCombo(combo)));
+            actualizarSubtotal();
         });
-
-        Label cantidad = new Label(String.valueOf(combosController.contarCombo(combo)));
-        cantidad.getStyleClass().add("cantidad-combo");
 
         Button agregar = new Button("+");
         agregar.getStyleClass().add("boton-cantidad");
         agregar.setOnAction(e -> {
             combosController.agregarCombo(combo);
-            dibujarTarjetas();
+            cantidad.setText(String.valueOf(combosController.contarCombo(combo)));
+            actualizarSubtotal();
         });
 
         HBox filaPrecio = new HBox(10, precio, quitar, cantidad, agregar);
         filaPrecio.setAlignment(Pos.CENTER_LEFT);
 
         VBox tarjeta = new VBox(8, marco, nombre, contenido, filaPrecio);
+        if (combo.isExclusivoVipBistro()) {
+            Label exclusivo = new Label("Exclusivo VIP Bistró");
+            exclusivo.setStyle("-fx-text-fill: #d4af37; -fx-font-weight: bold; -fx-font-size: 14px;");
+            tarjeta.getChildren().add(1, exclusivo);   // debajo de la foto
+        }
         tarjeta.getStyleClass().add("tarjeta-combo");
         tarjeta.setPrefWidth(440);   // 3 tarjetas por fila
         return tarjeta;

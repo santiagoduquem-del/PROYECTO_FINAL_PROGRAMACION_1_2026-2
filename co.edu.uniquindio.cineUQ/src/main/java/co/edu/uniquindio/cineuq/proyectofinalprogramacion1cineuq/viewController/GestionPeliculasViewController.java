@@ -209,6 +209,17 @@ public class GestionPeliculasViewController extends BarraSuperiorViewController 
         tablaPeliculas.getSelectionModel().clearSelection();
     }
 
+    /** Abre las secciones del detalle de la película seleccionada en la tabla. */
+    @FXML
+    private void onGestionarSecciones() {
+        try {
+            gestionPeliculasController.prepararSecciones(txtCodigo.getText());
+            Navegador.irA(rootPane, "GestionSecciones.fxml");
+        } catch (CinemaException e) {
+            Alertas.mostrarError("Secciones del detalle", e.getMessage());
+        }
+    }
+
     @FXML
     private void onVolver() {
         Navegador.irA(rootPane, "MenuAdministrador.fxml");

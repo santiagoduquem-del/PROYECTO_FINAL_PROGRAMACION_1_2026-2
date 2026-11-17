@@ -16,7 +16,7 @@ public class MenuOperadorViewController extends BarraSuperiorViewController {
      */
     @FXML
     private void onGenerarVenta() {
-        Navegador.irA(rootPane, "ConsultarPeliculas.fxml");
+        Navegador.irA(rootPane, "RegistrarVenta.fxml");
     }
 
     @FXML

@@ -100,6 +100,10 @@ public class RegistrarVentaViewController extends BarraSuperiorViewController {
 
     @FXML
     private void onSeleccionarFuncion() {
+        if (registrarVentaController.quitarCombosNoPermitidos(cbFuncion.getValue())) {
+            Alertas.mostrarInfo("Combos quitados", "Se quitaron los combos exclusivos de VIP Bistró, "
+                    + "porque la función elegida no es VIP Bistró.");
+        }
         asientosSeleccionados.clear();
         dibujarMapa();
         actualizarValor();   // el valor base de la función cambia el precio
@@ -151,6 +155,7 @@ public class RegistrarVentaViewController extends BarraSuperiorViewController {
     /** Abre la ventana de combos; al cerrarla se actualiza el resumen y el total. */
     @FXML
     private void onElegirCombos() {
+        registrarVentaController.prepararCombos(cbFuncion.getValue());   // para mostrar los combos de esa función
         Navegador.abrirVentana(rootPane, "Combos.fxml", "Combos");
         actualizarValor();
     }

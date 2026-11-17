@@ -185,6 +185,74 @@ public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
         pelicula.setEstudio(estudio == null ? "" : estudio.trim());
     }
 
+    // ---------------- Secciones del detalle de la película ----------------
+
+    /** Una sección necesita al menos título o texto (la etiqueta y la foto son opcionales). */
+    private void validarSeccion(String titulo, String texto) throws DatoInvalidoException {
+        boolean sinTitulo = (titulo == null || titulo.isBlank());
+        boolean sinTexto = (texto == null || texto.isBlank());
+        if (sinTitulo && sinTexto) {
+            throw new DatoInvalidoException("La sección necesita al menos un título o un texto.");
+        }
+    }
+
+    /** Revisa que la posición exista en la lista de secciones de la película (0 = la primera). */
+    private void validarPosicionSeccion(Pelicula pelicula, int posicion) throws DatoInvalidoException {
+        if (posicion < 0 || posicion >= pelicula.getListSecciones().size()) {
+            throw new DatoInvalidoException("Seleccione una sección de la tabla.");
+        }
+    }
+
+    private String limpiar(String texto) {
+        return (texto == null) ? "" : texto.trim();
+    }
+
+    /** Agrega la sección al final de la lista de la película. */
+    public void agregarSeccionPelicula(String codigoPelicula, String etiqueta, String titulo, String texto,
+                                       String rutaImagen) throws PeliculaNoEncontradaException, DatoInvalidoException {
+        Pelicula pelicula = buscarPelicula(codigoPelicula);
+        validarSeccion(titulo, texto);
+        pelicula.getListSecciones().add(new SeccionPelicula(limpiar(etiqueta), limpiar(titulo), limpiar(texto), rutaImagen));
+    }
+
+    public void modificarSeccionPelicula(String codigoPelicula, int posicion, String etiqueta, String titulo,
+                                         String texto, String rutaImagen)
+            throws PeliculaNoEncontradaException, DatoInvalidoException {
+        Pelicula pelicula = buscarPelicula(codigoPelicula);
+        validarPosicionSeccion(pelicula, posicion);
+        validarSeccion(titulo, texto);
+        SeccionPelicula seccion = pelicula.getListSecciones().get(posicion);
+        seccion.setEtiqueta(limpiar(etiqueta));
+        seccion.setTitulo(limpiar(titulo));
+        seccion.setTexto(limpiar(texto));
+        seccion.setRutaImagen(rutaImagen);
+    }
+
+    public void eliminarSeccionPelicula(String codigoPelicula, int posicion)
+            throws PeliculaNoEncontradaException, DatoInvalidoException {
+        Pelicula pelicula = buscarPelicula(codigoPelicula);
+        validarPosicionSeccion(pelicula, posicion);
+        pelicula.getListSecciones().remove(posicion);
+    }
+
+    /**
+     * Cambia el orden de una sección: desplazamiento -1 = la sube un puesto, +1 = la baja.
+     * Devuelve la nueva posición.
+     */
+    public int moverSeccionPelicula(String codigoPelicula, int posicion, int desplazamiento)
+            throws PeliculaNoEncontradaException, DatoInvalidoException {
+        Pelicula pelicula = buscarPelicula(codigoPelicula);
+        validarPosicionSeccion(pelicula, posicion);
+        List<SeccionPelicula> secciones = pelicula.getListSecciones();
+        int nueva = posicion + desplazamiento;
+        if (nueva < 0 || nueva >= secciones.size()) {
+            throw new DatoInvalidoException(desplazamiento < 0 ? "La sección ya es la primera." : "La sección ya es la última.");
+        }
+        SeccionPelicula seccion = secciones.remove(posicion);
+        secciones.add(nueva, seccion);
+        return nueva;
+    }
+
     /** Solo se puede eliminar si nunca se le programaron funciones (si no, se debe deshabilitar). */
     @Override
     public void eliminarPelicula(String codigo) throws PeliculaNoEncontradaException, EliminacionNoPermitidaException {
@@ -736,6 +804,10 @@ public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
                 if (!combo.estaDisponible()) {
                     throw new DatoInvalidoException("El combo " + combo.getNombre() + " ya no está disponible.");
                 }
+                if (!combo.sePuedeVenderEn(funcion.getFormato())) {
+                    throw new DatoInvalidoException("El combo " + combo.getNombre()
+                            + " es exclusivo de las funciones VIP Bistró.");
+                }
             }
         }
 
@@ -958,6 +1030,11 @@ public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
         listCombos.add(new Combo("C4", "Combo Nachos", "Nachos con queso cheddar + gaseosa grande", 24000));
         listCombos.add(new Combo("C5", "Combo Perro Caliente", "Perro caliente + crispetas pequeñas + gaseosa", 26000));
         listCombos.add(new Combo("C6", "Combo Infantil", "Crispetas pequeñas + jugo + juguete sorpresa", 16000));
+
+        // Exclusivo de las salas VIP Bistró (comida servida en la silla)
+        Combo bistro = new Combo("C7", "Combo Bistró Gourmet", "Hamburguesa gourmet + papas a la francesa + limonada de coco", 48000);
+        bistro.setExclusivoVipBistro(true);
+        listCombos.add(bistro);
     }
 
     private void validarDatosCombo(String codigo, String nombre, String descripcion, double precio)
@@ -1012,15 +1089,32 @@ public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
         return disponibles;
     }
 
+    /**
+     * Combos que se pueden ofrecer en una función: los habilitados, y los exclusivos de VIP Bistró
+     * solo si la función es VIP Bistró. Sin función elegida se muestran solo los combos normales.
+     */
+    public List<Combo> consultarCombosParaFuncion(Funcion funcion) {
+        Formato formato = (funcion == null) ? null : funcion.getFormato();
+        List<Combo> combos = new ArrayList<>();
+        for (Combo combo : consultarCombosDisponibles()) {
+            if (combo.sePuedeVenderEn(formato)) {
+                combos.add(combo);
+            }
+        }
+        return combos;
+    }
+
     /** Cambia los datos del combo. Las ventas ya hechas conservan el valor que se pagó. */
     @Override
-    public void modificarCombo(String codigo, String nombre, String descripcion, double precio)
+    public void modificarCombo(String codigo, String nombre, String descripcion, double precio,
+                               boolean exclusivoVipBistro)
             throws ComboNoEncontradoException, DatoInvalidoException {
         Combo combo = buscarCombo(codigo);
         validarDatosCombo(codigo, nombre, descripcion, precio);
         combo.setNombre(nombre.trim());
         combo.setDescripcion(descripcion.trim());
         combo.setPrecio(precio);
+        combo.setExclusivoVipBistro(exclusivoVipBistro);
     }
 
     public void asignarImagenCombo(String codigo, String rutaImagen) throws ComboNoEncontradoException {

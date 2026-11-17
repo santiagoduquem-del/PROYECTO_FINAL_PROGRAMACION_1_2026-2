@@ -11,6 +11,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
+import javafx.geometry.Pos;
+import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.SeccionPelicula;
+import java.util.List;
+import javafx.scene.control.Button;
 
 /**
  * Detalle de una película de la cartelera: banner, carátula, todos sus datos,
@@ -30,6 +37,7 @@ public class DetallePeliculaViewController extends BarraSuperiorViewController {
     @FXML private Label lblSinopsis;
     @FXML private Label lblElenco;
     @FXML private Label lblEstudio;
+    @FXML private VBox contenedorSecciones;
 
     private final DetallePeliculaController detallePeliculaController = new DetallePeliculaController();
 
@@ -57,6 +65,79 @@ public class DetallePeliculaViewController extends BarraSuperiorViewController {
         lblSinopsis.setText(textoOAviso(pelicula.getSinopsis()));
         lblElenco.setText(textoOAviso(pelicula.getElenco()));
         lblEstudio.setText(textoOAviso(pelicula.getEstudio()));
+
+        dibujarSecciones(pelicula);
+    }
+
+    /**
+     * Secciones que puso el administrador, una debajo de otra e intercaladas como en AMC:
+     * la 1.ª texto | foto, la 2.ª foto | texto, la 3.ª texto | foto... Sin secciones no se muestra nada.
+     */
+    private void dibujarSecciones(Pelicula pelicula) {
+        List<SeccionPelicula> secciones = pelicula.getListSecciones();
+        for (int i = 0; i < secciones.size(); i++) {
+            boolean fotoALaDerecha = (i % 2 == 0);   // posiciones pares: foto a la derecha
+            contenedorSecciones.getChildren().add(crearSeccion(secciones.get(i), fotoALaDerecha));
+        }
+    }
+
+    private HBox crearSeccion(SeccionPelicula seccion, boolean fotoALaDerecha) {
+        // Texto: etiqueta pequeña (opcional), título grande y el texto
+        VBox texto = new VBox(16);
+        texto.setAlignment(Pos.CENTER_LEFT);
+        if (!seccion.getEtiqueta().isEmpty()) {
+            Label etiqueta = new Label(seccion.getEtiqueta().toUpperCase());
+            etiqueta.setStyle("-fx-text-fill: white; -fx-font-size: 17px; -fx-font-weight: bold;");
+            texto.getChildren().add(etiqueta);
+        }
+        if (!seccion.getTitulo().isEmpty()) {
+            Label titulo = new Label(seccion.getTitulo());
+            titulo.setStyle("-fx-text-fill: white; -fx-font-size: 42px; -fx-font-weight: bold;");
+            titulo.setWrapText(true);
+            texto.getChildren().add(titulo);
+        }
+        if (!seccion.getTexto().isEmpty()) {
+            Label parrafo = new Label(seccion.getTexto());
+            parrafo.setStyle("-fx-text-fill: #dddddd; -fx-font-size: 22px; -fx-line-spacing: 6;");
+            parrafo.setWrapText(true);
+            texto.getChildren().add(parrafo);
+        }
+
+        // Botón pequeño para comprar, como en AMC: lleva a los horarios de esta película
+        Button comprar = new Button("Comprar entradas");
+        comprar.getStyleClass().add("boton-principal");   // rojo y redondeado (gestion.css)
+        comprar.setStyle("-fx-padding: 0 28 0 28;");
+        comprar.setOnAction(e -> onComprarEntradas());
+        texto.getChildren().add(comprar);
+
+        HBox fila = new HBox(70);
+        fila.setAlignment(Pos.CENTER);
+        if (!seccion.tieneImagen()) {
+            texto.setMaxWidth(1200);   // sin foto, el texto ocupa más ancho
+            fila.getChildren().add(texto);
+            return fila;
+        }
+
+        texto.setPrefWidth(760);
+        texto.setMaxWidth(760);
+
+        // Foto: llena su recuadro (se recorta lo que sobre) con las esquinas redondeadas
+        ImageView foto = new ImageView();
+        foto.setFitWidth(860);
+        foto.setFitHeight(540);
+        foto.setPreserveRatio(true);
+        Imagenes.mostrar(foto, seccion.getRutaImagen());
+        Rectangle esquinas = new Rectangle(860, 540);
+        esquinas.setArcWidth(30);
+        esquinas.setArcHeight(30);
+        foto.setClip(esquinas);
+
+        if (fotoALaDerecha) {
+            fila.getChildren().addAll(texto, foto);
+        } else {
+            fila.getChildren().addAll(foto, texto);
+        }
+        return fila;
     }
 
     /**

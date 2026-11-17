@@ -18,17 +18,18 @@ public class GestionCombosController {
     }
 
     public void registrarCombo(String codigo, String nombre, String descripcion, String precioTexto,
-                               String rutaFoto) throws CinemaException {
+                               boolean exclusivoVipBistro, String rutaFoto) throws CinemaException {
         double precio = Conversor.aDecimal(precioTexto, "precio");
         Combo combo = new Combo(codigo.trim(), nombre.trim(), descripcion.trim(), precio);
+        combo.setExclusivoVipBistro(exclusivoVipBistro);
         cine.registrarCombo(combo);
         guardarFoto(combo.getCodigo(), rutaFoto);
     }
 
     public void modificarCombo(String codigo, String nombre, String descripcion, String precioTexto,
-                               String rutaFoto) throws CinemaException {
+                               boolean exclusivoVipBistro, String rutaFoto) throws CinemaException {
         double precio = Conversor.aDecimal(precioTexto, "precio");
-        cine.modificarCombo(codigo.trim(), nombre, descripcion, precio);
+        cine.modificarCombo(codigo.trim(), nombre, descripcion, precio, exclusivoVipBistro);
         guardarFoto(codigo.trim(), rutaFoto);
     }
 

@@ -6,6 +6,7 @@ import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Combo;
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.exceptions.CinemaException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -24,6 +25,7 @@ public class GestionCombosViewController extends BarraSuperiorViewController {
     @FXML private TextField txtNombre;
     @FXML private TextArea txtDescripcion;
     @FXML private TextField txtPrecio;
+    @FXML private CheckBox chkExclusivoBistro;
     @FXML private ImageView imgCombo;
     @FXML private TableView<Combo> tablaCombos;
     @FXML private TableColumn<Combo, String> colCodigo;
@@ -31,6 +33,7 @@ public class GestionCombosViewController extends BarraSuperiorViewController {
     @FXML private TableColumn<Combo, String> colDescripcion;
     @FXML private TableColumn<Combo, String> colPrecio;
     @FXML private TableColumn<Combo, String> colFoto;
+    @FXML private TableColumn<Combo, String> colSalas;
     @FXML private TableColumn<Combo, String> colEstado;
 
     private final GestionCombosController gestionCombosController = new GestionCombosController();
@@ -45,6 +48,7 @@ public class GestionCombosViewController extends BarraSuperiorViewController {
         colDescripcion.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getDescripcion()));
         colPrecio.setCellValueFactory(c -> new SimpleStringProperty(Conversor.aPesos(c.getValue().getPrecio())));
         colFoto.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getRutaImagen() == null ? "Sin foto" : "Sí"));
+        colSalas.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().isExclusivoVipBistro() ? "Solo VIP Bistró" : "Todas las salas"));
         colEstado.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().estaDisponible() ? "DISPONIBLE" : "NO_DISPONIBLE"));
         refrescarTabla();
     }
@@ -59,6 +63,7 @@ public class GestionCombosViewController extends BarraSuperiorViewController {
             txtNombre.setText(combo.getNombre());
             txtDescripcion.setText(combo.getDescripcion());
             txtPrecio.setText(String.valueOf((long) combo.getPrecio()));
+            chkExclusivoBistro.setSelected(combo.isExclusivoVipBistro());
             rutaFoto = combo.getRutaImagen();
             Imagenes.mostrar(imgCombo, rutaFoto);
         }
@@ -77,7 +82,7 @@ public class GestionCombosViewController extends BarraSuperiorViewController {
     private void onRegistrar() {
         try {
             gestionCombosController.registrarCombo(txtCodigo.getText(), txtNombre.getText(),
-                    txtDescripcion.getText(), txtPrecio.getText(), rutaFoto);
+                    txtDescripcion.getText(), txtPrecio.getText(), chkExclusivoBistro.isSelected(), rutaFoto);
             Alertas.mostrarInfo("Combo registrado", "El combo se registró y ya aparece en la venta.");
             onLimpiar();
             refrescarTabla();
@@ -90,7 +95,7 @@ public class GestionCombosViewController extends BarraSuperiorViewController {
     private void onModificar() {
         try {
             gestionCombosController.modificarCombo(txtCodigo.getText(), txtNombre.getText(),
-                    txtDescripcion.getText(), txtPrecio.getText(), rutaFoto);
+                    txtDescripcion.getText(), txtPrecio.getText(), chkExclusivoBistro.isSelected(), rutaFoto);
             Alertas.mostrarInfo("Combo modificado", "Los datos del combo se actualizaron.");
             refrescarTabla();
         } catch (CinemaException e) {
@@ -143,6 +148,7 @@ public class GestionCombosViewController extends BarraSuperiorViewController {
         txtNombre.clear();
         txtDescripcion.clear();
         txtPrecio.clear();
+        chkExclusivoBistro.setSelected(false);
         rutaFoto = null;
         Imagenes.mostrar(imgCombo, null);
         tablaCombos.getSelectionModel().clearSelection();

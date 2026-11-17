@@ -17,6 +17,14 @@ public class GestionPeliculasController {
         cine = ModelFactoryController.getInstance().getCine();
     }
 
+    /** Antes de abrir Secciones del detalle: se guarda cuál película se va a editar. */
+    public void prepararSecciones(String codigo) throws CinemaException {
+        if (codigo == null || codigo.isBlank()) {
+            throw new DatoInvalidoException("Seleccione en la tabla la película a la que le quiere poner secciones.");
+        }
+        ModelFactoryController.getInstance().setPeliculaSeleccionada(cine.buscarPelicula(codigo.trim()));
+    }
+
     /**
      * rutaCaratula y rutaBanner son la ubicación de las imágenes elegidas por el administrador
      * (pueden ser null si no subió alguna).

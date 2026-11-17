@@ -16,9 +16,10 @@ public class CombosController {
         combosSeleccionados = ModelFactoryController.getInstance().getCombosSeleccionados();
     }
 
-    /** Combos habilitados por el administrador (los que se pueden vender). */
+    /** Combos que se pueden vender en la función elegida (los de VIP Bistró solo en esa sala). */
     public List<Combo> obtenerCombosDisponibles() {
-        return ModelFactoryController.getInstance().getCine().consultarCombosDisponibles();
+        ModelFactoryController modelFactory = ModelFactoryController.getInstance();
+        return modelFactory.getCine().consultarCombosParaFuncion(modelFactory.getFuncionEnCombos());
     }
 
     public void agregarCombo(Combo combo) {

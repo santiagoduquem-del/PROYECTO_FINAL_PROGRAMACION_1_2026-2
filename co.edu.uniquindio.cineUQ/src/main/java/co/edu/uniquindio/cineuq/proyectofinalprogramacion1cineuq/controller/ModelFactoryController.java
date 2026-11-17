@@ -30,6 +30,7 @@ public class ModelFactoryController {
     private Pelicula peliculaSeleccionada;   // la que se eligió en la cartelera
     private Pelicula peliculaHorarios;       // película cuyos horarios se muestran (null = todas)
     private Funcion funcionParaVenta;        // función elegida en Horarios: Generar venta la trae seleccionada
+    private Funcion funcionEnCombos;         // función de la venta, para mostrar los combos que aplican
     private double totalAPagar;              // total de la compra que se va a pagar con tarjeta
     private Cliente clienteEnPago;           // cliente de la compra (para sugerir el titular)
     private Pago pagoRealizado;              // pago aprobado en la ventana de pago (null = no se pagó)
@@ -122,6 +123,14 @@ public class ModelFactoryController {
 
     public void setFuncionParaVenta(Funcion funcionParaVenta) {
         this.funcionParaVenta = funcionParaVenta;
+    }
+
+    public Funcion getFuncionEnCombos() {
+        return funcionEnCombos;
+    }
+
+    public void setFuncionEnCombos(Funcion funcionEnCombos) {
+        this.funcionEnCombos = funcionEnCombos;
     }
 
     public double getTotalAPagar() {

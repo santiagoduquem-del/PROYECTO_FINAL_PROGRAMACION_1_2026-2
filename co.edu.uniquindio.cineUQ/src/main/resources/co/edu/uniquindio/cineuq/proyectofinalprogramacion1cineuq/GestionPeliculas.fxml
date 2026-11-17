@@ -129,6 +129,8 @@
                         <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#onLimpiar" styleClass="boton-secundario" text="Limpiar" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
+                  <!-- Secciones de texto y foto que salen debajo del detalle de la película -->
+                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#onGestionarSecciones" styleClass="boton-secundario" text="Secciones del detalle" />
                   <Label styleClass="etiqueta" text="Para modificar, eliminar, deshabilitar o habilitar: seleccione la película en la tabla." wrapText="true" />
                </children>
             </VBox>

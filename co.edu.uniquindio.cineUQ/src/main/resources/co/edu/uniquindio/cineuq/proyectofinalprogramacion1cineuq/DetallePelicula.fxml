@@ -37,76 +37,91 @@
          </children>
       </Pane>
 
-      <Button layoutX="86.0" layoutY="108.0" mnemonicParsing="false" onAction="#onVolver" styleClass="boton-volver" text="← Volver a la cartelera" />
-
-      <HBox layoutX="86.0" layoutY="160.0" prefHeight="1000.0" prefWidth="1776.0" spacing="30.0">
-         <children>
-            <!-- Película: banner arriba y, debajo, la carátula con los datos -->
-            <VBox prefWidth="1110.0" spacing="26.0" styleClass="panel">
+      <!-- Todo lo de abajo de la barra se desplaza: el detalle y, debajo, las secciones del administrador -->
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" layoutY="100.0" prefHeight="1100.0" prefWidth="1920.0" style="-fx-background: black; -fx-background-color: transparent;">
+         <content>
+            <VBox spacing="12.0">
+               <padding><Insets bottom="80.0" left="86.0" right="44.0" top="8.0" /></padding>
                <children>
-                  <!-- Banner (1050 x 420): se muestra completo, sin recortar -->
-                  <StackPane maxHeight="-Infinity" minHeight="420.0" prefHeight="420.0" prefWidth="1050.0">
+                  <Button mnemonicParsing="false" onAction="#onVolver" styleClass="boton-volver" text="← Volver a la cartelera" />
+
+                  <HBox minHeight="1000.0" prefHeight="1000.0" prefWidth="1776.0" spacing="30.0">
                      <children>
-                        <Label styleClass="sin-imagen" text="Sin banner" />
-                        <ImageView fx:id="imgBanner" fitHeight="420.0" fitWidth="1050.0" preserveRatio="true" />
-                     </children>
-                  </StackPane>
-                  <HBox spacing="30.0">
-                     <children>
-                        <StackPane maxHeight="-Infinity" minHeight="360.0" minWidth="240.0" prefHeight="360.0" prefWidth="240.0" styleClass="marco-imagen">
+                        <!-- Película: banner arriba y, debajo, la carátula con los datos -->
+                        <VBox prefWidth="1110.0" spacing="26.0" styleClass="panel">
                            <children>
-                              <Label styleClass="sin-imagen" text="Sin carátula" />
-                              <ImageView fx:id="imgCaratula" fitHeight="360.0" fitWidth="240.0" preserveRatio="true" />
+                              <!-- Banner (1050 x 420): se muestra completo, sin recortar -->
+                              <StackPane maxHeight="-Infinity" minHeight="420.0" prefHeight="420.0" prefWidth="1050.0">
+                                 <children>
+                                    <Label styleClass="sin-imagen" text="Sin banner" />
+                                    <ImageView fx:id="imgBanner" fitHeight="420.0" fitWidth="1050.0" preserveRatio="true" />
+                                 </children>
+                              </StackPane>
+                              <HBox spacing="30.0">
+                                 <children>
+                                    <StackPane maxHeight="-Infinity" minHeight="360.0" minWidth="240.0" prefHeight="360.0" prefWidth="240.0" styleClass="marco-imagen">
+                                       <children>
+                                          <Label styleClass="sin-imagen" text="Sin carátula" />
+                                          <ImageView fx:id="imgCaratula" fitHeight="360.0" fitWidth="240.0" preserveRatio="true" />
+                                       </children>
+                                    </StackPane>
+                                    <VBox spacing="6.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label fx:id="lblNombre" style="-fx-font-size: 34px;" styleClass="titulo-pelicula" text="-" wrapText="true" />
+                                          <Label styleClass="etiqueta" text="Año de estreno" />
+                                          <Label fx:id="lblAnio" styleClass="dato" text="-" />
+                                          <Label styleClass="etiqueta" text="Género" />
+                                          <Label fx:id="lblGenero" styleClass="dato" text="-" />
+                                          <Label styleClass="etiqueta" text="Duración" />
+                                          <Label fx:id="lblDuracion" styleClass="dato" text="-" />
+                                          <Label styleClass="etiqueta" text="Clasificación" />
+                                          <Label fx:id="lblClasificacion" styleClass="dato" text="-" />
+                                          <Label styleClass="etiqueta" text="Formatos" />
+                                          <!-- Un logo por cada formato de la película (los pone el programa) -->
+                                          <FlowPane fx:id="contenedorFormatos" alignment="CENTER_LEFT" hgap="22.0" vgap="10.0" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
                            </children>
-                        </StackPane>
-                        <VBox spacing="6.0" HBox.hgrow="ALWAYS">
+                        </VBox>
+
+                        <!-- Información de la película (la escribe el administrador) y botón para comprar -->
+                        <VBox spacing="14.0" styleClass="panel" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label fx:id="lblNombre" style="-fx-font-size: 34px;" styleClass="titulo-pelicula" text="-" wrapText="true" />
-                              <Label styleClass="etiqueta" text="Año de estreno" />
-                              <Label fx:id="lblAnio" styleClass="dato" text="-" />
-                              <Label styleClass="etiqueta" text="Género" />
-                              <Label fx:id="lblGenero" styleClass="dato" text="-" />
-                              <Label styleClass="etiqueta" text="Duración" />
-                              <Label fx:id="lblDuracion" styleClass="dato" text="-" />
-                              <Label styleClass="etiqueta" text="Clasificación" />
-                              <Label fx:id="lblClasificacion" styleClass="dato" text="-" />
-                              <Label styleClass="etiqueta" text="Formatos" />
-                              <!-- Un logo por cada formato de la película (los pone el programa) -->
-                              <FlowPane fx:id="contenedorFormatos" alignment="CENTER_LEFT" hgap="22.0" vgap="10.0" />
+                              <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background: #111111; -fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+                                 <content>
+                                    <VBox spacing="10.0">
+                                       <padding><Insets right="12.0" /></padding>
+                                       <children>
+                                          <Label styleClass="titulo-panel" text="Sinopsis" />
+                                          <Label fx:id="lblSinopsis" style="-fx-font-size: 17px; -fx-line-spacing: 4;" styleClass="etiqueta" text="-" wrapText="true" />
+                                          <Label styleClass="titulo-panel" text="Elenco principal">
+                                             <padding><Insets top="14.0" /></padding>
+                                          </Label>
+                                          <Label fx:id="lblElenco" style="-fx-font-size: 17px;" styleClass="etiqueta" text="-" wrapText="true" />
+                                          <Label styleClass="titulo-panel" text="Estudio">
+                                             <padding><Insets top="14.0" /></padding>
+                                          </Label>
+                                          <Label fx:id="lblEstudio" style="-fx-font-size: 17px;" styleClass="etiqueta" text="-" wrapText="true" />
+                                       </children>
+                                    </VBox>
+                                 </content>
+                              </ScrollPane>
+                              <!-- Lleva a los horarios de esta película -->
+                              <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#onComprarEntradas" prefHeight="58.0" style="-fx-font-size: 20px;" styleClass="boton-principal" text="Comprar entradas" />
                            </children>
                         </VBox>
                      </children>
                   </HBox>
-               </children>
-            </VBox>
 
-            <!-- Información de la película (la escribe el administrador) y botón para comprar -->
-            <VBox spacing="14.0" styleClass="panel" HBox.hgrow="ALWAYS">
-               <children>
-                  <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background: #111111; -fx-background-color: transparent;" VBox.vgrow="ALWAYS">
-                     <content>
-                        <VBox spacing="10.0">
-                           <padding><Insets right="12.0" /></padding>
-                           <children>
-                              <Label styleClass="titulo-panel" text="Sinopsis" />
-                              <Label fx:id="lblSinopsis" style="-fx-font-size: 17px; -fx-line-spacing: 4;" styleClass="etiqueta" text="-" wrapText="true" />
-                              <Label styleClass="titulo-panel" text="Elenco principal">
-                                 <padding><Insets top="14.0" /></padding>
-                              </Label>
-                              <Label fx:id="lblElenco" style="-fx-font-size: 17px;" styleClass="etiqueta" text="-" wrapText="true" />
-                              <Label styleClass="titulo-panel" text="Estudio">
-                                 <padding><Insets top="14.0" /></padding>
-                              </Label>
-                              <Label fx:id="lblEstudio" style="-fx-font-size: 17px;" styleClass="etiqueta" text="-" wrapText="true" />
-                           </children>
-                        </VBox>
-                     </content>
-                  </ScrollPane>
-                  <!-- Lleva a los horarios de esta película -->
-                  <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#onComprarEntradas" prefHeight="58.0" style="-fx-font-size: 20px;" styleClass="boton-principal" text="Comprar entradas" />
+                  <!-- Secciones de texto y foto intercaladas (las crea el administrador en Secciones del detalle) -->
+                  <VBox fx:id="contenedorSecciones" spacing="80.0">
+                     <padding><Insets top="70.0" /></padding>
+                  </VBox>
                </children>
             </VBox>
-         </children>
-      </HBox>
+         </content>
+      </ScrollPane>
    </children>
 </AnchorPane>

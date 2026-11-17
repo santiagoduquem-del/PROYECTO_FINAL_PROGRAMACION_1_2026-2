@@ -36,6 +36,7 @@ public class Pelicula implements Habilitable, ContadorEntradas, Serializable {
     private String sinopsis;
     private String elenco;     // actores principales, ej.: "Robert Pattinson, Zoë Kravitz"
     private String estudio;    // ej.: "Warner Bros. Pictures"
+    private List<SeccionPelicula> listSecciones;   // secciones de abajo del detalle (texto + foto intercalados)
 
     public Pelicula(String codigo, String nombre, Genero genero, int duracionMinutos,
                     Clasificacion clasificacion, List<Formato> formatos, int anioEstreno, EstadoPelicula estado) {
@@ -233,6 +234,14 @@ public class Pelicula implements Habilitable, ContadorEntradas, Serializable {
 
     public String getEstudio() {
         return (estudio == null) ? "" : estudio;
+    }
+
+    /** Secciones del detalle. Las películas guardadas antes de esta versión no tenían lista: se crea vacía. */
+    public List<SeccionPelicula> getListSecciones() {
+        if (listSecciones == null) {
+            listSecciones = new ArrayList<>();
+        }
+        return listSecciones;
     }
 
     public void setEstudio(String estudio) {

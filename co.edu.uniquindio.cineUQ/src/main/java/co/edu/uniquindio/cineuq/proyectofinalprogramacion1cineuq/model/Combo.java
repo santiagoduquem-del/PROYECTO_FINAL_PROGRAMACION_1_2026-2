@@ -21,6 +21,7 @@ public class Combo implements Habilitable, Serializable {
     private double precio;
     private String rutaImagen;    // foto del combo (puede ser null)
     private boolean disponible;
+    private boolean exclusivoVipBistro;   // true = solo se vende en funciones VIP Bistró
 
     public Combo(String codigo, String nombre, String descripcion, double precio) {
         this.codigo = codigo;
@@ -79,6 +80,19 @@ public class Combo implements Habilitable, Serializable {
 
     public void setRutaImagen(String rutaImagen) {
         this.rutaImagen = rutaImagen;
+    }
+
+    public boolean isExclusivoVipBistro() {
+        return exclusivoVipBistro;
+    }
+
+    public void setExclusivoVipBistro(boolean exclusivoVipBistro) {
+        this.exclusivoVipBistro = exclusivoVipBistro;
+    }
+
+    /** Un combo normal se vende en cualquier función; uno exclusivo, solo en funciones VIP Bistró. */
+    public boolean sePuedeVenderEn(Formato formato) {
+        return !exclusivoVipBistro || formato == Formato.VIP_BISTRO;
     }
 
     @Override
