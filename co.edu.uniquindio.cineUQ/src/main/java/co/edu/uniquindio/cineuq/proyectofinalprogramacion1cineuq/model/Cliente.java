@@ -1,7 +1,7 @@
 package co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model;
 
 import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.interfaces.RegistroVentas;
-
+import co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model.Persona;
 import java.util.ArrayList;
 import java.util.List;
 

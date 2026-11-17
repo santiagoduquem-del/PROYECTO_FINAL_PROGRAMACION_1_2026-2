@@ -23,7 +23,7 @@ public class SignUpController {
 
     public void prepararRegistro(String nombre, String identificacion, String telefono, String correo,
                                  TipoCliente tipoCliente) throws CinemaException {
-        Cliente cliente = new Cliente(identificacion.trim(), nombre.trim(), telefono.trim(), correo.trim(), tipoCliente);
+        Cliente cliente = new Cliente(identificacion.trim(), "Cliente" + nombre, telefono, correo, tipoCliente);
 
         // Se revisan los datos desde ya (en este paso), no hasta elegir el plan
         cine.validarDatosCliente(cliente);

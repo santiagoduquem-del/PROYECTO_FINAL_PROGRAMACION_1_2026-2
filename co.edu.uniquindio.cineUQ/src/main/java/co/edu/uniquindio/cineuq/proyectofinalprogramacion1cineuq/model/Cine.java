@@ -647,69 +647,12 @@ public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
         throw new EmpleadoNoEncontradoException(identificacion);
     }
 
-    /**
-     * Cambia nombre, usuario y contraseña del empleado.
-     * Si la contraseña llega vacía, se deja la que tenía.
-     */
-    @Override
-    public void modificarEmpleado(String identificacion, String nombre, String usuario, String contrasena)
-            throws EmpleadoNoEncontradoException, UsuarioDuplicadoException, DatoInvalidoException {
-        Empleado empleado = buscarEmpleado(identificacion);
-        validarTexto(nombre, "nombre");
-        validarTexto(usuario, "usuario");
-        for (Empleado otro : listEmpleados) {
-            if (otro != empleado && otro.getUsuario().equals(usuario.trim())) {
-                throw new UsuarioDuplicadoException("el usuario " + usuario.trim());
-            }
-        }
-        empleado.setNombre(nombre.trim());
-        empleado.setUsuario(usuario.trim());
-        if (contrasena != null && !contrasena.isEmpty()) {
-            empleado.setContrasena(contrasena);
-        }
-    }
-
-    /**
-     * Elimina un empleado, salvo que:
-     *  - sea el mismo que tiene la sesión iniciada,
-     *  - sea el último administrador (siempre debe quedar uno),
-     *  - sea un operador con ventas registradas (se necesitan para el historial).
-     */
-    @Override
-    public void eliminarEmpleado(String identificacion, Empleado empleadoActual)
-            throws EmpleadoNoEncontradoException, EliminacionNoPermitidaException {
-        Empleado empleado = buscarEmpleado(identificacion);
-        if (empleado == empleadoActual) {
-            throw new EliminacionNoPermitidaException("No puede eliminar su propia cuenta mientras tiene la sesión iniciada.");
-        }
-        if (empleado instanceof Administrador) {
-            int administradores = 0;
-            for (Empleado e : listEmpleados) {
-                if (e instanceof Administrador) {
-                    administradores++;
-                }
-            }
-            if (administradores == 1) {
-                throw new EliminacionNoPermitidaException("No se puede eliminar el último administrador del sistema.");
-            }
-        }
-        if (empleado instanceof Operador && !((Operador) empleado).getListVentas().isEmpty()) {
-            throw new EliminacionNoPermitidaException("No se puede eliminar el operador " + identificacion
-                    + " porque tiene ventas registradas (se necesitan para el historial).");
-        }
-        listEmpleados.remove(empleado);
-    }
-
-    // =====================================================================
-    // Ventas
-    // =====================================================================
-
     @Override
     public Venta venderEntrada(String codigoFuncion, String codigoAsiento, String identificacionCliente,
                                TipoEntrada tipoEntrada, List<Combo> combos, Operador operador)
             throws FuncionNoEncontradaException, FuncionNoDisponibleException, ClienteNoEncontradoException,
-                   SinAsientosDisponiblesException, AsientoNoEncontradoException, AsientoOcupadoException,
-                   DatoInvalidoException {
+            SinAsientosDisponiblesException, AsientoNoEncontradoException, AsientoOcupadoException,
+            DatoInvalidoException {
 
         if (tipoEntrada == null) {
             throw new DatoInvalidoException("Debe seleccionar el tipo de entrada.");
@@ -837,6 +780,63 @@ public class Cine implements GestionPeliculas, GestionSalas, GestionFunciones,
         return new Pago(tipoTarjeta, franquicia, ultimos, titular.trim(), documentoTitular.trim(),
                 cuotas, total, montoIngresado);
     }
+
+    /**
+     * Cambia nombre, usuario y contraseña del empleado.
+     * Si la contraseña llega vacía, se deja la que tenía.
+     */
+    @Override
+    public void modificarEmpleado(String identificacion, String nombre, String usuario, String contrasena)
+            throws EmpleadoNoEncontradoException, UsuarioDuplicadoException, DatoInvalidoException {
+        Empleado empleado = buscarEmpleado(identificacion);
+        validarTexto(nombre, "nombre");
+        validarTexto(usuario, "usuario");
+        for (Empleado otro : listEmpleados) {
+            if (otro != empleado && otro.getUsuario().equals(usuario.trim())) {
+                throw new UsuarioDuplicadoException("el usuario " + usuario.trim());
+            }
+        }
+        empleado.setNombre(nombre.trim());
+        empleado.setUsuario(usuario.trim());
+        if (contrasena != null && !contrasena.isEmpty()) {
+            empleado.setContrasena(contrasena);
+        }
+    }
+
+    /**
+     * Elimina un empleado, salvo que:
+     *  - sea el mismo que tiene la sesión iniciada,
+     *  - sea el último administrador (siempre debe quedar uno),
+     *  - sea un operador con ventas registradas (se necesitan para el historial).
+     */
+    @Override
+    public void eliminarEmpleado(String identificacion, Empleado empleadoActual)
+            throws EmpleadoNoEncontradoException, EliminacionNoPermitidaException {
+        Empleado empleado = buscarEmpleado(identificacion);
+        if (empleado == empleadoActual) {
+            throw new EliminacionNoPermitidaException("No puede eliminar su propia cuenta mientras tiene la sesión iniciada.");
+        }
+        if (empleado instanceof Administrador) {
+            int administradores = 0;
+            for (Empleado e : listEmpleados) {
+                if (e instanceof Administrador) {
+                    administradores++;
+                }
+            }
+            if (administradores == 1) {
+                throw new EliminacionNoPermitidaException("No se puede eliminar el último administrador del sistema.");
+            }
+        }
+        if (empleado instanceof Operador && !((Operador) empleado).getListVentas().isEmpty()) {
+            throw new EliminacionNoPermitidaException("No se puede eliminar el operador " + identificacion
+                    + " porque tiene ventas registradas (se necesitan para el historial).");
+        }
+        listEmpleados.remove(empleado);
+    }
+    // =====================================================================
+    // Ventas
+
+    // =====================================================================
 
     /** true si el texto tiene solo dígitos (0-9). */
     private boolean esSoloDigitos(String texto) {
