@@ -74,6 +74,7 @@ public class ConsultarFuncionesViewController extends BarraSuperiorViewControlle
     /** Encabezado de la película y, debajo, sus horarios agrupados por día. */
     private VBox crearBloquePelicula(Pelicula pelicula) {
         VBox bloque = new VBox(44);
+        bloque.getStyleClass().add("panel");
         bloque.getChildren().add(crearEncabezadoPelicula(pelicula));
 
         List<Funcion> funciones = consultarFuncionesController.obtenerFuncionesProximas(pelicula);

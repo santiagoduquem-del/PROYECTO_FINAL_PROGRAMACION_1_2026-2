@@ -13,6 +13,7 @@ public class Pago implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+
     private TipoTarjeta tipoTarjeta;
     private Franquicia franquicia;
     private String ultimosDigitos;
@@ -23,6 +24,9 @@ public class Pago implements Serializable {
     private double montoIngresado;   // lo que el cliente autorizó
     private double valorDevuelto;    // montoIngresado - valorAPagar
     private LocalDateTime fechaHora;
+
+    //relaciones
+
 
     public Pago(TipoTarjeta tipoTarjeta, Franquicia franquicia, String ultimosDigitos, String titular,
                 String documentoTitular, int cuotas, double valorAPagar, double montoIngresado) {
@@ -59,14 +63,33 @@ public class Pago implements Serializable {
         return texto;
     }
 
-    public TipoTarjeta getTipoTarjeta() { return tipoTarjeta; }
-    public Franquicia getFranquicia() { return franquicia; }
-    public String getUltimosDigitos() { return ultimosDigitos; }
-    public String getTitular() { return titular; }
-    public String getDocumentoTitular() { return documentoTitular; }
-    public int getCuotas() { return cuotas; }
-    public double getValorAPagar() { return valorAPagar; }
-    public double getMontoIngresado() { return montoIngresado; }
-    public double getValorDevuelto() { return valorDevuelto; }
-    public LocalDateTime getFechaHora() { return fechaHora; }
+    public TipoTarjeta getTipoTarjeta()
+    { return tipoTarjeta; }
+
+    public Franquicia getFranquicia()
+    { return franquicia; }
+
+    public String getUltimosDigitos()
+    { return ultimosDigitos; }
+
+    public String getTitular()
+    { return titular; }
+
+    public String getDocumentoTitular()
+    { return documentoTitular; }
+
+    public int getCuotas()
+    { return cuotas; }
+
+    public double getValorAPagar()
+    { return valorAPagar; }
+
+    public double getMontoIngresado()
+    { return montoIngresado; }
+
+    public double getValorDevuelto()
+    { return valorDevuelto; }
+
+    public LocalDateTime getFechaHora()
+    { return fechaHora; }
 }
