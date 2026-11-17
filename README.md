@@ -1,11 +1,11 @@
-# 🎬 CinemaUQ – Sistema de Gestión de Cine
+#  CinemaUQ – Sistema de Gestión de Cine
 
 Proyecto final de **Programación I** – Universidad del Quindío.
 Aplicación de escritorio en **Java 21 + JavaFX** para administrar un cine: cartelera, salas, funciones, venta de entradas con mapa de asientos, combos, membresías, pago con tarjeta (simulado) y reportes.
 
 ---
 
-## 👥 Integrantes
+##  Integrantes
 
 | Nombre | Rama |
 |---|---|
@@ -15,7 +15,7 @@ Aplicación de escritorio en **Java 21 + JavaFX** para administrar un cine: cart
 
 ---
 
-## 🛠️ Tecnologías
+## 🛠 Tecnologías
 
 - **Java 21**
 - **JavaFX 21** con **FXML** y Scene Builder
@@ -25,7 +25,7 @@ Aplicación de escritorio en **Java 21 + JavaFX** para administrar un cine: cart
 
 ---
 
-## ▶️ Cómo ejecutarlo
+## ▶ Cómo ejecutarlo
 
 1. Clonar el repositorio y abrirlo en **IntelliJ IDEA** (se importa como proyecto Maven).
 2. Ejecutar la clase `HelloApplication` (o `Launcher`) del paquete `co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq`.
@@ -47,7 +47,7 @@ La primera vez el programa crea datos de ejemplo (salas, películas, clientes y 
 
 ---
 
-## ✨ Funcionalidades
+##  Funcionalidades
 
 ### Operador de taquilla
 - **Generar venta:** película, función, cliente, tipo de entrada, combos y **mapa de asientos** (varios asientos por compra).
@@ -69,7 +69,7 @@ Signature, 3D, IMAX, IMAX 70 mm, Dolby Cinema, 4DX, ScreenX, Infinity Vision, Pr
 
 ---
 
-## 📐 Reglas de negocio principales
+##  Reglas de negocio principales
 
 - **Valor de la entrada** = (tarifa del tipo de entrada + valor base de la función) − descuento del plan del cliente.
 - Un cliente puede comprar entrada **General** o la de **su tipo** (Estudiante, Niño, Adulto mayor).
@@ -81,7 +81,7 @@ Signature, 3D, IMAX, IMAX 70 mm, Dolby Cinema, 4DX, ScreenX, Infinity Vision, Pr
 
 ---
 
-## 🏗️ Arquitectura (MVC)
+## 🏗 Arquitectura (MVC)
 
 ```
 src/main/java/co/edu/uniquindio/cineuq/proyectofinalprogramacion1cineuq/
@@ -100,7 +100,7 @@ src/test/java/...        → Pruebas unitarias JUnit 5
 
 ---
 
-## 💾 Persistencia
+## Persistencia
 
 Los datos se guardan automáticamente después de cada cambio en la carpeta personal del usuario:
 
@@ -113,7 +113,7 @@ Para volver a los datos de ejemplo: cerrar el programa y borrar `cinemauq.dat`.
 
 ---
 
-## ✅ Pruebas unitarias
+##  Pruebas unitarias
 
 **174 pruebas con JUnit 5** sobre todas las clases del modelo y el conversor de datos.
 Cada prueba crea un cine nuevo, así no dependen entre sí ni modifican los datos reales.
@@ -128,3 +128,50 @@ BUILD SUCCESS
 ```
 
 En IntelliJ: clic derecho en `src/test/java` → **Run 'All Tests'**.
+
+
+
+---
+
+##  Capturas
+
+<p align="center">
+  <img src="capturas/pantallaCarga.png" width="600" alt="Pantalla de carga">
+</p>
+
+### Acceso
+| Inicio de sesión | Registro de cliente |
+|---|---|
+| ![](capturas/login.png) | ![](capturas/signup.png) |
+
+| Planes de membresía |
+|---|
+| ![](capturas/planes.png) |
+
+### Menús
+| Operador | Administrador |
+|---|---|
+| ![](capturas/menuOperador.png) | ![](capturas/menuAdministrador.png) |
+
+### Cartelera
+| Películas en cartelera | Detalle de la película |
+|---|---|
+| ![](capturas/cartelera.png) | ![](capturas/detallePelicula.png) |
+
+| Secciones del detalle | |
+|---|---|
+| ![](capturas/seccion1.png) | ![](capturas/seccion2.png) |
+
+### Venta
+| Generar venta | Combos |
+|---|---|
+| ![](capturas/generarVenta.png) | ![](capturas/combos.png) |
+
+| Pago con tarjeta |
+|---|
+| ![](capturas/pago.png) |
+
+### Formatos de proyección
+| | | |
+|---|---|---|
+| ![](capturas/formatos1.png) | ![](capturas/formatos2.png) | ![](capturas/formatos3.png) |
