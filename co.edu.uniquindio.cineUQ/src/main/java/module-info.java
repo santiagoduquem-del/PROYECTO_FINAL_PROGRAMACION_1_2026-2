@@ -14,4 +14,8 @@ module co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq {
     opens co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq to javafx.fxml;
     opens co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.viewController to javafx.fxml;
     exports co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq;
+
+    // Para que JUnit pueda ejecutar las pruebas de estos paquetes
+    opens co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.model to org.junit.platform.commons;
+    opens co.edu.uniquindio.cineuq.proyectofinalprogramacion1cineuq.controller to org.junit.platform.commons;
 }
